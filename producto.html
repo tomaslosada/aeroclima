@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Producto — AeroClima | Pulsar</title>
+<meta name="description" content="De qué es capaz AeroClima: consultas en lenguaje natural sobre la meteorología del aeropuerto, alertas configurables y una incorporación sin obra ni reemplazos.">
+<link rel="icon" type="image/png" sizes="48x48" href="favicon-48.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="theme-color" content="#3C4A57">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="AeroClima">
+<meta property="og:locale" content="es_AR">
+<meta property="og:title" content="Producto — AeroClima">
+<meta property="og:description" content="Consultas en lenguaje natural, alertas configurables y una incorporación sin obra ni reemplazos. El kernel decide; la IA explica.">
+<meta property="og:url" content="https://tomaslosada.github.io/aeroclima/producto.html">
+<meta property="og:image" content="https://tomaslosada.github.io/aeroclima/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Producto — AeroClima">
+<meta name="twitter:description" content="Consultas en lenguaje natural, alertas configurables y una incorporación sin obra ni reemplazos. El kernel decide; la IA explica.">
+<meta name="twitter:image" content="https://tomaslosada.github.io/aeroclima/og-image.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400..900&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+.preguntas{margin-top:36px;display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:14px}
+.pregunta{background:#fff;border:1px solid var(--line);border-radius:11px;padding:18px 20px}
+.pregunta .q{font-size:15.5px;font-weight:600;margin-bottom:8px}
+.pregunta .q::before{content:"» ";color:var(--cielo);font-family:var(--mono)}
+.pregunta .a{font-size:14.5px;color:var(--ink-soft);line-height:1.55}
+.split{margin-top:36px;display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.half{background:#fff;border:1px solid var(--line);border-radius:11px;padding:28px}
+.half .label{display:inline-block;font-family:var(--mono);font-size:12px;letter-spacing:.08em;padding:4px 10px;border-radius:99px;margin-bottom:14px}
+.half.kernel .label{background:#E7F2EB;color:var(--verde)}
+.half.ia .label{background:#EAF2F9;color:var(--cielo)}
+.half h3{font-weight:800;font-size:20px;margin-bottom:8px}
+.half p{font-size:15.5px;color:var(--ink-soft)}
+.regla{margin-top:24px;font-family:var(--mono);font-size:14.5px;color:var(--ink);background:#fff;border:1px dashed var(--line);border-radius:10px;padding:16px 22px;display:inline-block}
+.pasos{margin-top:36px;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;counter-reset:paso}
+.paso{background:#fff;border:1px solid var(--line);border-radius:11px;padding:26px;counter-increment:paso}
+.paso::before{content:counter(paso,decimal-leading-zero);font-family:var(--mono);font-size:13px;color:var(--cielo);letter-spacing:.08em;display:block;margin-bottom:10px}
+.paso h3{font-weight:800;font-size:18px;margin-bottom:8px}
+.paso p{font-size:15px;color:var(--ink-soft)}
+
+/* demo interactiva */
+.demo-wrap{background:var(--grad-pulsar);border-bottom:0}
+.demo-wrap .kicker{color:var(--cielo-claro)}
+.demo-wrap h2{color:#fff}
+.demo-wrap>.wrap>p.intro{color:#CBD6E0}
+.chat{margin-top:36px;max-width:560px;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.28)}
+.chat-head{background:var(--ink);color:#fff;padding:15px 20px;display:flex;align-items:center;gap:11px}
+.chat-head .av{width:34px;height:34px;border-radius:50%;background:var(--cielo);display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:15px;color:#fff}
+.chat-head .nm{font-weight:600;font-size:15px}
+.chat-head .st{font-family:var(--mono);font-size:11px;color:#7FE0A8;display:flex;align-items:center;gap:5px}
+.chat-head .st::before{content:"";width:7px;height:7px;border-radius:50%;background:#7FE0A8}
+.chat-body{padding:20px;min-height:240px;display:flex;flex-direction:column;gap:12px;background:#F0F4F8}
+.msg{max-width:80%;padding:11px 15px;border-radius:14px;font-size:14.5px;line-height:1.5;animation:pop .3s ease}
+.msg.u{align-self:flex-end;background:var(--cielo);color:#fff;border-bottom-right-radius:4px}
+.msg.b{align-self:flex-start;background:#fff;border:1px solid var(--line);border-bottom-left-radius:4px}
+.msg .est{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:11.5px;font-weight:500;margin-top:7px}
+.msg .est .d{width:9px;height:9px;border-radius:50%}
+.est.verde{color:var(--verde)}.est.verde .d{background:var(--verde)}
+.est.amber{color:var(--ambar)}.est.amber .d{background:var(--ambar)}
+@keyframes pop{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.typing{align-self:flex-start;background:#fff;border:1px solid var(--line);border-radius:14px;border-bottom-left-radius:4px;padding:13px 16px;display:flex;gap:4px}
+.typing span{width:7px;height:7px;border-radius:50%;background:#9DB0C2;animation:blink 1.2s infinite}
+.typing span:nth-child(2){animation-delay:.2s}.typing span:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,60%,100%{opacity:.3}30%{opacity:1}}
+.chips{padding:14px 20px;display:flex;gap:9px;flex-wrap:wrap;background:#fff;border-top:1px solid var(--line)}
+.chip{font-size:13.5px;font-family:var(--body);background:#EDF3F8;border:1px solid var(--line);color:var(--ink);border-radius:99px;padding:8px 15px;cursor:pointer;transition:background .15s,border-color .15s}
+.chip:hover{background:#DCE8F2;border-color:var(--cielo)}
+.chip:disabled{opacity:.4;cursor:default}
+.demo-note{margin-top:18px;font-family:var(--mono);font-size:12px;color:#8FA1B3;max-width:560px;text-align:center}
+.split-note{margin-top:20px;font-size:14px;color:var(--ink-soft)}
+@media (max-width:820px){.split{grid-template-columns:1fr}}
+.skip{position:absolute;left:-9999px;top:0;background:#fff;color:var(--ink);padding:10px 16px;border-radius:0 0 8px 0;z-index:99;font-weight:600}.skip:focus{left:0}
+</style>
+</head>
+<body>
+<a class="skip" href="#contenido">Saltar al contenido</a>
+<div id="nav-slot"></div>
+
+<main id="contenido">
+<header class="page-hero">
+  <div class="wrap">
+    <div class="kicker">El producto</div>
+    <h1>Pregunte como le preguntaría a un colega.</h1>
+    <p>AeroClima responde en lenguaje natural sobre la situación meteorológica presente y pronosticada del aeropuerto, combinando todas las fuentes en una sola respuesta coherente.</p>
+  </div>
+</header>
+
+<section class="demo-wrap">
+  <div class="wrap">
+    <div class="kicker">Demo</div>
+    <h2>Probá una conversación.</h2>
+    <p class="intro">Tocá una pregunta y mirá cómo respondería AeroClima. Es una simulación con datos de ejemplo.</p>
+    <div class="chat reveal">
+      <div class="chat-head">
+        <div class="av">A</div>
+        <div><div class="nm">AeroClima</div><div class="st">en línea</div></div>
+      </div>
+      <div class="chat-body" id="chatBody">
+        <div class="msg b">Hola. Soy AeroClima. Preguntame sobre las condiciones del aeropuerto y te respondo en lenguaje claro. 👇</div>
+      </div>
+      <div class="chips" id="chips"></div>
+    </div>
+    <p class="demo-note">Simulación ilustrativa · los datos no corresponden a condiciones reales</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="kicker">De qué es capaz</div>
+    <h2>El tipo de consulta que resuelve.</h2>
+    <div class="preguntas reveal">
+      <div class="pregunta"><div class="q">¿Cómo viene el viento para las próximas tres horas?</div><div class="a">Estado actual, tendencia pronosticada y aviso si una ráfaga proyectada se acerca a los límites operativos del aeropuerto.</div></div>
+      <div class="pregunta"><div class="q">¿Hay riesgo de niebla para la primera salida?</div><div class="a">Cruza el pronóstico oficial con las condiciones locales de humedad y temperatura, y responde con el nivel de confianza.</div></div>
+      <div class="pregunta"><div class="q">¿Qué dice el último aviso de fenómenos severos?</div><div class="a">Traduce los avisos oficiales vigentes al contexto del aeropuerto: si afectan la operación, desde cuándo y hasta cuándo.</div></div>
+      <div class="pregunta"><div class="q">Resumime el turno para el relevo.</div><div class="a">Genera una síntesis del período: qué pasó, qué alertas hubo y qué se espera — lista para entregar el puesto.</div></div>
+      <div class="pregunta"><div class="q">¿Está la pista dentro de límites ahora?</div><div class="a">Responde con el estado del semáforo operativo según los umbrales configurados, con el detalle de cada variable.</div></div>
+      <div class="pregunta"><div class="q">¿Cómo estuvo el viento ayer de 14 a 18?</div><div class="a">Consulta el historial registrado y lo presenta en lenguaje claro — útil para reportes y análisis de eventos.</div></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="kicker">Cómo funciona, a grandes rasgos</div>
+    <h2>Las decisiones de seguridad no se delegan en la IA.</h2>
+    <p class="intro">AeroClima separa con claridad dos responsabilidades que en otros productos se mezclan:</p>
+    <div class="split reveal">
+      <div class="half kernel"><span class="label">DETERMINISTA</span><h3>El núcleo decide</h3><p>La evaluación de umbrales operativos —cuándo una condición amerita alerta— la realiza un motor determinista, con reglas explícitas, trazables y auditables. Siempre responde igual ante los mismos datos.</p></div>
+      <div class="half ia"><span class="label">CONVERSACIONAL</span><h3>La IA explica</h3><p>La inteligencia artificial traduce, sintetiza y responde en lenguaje natural. Enriquece la información y la hace accesible, pero no toma decisiones operativas ni emite alertas por su cuenta.</p></div>
+    </div>
+    <div class="regla">kernel decide · IA explica — siempre en ese orden</div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="kicker">Cómo se incorpora</div>
+    <h2>Sin obra, sin reemplazos, sin migración.</h2>
+    <p class="intro">La incorporación no interrumpe la operación ni exige cambios en la infraestructura existente.</p>
+    <div class="pasos reveal">
+      <div class="paso"><h3>Conexión</h3><p>Se releva qué fuentes meteorológicas tiene el aeropuerto y se conectan a la plataforma. Diseñado para integrarse tanto con sistemas modernos como con equipamiento de generaciones anteriores.</p></div>
+      <div class="paso"><h3>Configuración</h3><p>Junto al personal operativo se definen umbrales, alertas y el tablero según los criterios propios de la operación: cada aeropuerto configura su propio semáforo.</p></div>
+      <div class="paso"><h3>Operación</h3><p>El equipo consulta y recibe alertas desde el primer día, con acompañamiento en la puesta en marcha. Los sistemas existentes siguen funcionando igual que antes.</p></div>
+    </div>
+  </div>
+</section>
+
+</main>
+<div id="footer-slot"></div>
+
+<script src="main.js"></script>
+<script>
+// ---- demo de chat simulada ----
+const QA = [
+  {q:"¿Cómo viene el viento?", a:`Viento del oeste-sudoeste a 18 nudos, con ráfagas de 30. El pronóstico anticipa ráfagas de hasta 35 nudos entre las 15 y las 20.`, est:["amber","PRECAUCIÓN OPERATIVA"]},
+  {q:"¿Riesgo de niebla mañana?", a:`Baja probabilidad para la primera franja. La humedad sube hacia el amanecer pero la temperatura se mantiene lejos del punto de rocío. Confianza: media-alta.`, est:["verde","DENTRO DE LÍMITES"]},
+  {q:"¿Estado de la pista ahora?", a:`Visibilidad y techo en valores normales. El único factor a vigilar es el viento cruzado por las ráfagas. Operación posible con precaución.`, est:["amber","PRECAUCIÓN OPERATIVA"]},
+  {q:"Resumime el turno", a:`Turno estable en general. Pico de viento a las 16:10 (ráfaga de 32 nudos) que disparó una alerta ámbar, normalizada a las 17:40. Sin otros eventos. Próximas horas: viento en descenso gradual.`, est:["verde","SIN EVENTOS ABIERTOS"]}
+];
+const body = document.getElementById('chatBody');
+const chips = document.getElementById('chips');
+let used = new Set();
+function renderChips(){
+  chips.innerHTML='';
+  QA.forEach((item,i)=>{
+    const b=document.createElement('button');
+    b.className='chip'; b.textContent=item.q; b.disabled=used.has(i);
+    b.onclick=()=>ask(i);
+    chips.appendChild(b);
+  });
+}
+function scroll(){ body.scrollTop = body.scrollHeight; }
+function ask(i){
+  used.add(i); renderChips();
+  const item=QA[i];
+  const u=document.createElement('div'); u.className='msg u'; u.textContent=item.q;
+  body.appendChild(u); scroll();
+  const t=document.createElement('div'); t.className='typing'; t.innerHTML='<span></span><span></span><span></span>';
+  body.appendChild(t); scroll();
+  setTimeout(()=>{
+    t.remove();
+    const b=document.createElement('div'); b.className='msg b';
+    b.innerHTML = item.a + `<div class="est ${item.est[0]}"><span class="d"></span>${item.est[1]}</div>`;
+    body.appendChild(b); scroll();
+  }, 1100);
+}
+renderChips();
+</script>
+</body>
+</html>

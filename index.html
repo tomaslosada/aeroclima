@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AeroClima — Meteorología aeronáutica en lenguaje claro | Pulsar</title>
+<meta name="description" content="AeroClima es una capa de inteligencia conversacional para la meteorología aeronáutica de aeropuertos regionales de LATAM. Se enchufa a los sistemas que ya existen y traduce datos crípticos en decisiones claras.">
+<link rel="icon" type="image/png" sizes="48x48" href="favicon-48.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="theme-color" content="#3C4A57">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="AeroClima">
+<meta property="og:locale" content="es_AR">
+<meta property="og:title" content="AeroClima — Meteorología aeronáutica en lenguaje claro">
+<meta property="og:description" content="Una capa de IA conversacional que se enchufa a los sistemas meteorológicos que su aeropuerto ya tiene y los traduce a lenguaje operativo claro.">
+<meta property="og:url" content="https://tomaslosada.github.io/aeroclima/index.html">
+<meta property="og:image" content="https://tomaslosada.github.io/aeroclima/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="AeroClima — Meteorología aeronáutica en lenguaje claro">
+<meta name="twitter:description" content="Una capa de IA conversacional que se enchufa a los sistemas meteorológicos que su aeropuerto ya tiene y los traduce a lenguaje operativo claro.">
+<meta name="twitter:image" content="https://tomaslosada.github.io/aeroclima/og-image.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400..900&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+.hero{background:var(--paper);padding:78px 0 64px}
+.hero .eyebrow{font-family:var(--mono);font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:18px}
+.hero h1{font-weight:900;font-stretch:95%;font-size:clamp(36px,5.6vw,60px);line-height:1.05;letter-spacing:-.015em;max-width:17ch}
+.hero h1 em{font-style:normal;color:var(--cielo)}
+.hero p.lede{margin-top:22px;font-size:clamp(17px,2vw,21px);color:var(--ink-soft);max-width:56ch}
+.hero-cta{margin-top:32px;display:flex;gap:14px;flex-wrap:wrap}
+.decode{margin-top:52px;display:grid;grid-template-columns:1fr auto 1fr;align-items:stretch;border:1px solid var(--line);background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 10px 34px rgba(19,40,63,.07)}
+.decode .raw{padding:26px 28px;background:var(--ink);color:#BFD3E6;font-family:var(--mono);font-size:14px;line-height:1.9;word-break:break-word}
+.decode .raw .tag{display:block;font-size:11px;letter-spacing:.1em;color:#6E8BA8;margin-bottom:10px}
+.decode .raw b{color:#FFD27A;font-weight:500}
+.decode .bridge{display:flex;align-items:center;justify-content:center;padding:0 18px;font-family:var(--mono);font-size:20px;color:var(--cielo);background:#fff}
+.decode .clear{padding:24px 26px;display:flex;flex-direction:column;justify-content:center;gap:13px}
+.decode .clear .tag{font-size:11px;letter-spacing:.1em;font-family:var(--mono);color:var(--ink-soft)}
+.bubble{background:#EDF3F8;border:1px solid var(--line);border-radius:12px;padding:13px 17px;font-size:15px;max-width:46ch}
+.bubble .who{font-family:var(--mono);font-size:11px;color:var(--ink-soft);display:block;margin-bottom:6px}
+.bubble.answer{background:#fff;border-color:#B5CCE0}
+.estado{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:12.5px;font-weight:500;margin-top:4px}
+.dot{width:10px;height:10px;border-radius:50%}
+.dot.amber{background:var(--ambar)}.estado.amber{color:var(--ambar)}
+.frag{margin-top:34px;display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}
+.frag .pane{background:#fff;border:1px solid var(--line);border-radius:10px;padding:18px 20px}
+.frag .pane .src{font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;color:var(--ink-soft);text-transform:uppercase}
+.frag .pane .what{margin-top:8px;font-size:15px;line-height:1.5}
+.frag-note{margin-top:18px;font-size:15px;color:var(--ink-soft);font-style:italic}
+.pilares{margin-top:36px;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
+.pilar{background:#fff;border:1px solid var(--line);border-top:3px solid var(--cielo);border-radius:10px;padding:26px 24px}
+.pilar h3{font-weight:800;font-size:21px;margin-bottom:10px}
+.pilar p{font-size:15.5px;color:var(--ink-soft)}
+.cta-band{background:var(--grad-pulsar);border-bottom:0;text-align:center;color:#fff}
+.cta-band h2{margin:0 auto 14px;color:#fff}
+.cta-band p{color:#CBD6E0;max-width:50ch;margin:0 auto 28px;font-size:18px}
+@media (max-width:820px){
+  .decode{grid-template-columns:1fr}
+  .decode .bridge{padding:8px 0;background:transparent;font-size:0;line-height:0}
+  .decode .bridge::after{content:"\2193";font-size:22px;line-height:1;color:var(--cielo)}
+}
+.skip{position:absolute;left:-9999px;top:0;background:#fff;color:var(--ink);padding:10px 16px;border-radius:0 0 8px 0;z-index:99;font-weight:600}.skip:focus{left:0}
+</style>
+</head>
+<body>
+<a class="skip" href="#contenido">Saltar al contenido</a>
+<div id="nav-slot"></div>
+
+<main id="contenido">
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Meteorología aeronáutica · Aeropuertos regionales · LATAM</div>
+    <h1>El clima de su aeropuerto, en <em>lenguaje claro</em>.</h1>
+    <p class="lede">AeroClima es una capa de inteligencia conversacional que se enchufa a los sistemas meteorológicos que su aeropuerto ya tiene, y convierte datos dispersos y crípticos en respuestas operativas que cualquier persona de la torre entiende al instante.</p>
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="producto.html">Ver el producto →</a>
+      <a class="btn btn-ghost" href="dashboard.html">Conocer el dashboard</a>
+    </div>
+
+    <div class="decode reveal" aria-label="De un METAR crudo a una respuesta clara">
+      <div class="raw">
+        <span class="tag">LO QUE LOS SISTEMAS EMITEN HOY</span>
+        METAR SAZB 091400Z <b>24018G30KT</b> 9999 SCT025 BKN040 18/09 Q1012=<br><br>
+        TAF SAZB 091130Z 0912/1012 24015KT 9999 SCT030 <b>TEMPO 0915/0920 24020G35KT</b>=
+      </div>
+      <div class="bridge" aria-hidden="true">→</div>
+      <div class="clear">
+        <span class="tag">LO QUE AEROCLIMA RESPONDE</span>
+        <div class="bubble"><span class="who">TORRE</span>¿Cómo viene el viento para la próxima hora?</div>
+        <div class="bubble answer"><span class="who">AEROCLIMA</span>Viento fuerte del oeste-sudoeste: 18 nudos con ráfagas de 30. El pronóstico indica que entre las 15 y las 20 las ráfagas pueden llegar a 35 nudos.
+          <div class="estado amber"><span class="dot amber"></span>PRECAUCIÓN OPERATIVA</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <div class="kicker">El problema</div>
+    <h2>El dato existe. Lo que falta es la síntesis.</h2>
+    <p class="intro">Un aeropuerto regional con tráfico comercial ya convive con varios sistemas meteorológicos, cada uno en su propio formato, en su propia pantalla y con su propio ritmo. En el momento de mayor presión, alguien tiene que leer, cruzar y traducir mentalmente todo eso.</p>
+    <div class="frag reveal">
+      <div class="pane"><div class="src">Estación de superficie</div><div class="what">Viento, visibilidad, techo de nubes — en tiempo real, en formato técnico.</div></div>
+      <div class="pane"><div class="src">Reportes oficiales</div><div class="what">METAR, TAF y avisos — codificados, en pantallas separadas.</div></div>
+      <div class="pane"><div class="src">Cartas y modelos</div><div class="what">Pronósticos de área y modelos regionales — para meteorólogos, no para la torre.</div></div>
+      <div class="pane"><div class="src">Experiencia personal</div><div class="what">El criterio del operador de turno, que hoy integra todo lo anterior.</div></div>
+    </div>
+    <p class="frag-note">AeroClima no reemplaza ninguna de estas piezas. Las une.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="kicker">Qué es AeroClima</div>
+    <h2>Una capa que se suma, no un sistema que se impone.</h2>
+    <div class="pilares reveal">
+      <div class="pilar"><h3>Enchufable</h3><p>Se conecta a la infraestructura meteorológica que el aeropuerto ya tiene y a las fuentes oficiales de su país. No exige reemplazar equipamiento ni cambiar de proveedor.</p></div>
+      <div class="pilar"><h3>Personalizable</h3><p>Cada aeropuerto tiene su pista, sus umbrales y su realidad. Las alertas y el tablero se configuran según los criterios de cada operación, no al revés.</p></div>
+      <div class="pilar"><h3>Económico</h3><p>Pensado desde el origen para la escala y el presupuesto de un aeropuerto regional de LATAM, no como una versión recortada de un sistema para grandes hubs.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-band">
+  <div class="wrap">
+    <h2>¿Querés ver cómo funcionaría en tu aeropuerto?</h2>
+    <p>Conocé el producto en detalle o escribinos para una conversación sin compromiso.</p>
+    <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+      <a class="btn btn-primary" href="producto.html">Explorar el producto</a>
+      <a class="btn btn-wa" href="contacto.html">Hablemos →</a>
+    </div>
+  </div>
+</section>
+
+</main>
+<div id="footer-slot"></div>
+<script src="main.js"></script>
+</body>
+</html>
