@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Demo interactiva — AeroClima | Pulsar</title>
+<meta name="description" content="Demostración interactiva de AeroClima: cambiá entre escenarios meteorológicos y preguntale al sistema en lenguaje natural. Tablero operativo con semáforo, viento, visibilidad y pronóstico.">
+<link rel="icon" type="image/png" sizes="48x48" href="favicon-48.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="theme-color" content="#3C4A57">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="AeroClima">
+<meta property="og:locale" content="es_AR">
+<meta property="og:title" content="Demo interactiva — AeroClima">
+<meta property="og:description" content="Cambiá entre escenarios meteorológicos y preguntale al sistema en lenguaje natural. Una muestra en vivo de cómo AeroClima traduce los datos a respuestas operativas.">
+<meta property="og:url" content="https://aeroclima.pulsar-avitech.ai/demo.html">
+<meta property="og:image" content="https://aeroclima.pulsar-avitech.ai/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Demo interactiva — AeroClima">
+<meta name="twitter:description" content="Cambiá entre escenarios meteorológicos y preguntale al sistema en lenguaje natural.">
+<meta name="twitter:image" content="https://aeroclima.pulsar-avitech.ai/og-image.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400..900&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  /* ====== DEMO INTERACTIVA ====== */
+  .skip{position:absolute;left:-9999px;top:0;background:#fff;color:var(--ink);padding:10px 16px;border-radius:0 0 8px 0;z-index:99;font-weight:600}.skip:focus{left:0}
+  .dm-intro{margin-top:10px;color:var(--ink-soft);max-width:60ch}
+  .dm-sim{display:flex;align-items:center;gap:9px;background:rgba(224,163,64,.1);border:1px solid rgba(224,163,64,.4);
+    color:#9A6B14;font-family:var(--mono);font-size:12px;border-radius:9px;padding:10px 15px;margin:24px 0 18px}
+  .dm-sim .d{width:7px;height:7px;border-radius:50%;background:#E0A340;flex:none;animation:dmpulse 2s infinite}
+  @keyframes dmpulse{0%,100%{opacity:1}50%{opacity:.35}}
+
+  .dm-scen{display:flex;gap:9px;margin-bottom:20px;flex-wrap:wrap}
+  .dm-scen button{flex:1;min-width:150px;background:#fff;border:1px solid var(--line);color:var(--ink);
+    padding:13px 14px;border-radius:11px;cursor:pointer;font-family:var(--sans,inherit);font-size:13.5px;font-weight:600;
+    transition:all .18s;display:flex;align-items:center;gap:9px;justify-content:center}
+  .dm-scen button .ic{font-size:17px}
+  .dm-scen button:hover{border-color:var(--cielo);box-shadow:0 3px 12px rgba(7,120,206,.12)}
+  .dm-scen button.on{background:linear-gradient(135deg,var(--cielo),#0a5fa3);border-color:var(--cielo);color:#fff;box-shadow:0 4px 16px rgba(7,120,206,.28)}
+
+  .dm-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  @media(max-width:860px){.dm-grid{grid-template-columns:1fr}}
+
+  .dm-panel{background:#0E1F30;border:1px solid #2A3D52;border-radius:16px;padding:20px;color:#E8F0F7}
+  .dm-panel.light{background:#fff;border-color:var(--line);color:var(--ink)}
+  .dm-panel h3{font-size:11px;font-family:var(--mono);letter-spacing:.13em;text-transform:uppercase;color:#5BB4F2;margin-bottom:15px}
+  .dm-panel.light h3{color:var(--cielo)}
+
+  .dm-station{display:flex;align-items:baseline;justify-content:space-between}
+  .dm-station .id{font-size:19px;font-weight:800}
+  .dm-station .tm{font-family:var(--mono);font-size:12px;color:#9FB2C4}
+  .dm-meta{font-family:var(--mono);font-size:11px;color:#54677C;margin:3px 0 16px}
+
+  .dm-light{display:flex;align-items:center;gap:16px;padding:16px;border-radius:13px;margin-bottom:15px;border:1px solid #2A3D52;transition:all .4s}
+  .dm-light .orb{width:58px;height:58px;border-radius:50%;flex:none;position:relative;transition:all .4s}
+  .dm-light .orb::after{content:'';position:absolute;inset:-7px;border-radius:50%;opacity:.3;background:inherit;filter:blur(9px)}
+  .dm-light .lbl{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#9FB2C4;margin-bottom:3px}
+  .dm-light .st{font-size:20px;font-weight:800}
+  .dm-light .ds{font-size:12.5px;color:#C6D6E5;margin-top:3px}
+
+  .dm-metrics{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:15px}
+  .dm-metric{background:rgba(11,26,41,.6);border:1px solid #2A3D52;border-radius:11px;padding:13px 15px}
+  .dm-metric .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;color:#54677C;margin-bottom:6px}
+  .dm-metric .v{font-size:22px;font-weight:800;line-height:1}
+  .dm-metric .v small{font-size:13px;font-weight:600;color:#9FB2C4}
+  .dm-metric .x{font-size:11.5px;color:#5BB4F2;margin-top:5px;font-family:var(--mono)}
+  .dm-metric .x.warn{color:#E0A340}.dm-metric .x.bad{color:#E0584F}
+
+  .dm-fc{background:rgba(11,26,41,.6);border:1px solid #2A3D52;border-radius:11px;padding:14px}
+  .dm-fc .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;color:#54677C;margin-bottom:13px}
+  .dm-spark{display:flex;align-items:flex-end;gap:6px;height:54px}
+  .dm-spark .bar{flex:1;border-radius:3px 3px 0 0;background:linear-gradient(180deg,#5BB4F2,#0778CE);position:relative;transition:height .5s,background .5s;min-height:5px}
+  .dm-spark .bar span{position:absolute;top:-17px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:9px;color:#9FB2C4}
+  .dm-spark .bar.hi{background:linear-gradient(180deg,#f0b860,#E0A340)}
+  .dm-spark .bar.cr{background:linear-gradient(180deg,#ec7d76,#E0584F)}
+  .dm-fclabels{display:flex;gap:6px;margin-top:6px}
+  .dm-fclabels span{flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#54677C}
+
+  .dm-sources{display:flex;gap:7px;flex-wrap:wrap;margin-top:14px}
+  .dm-src{display:flex;align-items:center;gap:6px;background:rgba(11,26,41,.55);border:1px solid #2A3D52;border-radius:20px;padding:5px 11px;font-size:11px;color:#C6D6E5;font-family:var(--mono)}
+  .dm-src .d{width:6px;height:6px;border-radius:50%;background:#3FB67A}
+
+  .dm-chat{display:flex;flex-direction:column;height:100%}
+  .dm-win{flex:1;min-height:330px;max-height:420px;overflow-y:auto;padding-right:6px;margin-bottom:13px;display:flex;flex-direction:column;gap:11px}
+  .dm-win::-webkit-scrollbar{width:6px}.dm-win::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
+  .dm-bub{max-width:88%;padding:12px 15px;border-radius:14px;font-size:13.5px;line-height:1.5;animation:dmpop .3s ease}
+  @keyframes dmpop{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .dm-bub.q{align-self:flex-end;background:linear-gradient(135deg,var(--cielo),#0a5fa3);color:#fff;border-bottom-right-radius:5px}
+  .dm-bub.a{align-self:flex-start;background:#F4F8FC;color:#13283F;border-bottom-left-radius:5px;border:1px solid #E0EAF3}
+  .dm-bub.a .who{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;color:var(--cielo);font-weight:700;margin-bottom:5px}
+  .dm-bub.a .tag{display:inline-flex;align-items:center;gap:6px;margin-top:9px;padding:4px 10px;border-radius:20px;font-family:var(--mono);font-size:10px;font-weight:700}
+  .dm-bub.a .tag .d{width:7px;height:7px;border-radius:50%}
+  .tag.ok{background:#E7F6EE;color:#1E7A47}.tag.ok .d{background:#3FB67A}
+  .tag.warn{background:#FEF6E7;color:#9A6B14}.tag.warn .d{background:#E0A340}
+  .tag.bad{background:#FCEAE9;color:#A5302A}.tag.bad .d{background:#E0584F}
+  .dm-typing{align-self:flex-start;background:#F4F8FC;border:1px solid #E0EAF3;border-radius:14px;border-bottom-left-radius:5px;padding:14px 17px;display:flex;gap:5px}
+  .dm-typing i{width:7px;height:7px;border-radius:50%;background:#9FB2C4;animation:dmbounce 1.2s infinite}
+  .dm-typing i:nth-child(2){animation-delay:.18s}.dm-typing i:nth-child(3){animation-delay:.36s}
+  @keyframes dmbounce{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-6px);opacity:1}}
+
+  .dm-chips{display:flex;gap:8px;flex-wrap:wrap}
+  .dm-chip{background:#fff;border:1px solid var(--line);color:var(--ink);padding:9px 13px;border-radius:20px;cursor:pointer;font-size:12.5px;transition:all .16s}
+  .dm-chip:hover{border-color:var(--cielo);background:#F4F8FC}
+  .dm-chip:disabled{opacity:.4;cursor:default}
+  .dm-hint{font-family:var(--mono);font-size:10.5px;color:#54677C;margin-top:11px;text-align:center}
+</style>
+</head>
+<body>
+<a class="skip" href="#contenido">Saltar al contenido</a>
+<div id="nav-slot"></div>
+
+<main id="contenido">
+<header class="page-hero">
+  <div class="wrap">
+    <div class="kicker">Demo interactiva</div>
+    <h1>Probá AeroClima en vivo.</h1>
+    <p>Cambiá entre escenarios meteorológicos y preguntale al sistema como le preguntarías a un colega. Mirá cómo el mismo dato se convierte en una respuesta lista para decidir.</p>
+  </div>
+</header>
+
+<section style="padding:48px 0 64px">
+  <div class="wrap">
+
+    <div class="dm-sim">
+      <span class="d"></span>
+      <span>Simulación ilustrativa · Los datos son de ejemplo y no corresponden a un aeropuerto ni a un momento real. Sirven para mostrar cómo funciona el sistema.</span>
+    </div>
+
+    <div class="dm-scen" id="dmScen"></div>
+
+    <div class="dm-grid">
+      <!-- DASHBOARD -->
+      <div class="dm-panel">
+        <h3>▣ Tablero operativo</h3>
+        <div class="dm-station">
+          <div class="id" id="dmStid">AEROPUERTO DE EJEMPLO</div>
+          <div class="tm" id="dmTime">—</div>
+        </div>
+        <div class="dm-meta" id="dmMeta">Torre · condiciones de demostración</div>
+
+        <div class="dm-light" id="dmLight">
+          <div class="orb" id="dmOrb"></div>
+          <div>
+            <div class="lbl">Estado operativo</div>
+            <div class="st" id="dmSt">—</div>
+            <div class="ds" id="dmDs">—</div>
+          </div>
+        </div>
+
+        <div class="dm-metrics">
+          <div class="dm-metric"><div class="k">Viento</div><div class="v" id="dmWind">—</div><div class="x" id="dmWindx">—</div></div>
+          <div class="dm-metric"><div class="k">Visibilidad</div><div class="v" id="dmVis">—</div><div class="x" id="dmVisx">—</div></div>
+          <div class="dm-metric"><div class="k">Techo de nubes</div><div class="v" id="dmCeil">—</div><div class="x" id="dmCeilx">—</div></div>
+          <div class="dm-metric"><div class="k">Tendencia</div><div class="v" id="dmTrend" style="font-size:17px">—</div><div class="x" id="dmTrendx">—</div></div>
+        </div>
+
+        <div class="dm-fc">
+          <div class="k" id="dmFck">Pronóstico próximas 6 horas</div>
+          <div class="dm-spark" id="dmSpark"></div>
+          <div class="dm-fclabels" id="dmFcl"></div>
+        </div>
+
+        <div class="dm-sources">
+          <div class="dm-src"><span class="d"></span>AWOS</div>
+          <div class="dm-src"><span class="d"></span>SMN</div>
+          <div class="dm-src"><span class="d"></span>Modelo regional</div>
+          <div class="dm-src"><span class="d"></span>Satelital</div>
+        </div>
+      </div>
+
+      <!-- CHAT -->
+      <div class="dm-panel light dm-chat">
+        <h3>◆ Pregúntele a AeroClima</h3>
+        <div class="dm-win" id="dmWin"></div>
+        <div class="dm-chips" id="dmChips"></div>
+        <div class="dm-hint">Tocá una pregunta — la respuesta usa los datos del escenario activo</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- banda CTA -->
+<section class="page-hero" style="padding:56px 0">
+  <div class="wrap" style="text-align:center">
+    <div class="kicker" style="justify-content:center">¿Lo querés ver con tus datos?</div>
+    <h2 style="margin:0 auto">Coordinemos una demostración a medida.</h2>
+    <p style="margin:14px auto 26px">Esta es una muestra con datos de ejemplo. Con las fuentes reales de su aeropuerto, se vería igual — pero con los valores del momento.</p>
+    <a class="btn btn-primary" href="contacto.html">Conversemos →</a>
+  </div>
+</section>
+</main>
+
+<script src="main.js"></script>
+<script>
+// ====== ESCENARIOS (genéricos) ======
+const SCEN = {
+  viento: {
+    label:"Viento fuerte", ic:"🌬️",
+    state:"warn", stateTxt:"PRECAUCIÓN", stateDs:"Viento cruzado por ráfagas sobre la pista en uso",
+    wind:"18 <small>kt</small>", windx:"WSW 240° · ráfagas 30 kt", windxc:"warn",
+    vis:"10+ <small>km</small>", visx:"Sin restricción", visxc:"",
+    ceil:"4000 <small>ft</small>", ceilx:"SCT025 BKN040", ceilxc:"",
+    trend:"En aumento", trendx:"Pico hacia la tarde",
+    fck:"Ráfagas máximas · próximas 6 horas (kt)",
+    spark:[18,24,30,35,28,22], thr:32,
+    qa:{
+      viento:{tag:"warn",t:"Viento fuerte del oeste-sudoeste: 18 nudos sostenidos con ráfagas de 30. Hacia la tarde las ráfagas pueden alcanzar 35 nudos. Conviene vigilar la componente cruzada sobre la pista en uso."},
+      pista:{tag:"warn",t:"Con viento del 240°, la pista mejor alineada reduce la componente cruzada. Si la pista en uso queda muy transversal al viento, evaluar el cambio según el tipo de aeronave."},
+      niebla:{tag:"ok",t:"Sin riesgo de niebla: visibilidad sobre 10 km y humedad baja. El viento fuerte mantiene la masa de aire mezclada, lo que aleja la posibilidad de niebla."},
+      resumen:{tag:"warn",t:"Condición dominada por viento: 18 kt del WSW con ráfagas de 30, en aumento hacia la tarde. Visibilidad y techo sin problemas. Recomendación: atención a la componente cruzada durante el pico de ráfagas."},
+      cambio:{tag:"warn",t:"La tendencia es a intensificarse: el pico de ráfagas se espera por la tarde (hasta 35 kt) y luego una baja gradual hacia la noche. No se esperan cambios en visibilidad ni techo."}
+    }
+  },
+  niebla: {
+    label:"Niebla / visibilidad", ic:"🌫️",
+    state:"bad", stateTxt:"RESTRINGIDO", stateDs:"Visibilidad reducida bajo mínimos de aproximación",
+    wind:"4 <small>kt</small>", windx:"Calmo · 120°", windxc:"",
+    vis:"800 <small>m</small>", visx:"Bajo mínimos", visxc:"bad",
+    ceil:"200 <small>ft</small>", ceilx:"Niebla · OVC002", ceilxc:"bad",
+    trend:"Mejora gradual", trendx:"Con el ascenso térmico",
+    fck:"Visibilidad estimada · próximas 6 horas (m)",
+    spark:[800,600,1200,3000,6000,9999], thr:1500, invert:true,
+    qa:{
+      viento:{tag:"ok",t:"Viento calmo, 4 nudos del sudeste. No es un factor ahora — el problema actual es la visibilidad, no el viento."},
+      pista:{tag:"bad",t:"Con 800 metros de visibilidad y techo de 200 pies, el aeropuerto está por debajo de los mínimos de aproximación visual. Cualquier operación dependería de los procedimientos instrumentales aplicables."},
+      niebla:{tag:"bad",t:"Niebla activa: visibilidad 800 metros, techo 200 pies, temperatura y punto de rocío iguales — saturación total. Es niebla de radiación típica de la mañana con viento calmo."},
+      resumen:{tag:"bad",t:"Aeropuerto bajo mínimos por niebla: 800 m de visibilidad y techo de 200 ft. Viento calmo. La buena noticia: con el correr de la mañana y el ascenso de temperatura, el modelo espera mejora progresiva."},
+      cambio:{tag:"warn",t:"Mejora esperada: la niebla debería empezar a levantar hacia media mañana a medida que sube la temperatura. El modelo proyecta visibilidad superando los 3 km en unas horas y condiciones despejadas hacia el mediodía."}
+    }
+  },
+  tormenta: {
+    label:"Tormenta", ic:"⛈️",
+    state:"bad", stateTxt:"RESTRINGIDO", stateDs:"Cumulonimbus en aproximación · actividad eléctrica",
+    wind:"22 <small>kt</small>", windx:"NW 310° · ráfagas 40 kt", windxc:"bad",
+    vis:"3 <small>km</small>", visx:"Lluvia · TSRA", visxc:"warn",
+    ceil:"1500 <small>ft</small>", ceilx:"CB · BKN015", ceilxc:"bad",
+    trend:"Pico inminente", trendx:"Luego desplaza",
+    fck:"Probabilidad de tormenta · próximas 6 horas (%)",
+    spark:[40,75,90,70,35,15], thr:60,
+    qa:{
+      viento:{tag:"bad",t:"Viento del noroeste a 22 nudos con ráfagas de 40, variable en dirección por la actividad convectiva. Las ráfagas de tormenta pueden cambiar de dirección bruscamente — el dato a vigilar es la variabilidad, no solo la intensidad."},
+      pista:{tag:"bad",t:"Con cumulonimbus en aproximación y ráfagas de 40 nudos variables, la recomendación es cautela máxima. La pista en uso puede tener que cambiar rápido según se mueva la celda."},
+      niebla:{tag:"ok",t:"No hay niebla — el fenómeno actual es una tormenta. La visibilidad está reducida a 3 km pero por lluvia, no por niebla."},
+      resumen:{tag:"bad",t:"Tormenta activa: cumulonimbus, lluvia, viento del NW a 22 kt con ráfagas de 40 y actividad eléctrica. Visibilidad 3 km por lluvia. El pico de la celda se espera pronto; luego desplazamiento y mejora gradual."},
+      cambio:{tag:"warn",t:"La celda está en su fase más intensa ahora y en la próxima hora. El modelo proyecta desplazamiento hacia el este-sudeste y disminución de la probabilidad de tormenta por debajo del 20% en unas horas."}
+    }
+  },
+  tranquilo: {
+    label:"Día tranquilo", ic:"☀️",
+    state:"ok", stateTxt:"NORMAL", stateDs:"Condiciones óptimas para la operación",
+    wind:"6 <small>kt</small>", windx:"N 360° · sin ráfagas", windxc:"",
+    vis:"10+ <small>km</small>", visx:"Cielo despejado", visxc:"",
+    ceil:"—", ceilx:"Sin nubes bajas", ceilxc:"",
+    trend:"Estable", trendx:"Sin cambios previstos",
+    fck:"Viento sostenido · próximas 6 horas (kt)",
+    spark:[6,8,7,9,8,6], thr:99,
+    qa:{
+      viento:{tag:"ok",t:"Viento suave del norte, 6 nudos, sin ráfagas. Condición ideal — bien alineado con la pista, sin componente cruzada significativa."},
+      pista:{tag:"ok",t:"La pista alineada con el norte es la natural con este viento: prácticamente sin viento cruzado. Operación sin restricciones por viento."},
+      niebla:{tag:"ok",t:"Sin riesgo de niebla: visibilidad superior a 10 km, buena separación entre temperatura y punto de rocío. Nada que vigilar en ese frente."},
+      resumen:{tag:"ok",t:"Condiciones óptimas: cielo despejado, viento suave del norte de 6 nudos, sin nubes bajas. Operación normal sin restricciones. El pronóstico mantiene estas condiciones estables."},
+      cambio:{tag:"ok",t:"Estabilidad: el modelo no proyecta cambios significativos en las próximas 6 horas. Viento suave constante, visibilidad ilimitada. Buena ventana operativa."}
+    }
+  }
+};
+const QLABELS={viento:"¿Cómo viene el viento?",pista:"¿Qué pista conviene usar?",niebla:"¿Hay riesgo de niebla?",resumen:"Resumime el turno",cambio:"¿Cómo evoluciona?"};
+const COLORS={ok:'#3FB67A',warn:'#E0A340',bad:'#E0584F'};
+let current="viento", busy=false;
+
+const scenEl=document.getElementById('dmScen');
+Object.entries(SCEN).forEach(([k,v])=>{
+  const b=document.createElement('button');
+  b.innerHTML=`<span class="ic">${v.ic}</span> ${v.label}`;b.dataset.k=k;
+  b.onclick=()=>selectScen(k);scenEl.appendChild(b);
+});
+function selectScen(k){
+  current=k;
+  document.querySelectorAll('.dm-scen button').forEach(b=>b.classList.toggle('on',b.dataset.k===k));
+  renderDash();resetChat();
+}
+function renderDash(){
+  const s=SCEN[current];
+  const now=new Date();
+  document.getElementById('dmTime').textContent=now.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'})+" LT";
+  const orb=document.getElementById('dmOrb');orb.style.background=COLORS[s.state];
+  const L=document.getElementById('dmLight');L.style.borderColor=COLORS[s.state];
+  L.style.background=s.state==='ok'?'rgba(63,182,122,.08)':s.state==='warn'?'rgba(224,163,64,.08)':'rgba(224,88,79,.08)';
+  const st=document.getElementById('dmSt');st.textContent=s.stateTxt;st.style.color=COLORS[s.state];
+  document.getElementById('dmDs').textContent=s.stateDs;
+  set('dmWind',s.wind);set('dmWindx',s.windx,s.windxc);
+  set('dmVis',s.vis);set('dmVisx',s.visx,s.visxc);
+  set('dmCeil',s.ceil);set('dmCeilx',s.ceilx,s.ceilxc);
+  set('dmTrend',s.trend);set('dmTrendx',s.trendx);
+  document.getElementById('dmFck').textContent=s.fck;
+  const max=Math.max(...s.spark, s.thr<99?s.thr:0);
+  const spark=document.getElementById('dmSpark');spark.innerHTML='';
+  const labels=document.getElementById('dmFcl');labels.innerHTML='';
+  s.spark.forEach((val,i)=>{
+    const bar=document.createElement('div');bar.className='bar';
+    const disp=(s.invert&&val>=9999)?'OK':val;
+    const pct=s.invert?(1-Math.min(val,max)/max)*100:(val/max)*100;
+    bar.style.height=Math.max(8,pct)+'%';
+    if(!s.invert&&s.thr<99&&val>=s.thr)bar.classList.add(val>=s.thr*1.1?'cr':'hi');
+    if(s.invert&&val<=s.thr)bar.classList.add('cr');
+    const sp=document.createElement('span');sp.textContent=disp;bar.appendChild(sp);spark.appendChild(bar);
+    const lb=document.createElement('span');lb.textContent='+'+i+'h';labels.appendChild(lb);
+  });
+}
+function set(id,html,cls){const el=document.getElementById(id);el.innerHTML=html;if(id.endsWith('x')||id==='dmTrendx')el.className='x'+(cls?' '+cls:'')}
+const win=document.getElementById('dmWin'),chipsEl=document.getElementById('dmChips');
+function resetChat(){win.innerHTML='';addA({who:'AEROCLIMA',t:'Estoy conectado a las fuentes del aeropuerto. Preguntame sobre el escenario activo ('+SCEN[current].label.toLowerCase()+') y te respondo en lenguaje claro.',tag:null},false);buildChips();}
+function buildChips(){chipsEl.innerHTML='';Object.keys(QLABELS).forEach(q=>{const c=document.createElement('button');c.className='dm-chip';c.textContent=QLABELS[q];c.onclick=()=>ask(q,c);chipsEl.appendChild(c);});}
+function ask(q,chip){if(busy)return;busy=true;chip.disabled=true;addQ(QLABELS[q]);
+  const typ=document.createElement('div');typ.className='dm-typing';typ.innerHTML='<i></i><i></i><i></i>';win.appendChild(typ);down();
+  const ans=SCEN[current].qa[q];
+  setTimeout(()=>{typ.remove();addA({who:'AEROCLIMA',t:ans.t,tag:ans.tag});busy=false;},1100+Math.random()*500);
+}
+function addQ(t){const b=document.createElement('div');b.className='dm-bub q';b.textContent=t;win.appendChild(b);down();}
+function addA(o,scroll=true){const b=document.createElement('div');b.className='dm-bub a';
+  let tag='';if(o.tag){const n={ok:'NORMAL',warn:'PRECAUCIÓN',bad:'RESTRINGIDO'};tag=`<div class="tag ${o.tag}"><span class="d"></span>${n[o.tag]}</div>`;}
+  b.innerHTML=`<div class="who">${o.who}</div>${o.t}${tag}`;win.appendChild(b);if(scroll)down();}
+function down(){win.scrollTop=win.scrollHeight}
+selectScen('viento');
+</script>
+</body>
+</html>
