@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Demo interactiva — AeroClima | Pulsar</title>
-<meta name="description" content="Demostración interactiva de AeroClima: cambiá entre escenarios meteorológicos y preguntale al sistema en lenguaje natural. Tablero operativo con semáforo, viento, visibilidad y pronóstico.">
+<meta name="description" content="Demo de AeroClima: tablero por perfil (torre y piloto) y un asistente que se apoya en las mediciones homologadas del aeropuerto y en la normativa vigente (RAC, carta IAC, Anexo OACI) para asistir la decisión — sin reemplazar a nadie.">
 <link rel="icon" type="image/png" sizes="48x48" href="favicon-48.png">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -13,101 +13,252 @@
 <meta property="og:site_name" content="AeroClima">
 <meta property="og:locale" content="es_AR">
 <meta property="og:title" content="Demo interactiva — AeroClima">
-<meta property="og:description" content="Cambiá entre escenarios meteorológicos y preguntale al sistema en lenguaje natural. Una muestra en vivo de cómo AeroClima traduce los datos a respuestas operativas.">
+<meta property="og:description" content="Tablero por perfil y un asistente que cita la normativa. Inteligencia meteorológica conversacional para la torre, apoyada en datos homologados.">
 <meta property="og:url" content="https://aeroclima.pulsar-avitech.ai/demo.html">
 <meta property="og:image" content="https://aeroclima.pulsar-avitech.ai/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Demo interactiva — AeroClima">
-<meta name="twitter:description" content="Cambiá entre escenarios meteorológicos y preguntale al sistema en lenguaje natural.">
+<meta name="twitter:description" content="Tablero por perfil y un asistente que cita la normativa.">
 <meta name="twitter:image" content="https://aeroclima.pulsar-avitech.ai/og-image.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400..900&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 <style>
-  /* ====== DEMO INTERACTIVA ====== */
   .skip{position:absolute;left:-9999px;top:0;background:#fff;color:var(--ink);padding:10px 16px;border-radius:0 0 8px 0;z-index:99;font-weight:600}.skip:focus{left:0}
-  .dm-intro{margin-top:10px;color:var(--ink-soft);max-width:60ch}
-  .dm-sim{display:flex;align-items:center;gap:9px;background:rgba(224,163,64,.1);border:1px solid rgba(224,163,64,.4);
-    color:#9A6B14;font-family:var(--mono);font-size:12px;border-radius:9px;padding:10px 15px;margin:24px 0 18px}
-  .dm-sim .d{width:7px;height:7px;border-radius:50%;background:#E0A340;flex:none;animation:dmpulse 2s infinite}
-  @keyframes dmpulse{0%,100%{opacity:1}50%{opacity:.35}}
 
-  .dm-scen{display:flex;gap:9px;margin-bottom:20px;flex-wrap:wrap}
-  .dm-scen button{flex:1;min-width:150px;background:#fff;border:1px solid var(--line);color:var(--ink);
-    padding:13px 14px;border-radius:11px;cursor:pointer;font-family:var(--sans,inherit);font-size:13.5px;font-weight:600;
-    transition:all .18s;display:flex;align-items:center;gap:9px;justify-content:center}
-  .dm-scen button .ic{font-size:17px}
-  .dm-scen button:hover{border-color:var(--cielo);box-shadow:0 3px 12px rgba(7,120,206,.12)}
-  .dm-scen button.on{background:linear-gradient(135deg,var(--cielo),#0a5fa3);border-color:var(--cielo);color:#fff;box-shadow:0 4px 16px rgba(7,120,206,.28)}
+  #demoApp{
+    --dpanel:#0E1F30;--dpanel2:#13283F;--dborder:#27384C;--dtext:#E8F0F7;--dmute:#9FB2C4;--dsteel:#5B6E82;
+    --dok:#3FB67A;--dwarn:#E0A340;--dbad:#E0584F;--dokbg:rgba(63,182,122,.13);--dwarnbg:rgba(224,163,64,.14);--dbadbg:rgba(224,88,79,.14);
+    --sky:#0778CE;--skylt:#5BB4F2;--skypale:#CFEBFA;
+  }
+  /* ---- barra de control ---- */
+  #demoApp .ctrls{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:14px}
+  #demoApp .seg{display:inline-flex;background:#fff;border:1px solid var(--line);border-radius:999px;padding:4px}
+  #demoApp .seg button{font-family:var(--body);font-size:13.5px;font-weight:600;color:var(--ink-soft);background:transparent;border:0;padding:9px 17px;border-radius:999px;cursor:pointer;transition:.18s;display:flex;align-items:center;gap:8px}
+  #demoApp .seg button .ic{width:15px;height:15px}
+  #demoApp .seg button.on{background:linear-gradient(135deg,var(--cielo),#0a5fa3);color:#fff;box-shadow:0 3px 12px rgba(7,120,206,.28)}
+  #demoApp .ghost{font-family:var(--body);font-size:12.5px;font-weight:600;color:var(--ink-soft);background:#fff;border:1px solid var(--line);border-radius:999px;padding:9px 14px;cursor:pointer;transition:.18s;display:flex;align-items:center;gap:8px}
+  #demoApp .ghost:hover{border-color:var(--cielo);color:var(--cielo)}
+  #demoApp .ghost.armed{color:var(--ambar);border-color:#E8CF90;background:#FFF6E6}
+  #demoApp .ghost .dot{width:7px;height:7px;border-radius:50%;background:var(--verde)}
+  #demoApp .ghost.armed .dot{background:var(--ambar)}
+  #demoApp .scn{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:16px}
+  #demoApp .scn .lab{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--acero);margin-right:2px}
+  #demoApp .chip{font-family:var(--body);font-size:13px;font-weight:600;color:var(--ink-soft);background:#fff;border:1px solid var(--line);border-radius:999px;padding:9px 15px;cursor:pointer;transition:.16s;display:flex;align-items:center;gap:8px}
+  #demoApp .chip:hover{border-color:var(--cielo);color:var(--cielo)}
+  #demoApp .chip .sd{width:8px;height:8px;border-radius:50%;background:var(--acero)}
+  #demoApp .chip.on{color:#fff;border-color:var(--cielo);background:linear-gradient(135deg,var(--cielo),#0a5fa3)}
+  #demoApp .chip.on .sd{background:#fff}
 
-  .dm-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-  @media(max-width:860px){.dm-grid{grid-template-columns:1fr}}
+  /* ---- decode (METAR críptico -> claro) ---- */
+  #demoApp .decode{display:grid;grid-template-columns:1fr auto 1.1fr;border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:20px;background:#fff}
+  @media(max-width:760px){#demoApp .decode{grid-template-columns:1fr}}
+  #demoApp .decode .raw{background:var(--dpanel);color:#BFD3E6;padding:18px 20px;font-family:var(--mono);font-size:12.5px;line-height:1.85;word-break:break-word}
+  #demoApp .decode .raw .tg{display:block;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:#6E8BA8;margin-bottom:9px}
+  #demoApp .decode .raw b{color:#FFD27A;font-weight:500}
+  #demoApp .decode .arrow{display:flex;align-items:center;justify-content:center;padding:0 16px;color:var(--cielo);font-size:20px;background:#F4F8FC}
+  @media(max-width:760px){#demoApp .decode .arrow{padding:8px;transform:rotate(90deg)}}
+  #demoApp .decode .clear{padding:18px 20px;display:flex;flex-direction:column;justify-content:center;gap:8px}
+  #demoApp .decode .clear .tg{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--acero)}
+  #demoApp .decode .clear .ans{font-size:14.5px;line-height:1.5;color:var(--ink)}
+  #demoApp .decode .clear .ans b{color:var(--ink)}
+  #demoApp .decode .clear .vd{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.04em;padding:4px 10px;border-radius:20px;width:fit-content}
+  #demoApp .vd.ok{background:#E7F6EE;color:#176a42}#demoApp .vd.warn{background:#FEF6E7;color:#8a5d0c}#demoApp .vd.bad{background:#FCEAE9;color:#9a2d24}
+  #demoApp .vd .d{width:7px;height:7px;border-radius:50%}#demoApp .vd.ok .d{background:var(--verde)}#demoApp .vd.warn .d{background:var(--ambar)}#demoApp .vd.bad .d{background:var(--rojo)}
 
-  .dm-panel{background:#0E1F30;border:1px solid #2A3D52;border-radius:16px;padding:20px;color:#E8F0F7}
-  .dm-panel.light{background:#fff;border-color:var(--line);color:var(--ink)}
-  .dm-panel h3{font-size:11px;font-family:var(--mono);letter-spacing:.13em;text-transform:uppercase;color:#5BB4F2;margin-bottom:15px}
-  .dm-panel.light h3{color:var(--cielo)}
+  /* ---- grid principal ---- */
+  #demoApp .grid{display:grid;grid-template-columns:1.04fr .96fr;gap:18px;align-items:start}
+  @media(max-width:940px){#demoApp .grid{grid-template-columns:1fr}}
+  #demoApp .col{display:flex;flex-direction:column;gap:14px;min-width:0}
+  #demoApp .card{background:var(--dpanel);border:1px solid var(--dborder);border-radius:16px;overflow:hidden;color:var(--dtext)}
+  #demoApp .card .hd{display:flex;align-items:center;justify-content:space-between;padding:13px 16px 11px;border-bottom:1px solid var(--dborder);gap:10px}
+  #demoApp .card .hd .t{font-family:var(--body);font-size:13px;font-weight:700;display:flex;align-items:center;gap:9px;min-width:0}
+  #demoApp .card .hd .t .ic{width:16px;height:16px;color:var(--skylt);flex:0 0 auto}
+  #demoApp .card .hd .meta{font-family:var(--mono);font-size:10px;color:var(--dsteel);text-align:right;flex:0 0 auto}
+  #demoApp .card .bd{padding:15px}
 
-  .dm-station{display:flex;align-items:baseline;justify-content:space-between}
-  .dm-station .id{font-size:19px;font-weight:800}
-  .dm-station .tm{font-family:var(--mono);font-size:12px;color:#9FB2C4}
-  .dm-meta{font-family:var(--mono);font-size:11px;color:#54677C;margin:3px 0 16px}
+  /* tiles hero del tablero */
+  #demoApp .heroes{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:520px){#demoApp .heroes{grid-template-columns:1fr}}
+  #demoApp .htile{position:relative;border-radius:13px;padding:14px;border:1px solid var(--dborder);background:rgba(11,26,41,.55);overflow:hidden}
+  #demoApp .htile .k{font-family:var(--mono);font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:var(--dsteel);display:flex;align-items:center;gap:7px;flex-wrap:wrap;row-gap:5px}
+  #demoApp .htile .k .kr{margin-left:auto;display:flex;align-items:center;gap:5px;flex:0 0 auto}
+  #demoApp .htile .k .pr{font-size:8px;letter-spacing:.06em;color:var(--skylt);background:rgba(7,120,206,.14);padding:2px 6px;border-radius:5px}
+  #demoApp .htile .v{font-size:30px;font-weight:800;letter-spacing:-.02em;margin-top:8px;line-height:1;font-variant-numeric:tabular-nums}
+  #demoApp .htile .v small{font-size:14px;font-weight:600;color:var(--dmute);margin-left:3px}
+  #demoApp .htile .sub{font-size:11px;color:var(--dmute);margin-top:7px}
+  #demoApp .htile .badge{font-family:var(--mono);font-size:8.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:3px 7px;border-radius:6px;flex:0 0 auto}
+  #demoApp .htile.is-ok{border-color:rgba(63,182,122,.4)}#demoApp .htile.is-ok .badge{background:var(--dokbg);color:var(--dok)}#demoApp .htile.is-ok .v{color:#CFF0DE}
+  #demoApp .htile.is-warn{border-color:rgba(224,163,64,.44)}#demoApp .htile.is-warn .badge{background:var(--dwarnbg);color:var(--dwarn)}#demoApp .htile.is-warn .v{color:#F6DDAE}
+  #demoApp .htile.is-bad{border-color:rgba(224,88,79,.48)}#demoApp .htile.is-bad .badge{background:var(--dbadbg);color:var(--dbad)}#demoApp .htile.is-bad .v{color:#F4C3BF}
+  #demoApp .spark{margin-top:9px;height:26px;width:100%;display:block}
 
-  .dm-light{display:flex;align-items:center;gap:16px;padding:16px;border-radius:13px;margin-bottom:15px;border:1px solid #2A3D52;transition:all .4s}
-  .dm-light .orb{width:58px;height:58px;border-radius:50%;flex:none;position:relative;transition:all .4s}
-  .dm-light .orb::after{content:'';position:absolute;inset:-7px;border-radius:50%;opacity:.3;background:inherit;filter:blur(9px)}
-  .dm-light .lbl{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#9FB2C4;margin-bottom:3px}
-  .dm-light .st{font-size:20px;font-weight:800}
-  .dm-light .ds{font-size:12.5px;color:#C6D6E5;margin-top:3px}
+  /* estado operativo */
+  #demoApp .estado{display:flex;align-items:center;gap:14px;padding:13px 15px;border-radius:13px;border:1px solid var(--dborder);margin-top:12px}
+  #demoApp .estado .orb{width:42px;height:42px;border-radius:50%;flex:0 0 auto;position:relative}
+  #demoApp .estado .orb::after{content:'';position:absolute;inset:-6px;border-radius:50%;opacity:.3;background:inherit;filter:blur(8px)}
+  #demoApp .estado .lbl{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--dmute)}
+  #demoApp .estado .stt{font-size:19px;font-weight:800;margin-top:2px}
+  #demoApp .estado .dsc{font-size:11.5px;color:var(--dmute);margin-top:2px}
+  /* carta / pista en uso sugerida (salida normativa del tablero) */
+  #demoApp .carta{margin-top:12px;border:1px solid rgba(7,120,206,.4);border-radius:13px;background:linear-gradient(180deg,rgba(7,120,206,.1),rgba(7,120,206,.03));padding:14px 15px}
+  #demoApp .carta .ct{font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--skylt);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+  #demoApp .carta .ct .ic{width:14px;height:14px}
+  #demoApp .carta .rows{display:flex;flex-direction:column;gap:9px}
+  #demoApp .carta .r{display:flex;align-items:baseline;gap:10px}
+  #demoApp .carta .r .rk{font-family:var(--mono);font-size:10px;color:var(--dsteel);min-width:96px;flex:0 0 auto}
+  #demoApp .carta .r .rv{font-size:14px;font-weight:700;color:#fff}
+  #demoApp .carta .r .rv small{font-weight:500;color:var(--dmute);font-size:11.5px}
+  #demoApp .carta .foot{margin-top:11px;padding-top:10px;border-top:1px solid var(--dborder);display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+  #demoApp .carta .conf{font-family:var(--mono);font-size:9px;color:var(--dwarn);background:var(--dwarnbg);border:1px solid rgba(224,163,64,.3);border-radius:6px;padding:4px 8px;display:inline-flex;align-items:center;gap:5px}
+  #demoApp .carta .rule{font-family:var(--mono);font-size:9px;color:var(--skylt);background:rgba(7,120,206,.14);border:1px solid rgba(7,120,206,.3);border-radius:6px;padding:4px 8px;cursor:pointer}
+  #demoApp .carta .rule:hover{background:rgba(7,120,206,.24)}
 
-  .dm-metrics{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:15px}
-  .dm-metric{background:rgba(11,26,41,.6);border:1px solid #2A3D52;border-radius:11px;padding:13px 15px}
-  .dm-metric .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;color:#54677C;margin-bottom:6px}
-  .dm-metric .v{font-size:22px;font-weight:800;line-height:1}
-  .dm-metric .v small{font-size:13px;font-weight:600;color:#9FB2C4}
-  .dm-metric .x{font-size:11.5px;color:#5BB4F2;margin-top:5px;font-family:var(--mono)}
-  .dm-metric .x.warn{color:#E0A340}.dm-metric .x.bad{color:#E0584F}
+  /* cabeceras / pistas */
+  #demoApp .rwys{display:flex;flex-direction:column;gap:8px}
+  #demoApp .rwy{display:flex;align-items:center;gap:11px;padding:9px 11px;border-radius:10px;background:rgba(11,26,41,.5);border:1px solid var(--dborder)}
+  #demoApp .rwy .sem{width:11px;height:11px;border-radius:50%;flex:0 0 auto}
+  #demoApp .rwy .sem.ok{background:var(--dok);box-shadow:0 0 0 4px var(--dokbg)}
+  #demoApp .rwy .sem.warn{background:var(--dwarn);box-shadow:0 0 0 4px var(--dwarnbg)}
+  #demoApp .rwy .sem.bad{background:var(--dbad);box-shadow:0 0 0 4px var(--dbadbg)}
+  #demoApp .rwy .id{font-family:var(--mono);font-size:12.5px;font-weight:700;min-width:62px}
+  #demoApp .rwy .why{font-size:11px;color:var(--dmute);flex:1}
+  #demoApp .rwy .why b{color:var(--skypale);font-weight:600}
+  #demoApp .rwy .st{font-family:var(--mono);font-size:8.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:3px 7px;border-radius:6px;flex:0 0 auto}
+  #demoApp .rwy .st.ok{background:var(--dokbg);color:var(--dok)}#demoApp .rwy .st.warn{background:var(--dwarnbg);color:var(--dwarn)}#demoApp .rwy .st.bad{background:var(--dbadbg);color:var(--dbad)}
 
-  .dm-fc{background:rgba(11,26,41,.6);border:1px solid #2A3D52;border-radius:11px;padding:14px}
-  .dm-fc .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;color:#54677C;margin-bottom:13px}
-  .dm-spark{display:flex;align-items:flex-end;gap:6px;height:54px}
-  .dm-spark .bar{flex:1;border-radius:3px 3px 0 0;background:linear-gradient(180deg,#5BB4F2,#0778CE);position:relative;transition:height .5s,background .5s;min-height:5px}
-  .dm-spark .bar span{position:absolute;top:-17px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:9px;color:#9FB2C4}
-  .dm-spark .bar.hi{background:linear-gradient(180deg,#f0b860,#E0A340)}
-  .dm-spark .bar.cr{background:linear-gradient(180deg,#ec7d76,#E0584F)}
-  .dm-fclabels{display:flex;gap:6px;margin-top:6px}
-  .dm-fclabels span{flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#54677C}
+  /* NOTAMs (piloto) */
+  #demoApp .notams{display:flex;flex-direction:column;gap:8px}
+  #demoApp .notam{display:flex;gap:10px;padding:9px 11px;border-radius:10px;background:rgba(11,26,41,.5);border:1px solid var(--dborder)}
+  #demoApp .notam .nid{font-family:var(--mono);font-size:10px;font-weight:700;color:var(--skylt);flex:0 0 auto}
+  #demoApp .notam .ntx{font-size:11.5px;color:var(--dmute);line-height:1.45}
+  #demoApp .notam .ntx b{color:#D6E4F0;font-weight:600}
+  #demoApp .alts{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:11px}
+  #demoApp .alt{padding:10px 12px;border-radius:10px;background:rgba(11,26,41,.5);border:1px solid var(--dborder)}
+  #demoApp .alt .ak{font-family:var(--mono);font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--dsteel)}
+  #demoApp .alt .av{font-size:13px;font-weight:700;color:#fff;margin-top:3px}
+  #demoApp .alt .as{font-size:10.5px;color:var(--dmute);margin-top:2px}
 
-  .dm-sources{display:flex;gap:7px;flex-wrap:wrap;margin-top:14px}
-  .dm-src{display:flex;align-items:center;gap:6px;background:rgba(11,26,41,.55);border:1px solid #2A3D52;border-radius:20px;padding:5px 11px;font-size:11px;color:#C6D6E5;font-family:var(--mono)}
-  .dm-src .d{width:6px;height:6px;border-radius:50%;background:#3FB67A}
+  /* fuentes */
+  #demoApp .srcs .sttl{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--dsteel);margin-bottom:8px}
+  #demoApp .src{display:flex;align-items:center;gap:10px;padding:5px 0;font-size:11.5px;color:var(--dmute)}
+  #demoApp .src .d{width:7px;height:7px;border-radius:50%;background:var(--dok);flex:0 0 auto}
+  body.degraded #demoApp .src.ai .d{background:var(--dwarn)}
+  #demoApp .src .nm2{font-weight:600;color:#D6E4F0}
+  #demoApp .src .tg{margin-left:auto;font-family:var(--mono);font-size:8px;letter-spacing:.04em;text-transform:uppercase;color:var(--dsteel);border:1px solid var(--dborder);border-radius:5px;padding:2px 6px;flex:0 0 auto}
+  #demoApp .src .tg.hom{color:var(--dok);border-color:rgba(63,182,122,.35)}#demoApp .src .tg.pub{color:var(--skylt);border-color:rgba(91,180,242,.35)}#demoApp .src .tg.nor{color:var(--dwarn);border-color:rgba(224,163,64,.35)}
 
-  .dm-chat{display:flex;flex-direction:column;height:100%}
-  .dm-win{flex:1;min-height:330px;max-height:420px;overflow-y:auto;padding-right:6px;margin-bottom:13px;display:flex;flex-direction:column;gap:11px}
-  .dm-win::-webkit-scrollbar{width:6px}.dm-win::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
-  .dm-bub{max-width:88%;padding:12px 15px;border-radius:14px;font-size:13.5px;line-height:1.5;animation:dmpop .3s ease}
-  @keyframes dmpop{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-  .dm-bub.q{align-self:flex-end;background:linear-gradient(135deg,var(--cielo),#0a5fa3);color:#fff;border-bottom-right-radius:5px}
-  .dm-bub.a{align-self:flex-start;background:#F4F8FC;color:#13283F;border-bottom-left-radius:5px;border:1px solid #E0EAF3}
-  .dm-bub.a .who{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;color:var(--cielo);font-weight:700;margin-bottom:5px}
-  .dm-bub.a .tag{display:inline-flex;align-items:center;gap:6px;margin-top:9px;padding:4px 10px;border-radius:20px;font-family:var(--mono);font-size:10px;font-weight:700}
-  .dm-bub.a .tag .d{width:7px;height:7px;border-radius:50%}
-  .tag.ok{background:#E7F6EE;color:#1E7A47}.tag.ok .d{background:#3FB67A}
-  .tag.warn{background:#FEF6E7;color:#9A6B14}.tag.warn .d{background:#E0A340}
-  .tag.bad{background:#FCEAE9;color:#A5302A}.tag.bad .d{background:#E0584F}
-  .dm-typing{align-self:flex-start;background:#F4F8FC;border:1px solid #E0EAF3;border-radius:14px;border-bottom-left-radius:5px;padding:14px 17px;display:flex;gap:5px}
-  .dm-typing i{width:7px;height:7px;border-radius:50%;background:#9FB2C4;animation:dmbounce 1.2s infinite}
-  .dm-typing i:nth-child(2){animation-delay:.18s}.dm-typing i:nth-child(3){animation-delay:.36s}
-  @keyframes dmbounce{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-6px);opacity:1}}
+  /* aviso IA caída */
+  #demoApp .degbanner{display:none;align-items:center;gap:12px;background:#FFF6E6;border:1px solid #E8CF90;border-radius:11px;padding:11px 15px;margin-bottom:16px;font-size:13px;color:#7A5B12}
+  body.degraded #demoApp .degbanner{display:flex}
+  #demoApp .degbanner b{color:#5e4708}#demoApp .degbanner .ic{width:18px;height:18px;flex:0 0 auto;color:var(--ambar)}
+  /* ---- asistente (chat claro) ---- */
+  #demoApp .card.light{background:#fff;border-color:var(--line);color:var(--ink)}
+  #demoApp .card.light .hd{border-bottom-color:#E6EDF3}
+  #demoApp .card.light .hd .t{color:var(--ink)}#demoApp .card.light .hd .t .ic{color:var(--cielo)}
+  #demoApp .card.light .hd .meta{color:var(--acero)}
+  #demoApp .chatcard{display:flex;flex-direction:column}
+  #demoApp .regbar{display:flex;align-items:center;gap:11px;padding:11px 15px;border-bottom:1px solid #E6EDF3;background:#F7FAFD}
+  #demoApp .regbar .rl{font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--acero);flex:0 0 auto;display:flex;align-items:center;gap:6px}
+  #demoApp .regbar .rl .ic{width:13px;height:13px;color:var(--cielo)}
+  #demoApp .regbar input[type=range]{flex:1;max-width:160px;-webkit-appearance:none;appearance:none;height:5px;border-radius:5px;background:#D7E2EC;outline:none}
+  #demoApp .regbar input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:#fff;border:3px solid var(--cielo);cursor:pointer}
+  #demoApp .regbar input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:#fff;border:3px solid var(--cielo);cursor:pointer}
+  #demoApp .regbar .rv{font-family:var(--body);font-size:11.5px;font-weight:700;color:var(--cielo);min-width:72px}
+  #demoApp .regbar .rv small{display:block;font-family:var(--mono);font-size:8.5px;font-weight:400;color:var(--acero)}
+  #demoApp .chat{padding:15px;display:flex;flex-direction:column;gap:12px;overflow-y:auto;max-height:580px;background:#fff}
+  body.degraded #demoApp .chat{opacity:.32;pointer-events:none;filter:grayscale(.5)}
+  #demoApp .chat::-webkit-scrollbar{width:7px}#demoApp .chat::-webkit-scrollbar-thumb{background:var(--line);border-radius:4px}
+  #demoApp .msg{display:flex;gap:10px;max-width:97%;animation:dmrise .35s ease}
+  @keyframes dmrise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  #demoApp .msg.u{align-self:flex-end;flex-direction:row-reverse}
+  #demoApp .av{width:28px;height:28px;border-radius:8px;flex:0 0 auto;display:grid;place-items:center;font-family:var(--mono);font-size:10px;font-weight:700}
+  #demoApp .msg.a .av{background:#EAF2F9;color:var(--cielo);border:1px solid #D5E6F4}
+  #demoApp .msg.u .av{background:#EEF1F4;color:var(--ink-soft);border:1px solid var(--line)}
+  #demoApp .bub{padding:11px 13px;border-radius:13px;font-size:13.5px;line-height:1.5}
+  #demoApp .msg.a .bub{background:#F4F8FC;border:1px solid #E0EAF3;border-top-left-radius:4px;color:var(--ink)}
+  #demoApp .msg.u .bub{background:linear-gradient(135deg,var(--cielo),#0a5fa3);color:#fff;border-top-right-radius:4px;font-weight:500}
+  #demoApp .bub p{margin:0 0 7px}#demoApp .bub p:last-child{margin:0}
+  #demoApp .bub .meas{font-family:var(--mono);font-size:11px;color:#2c5a82;display:flex;flex-wrap:wrap;gap:4px 12px;margin:6px 0 8px;padding:8px 10px;background:#EAF3FB;border-radius:9px}
+  #demoApp .bub .meas span b{color:var(--ink)}
+  #demoApp .verdict{font-weight:700;color:var(--ink);margin:2px 0 8px}
+  #demoApp .verdict.warn{color:#8a5d0c}#demoApp .verdict.bad{color:#9a2d24}#demoApp .verdict.ok{color:#176a42}
+  #demoApp .clause{border:1px solid #CFE3F4;border-radius:11px;background:#F2F8FD;padding:10px 11px;margin:9px 0}
+  #demoApp .clause .ch{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:6px}
+  #demoApp .clause .ref{font-family:var(--mono);font-size:10.5px;font-weight:700;color:var(--cielo)}
+  #demoApp .clause .valid{font-family:var(--mono);font-size:9px;color:var(--verde);background:#E7F6EE;border:1px solid #B6E0C8;border-radius:6px;padding:3px 6px;display:inline-flex;align-items:center;gap:4px}
+  #demoApp .clause .valid .ic{width:10px;height:10px}
+  #demoApp .clause .ex{font-size:12px;color:var(--ink-soft);margin-bottom:8px}
+  #demoApp .clause .lit{font-family:var(--body);font-size:11.5px;font-weight:600;color:var(--cielo);background:#fff;border:1px solid #BFDDF4;border-radius:8px;padding:6px 11px;cursor:pointer;display:inline-flex;align-items:center;gap:7px;transition:.16s}
+  #demoApp .clause .lit:hover{background:#EAF3FB}#demoApp .clause .lit .ic{width:13px;height:13px}
+  #demoApp .elicit{border:1px dashed #E0B968;border-radius:11px;background:#FFF6E6;padding:10px 11px;margin:9px 0 2px}
+  #demoApp .elicit .et{font-size:12px;color:#7A5B12;margin-bottom:9px;display:flex;gap:8px}
+  #demoApp .elicit .et .ic{width:15px;height:15px;flex:0 0 auto;color:var(--ambar);margin-top:1px}
+  #demoApp .elicit .ebtns{display:flex;gap:8px;flex-wrap:wrap}
+  #demoApp .ebtn{font-family:var(--body);font-size:11.5px;font-weight:700;border-radius:8px;padding:8px 12px;cursor:pointer;transition:.16s;border:1px solid}
+  #demoApp .ebtn.go{background:var(--verde);color:#fff;border-color:transparent}#demoApp .ebtn.go:hover{background:#176a42}
+  #demoApp .ebtn.rev{background:#fff;color:var(--cielo);border-color:#BFDDF4}#demoApp .ebtn.rev:hover{background:#EAF3FB}
+  #demoApp .audit{display:flex;align-items:center;gap:7px;font-family:var(--mono);font-size:10px;color:var(--acero);margin-top:9px;padding-top:9px;border-top:1px dashed #E0EAF3}
+  #demoApp .audit .ic{width:12px;height:12px;flex:0 0 auto;color:var(--verde)}
+  #demoApp .typing{display:flex;gap:4px;padding:12px 14px}
+  #demoApp .typing i{width:7px;height:7px;border-radius:50%;background:var(--acero);animation:dmblink 1.2s infinite}
+  #demoApp .typing i:nth-child(2){animation-delay:.18s}#demoApp .typing i:nth-child(3){animation-delay:.36s}
+  @keyframes dmblink{0%,60%,100%{opacity:.25}30%{opacity:1}}
+  #demoApp .ask{border-top:1px solid #E6EDF3;padding:13px 15px;background:#F7FAFD}
+  #demoApp .ask .lab{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--acero);margin-bottom:9px}
+  #demoApp .qchips{display:flex;flex-wrap:wrap;gap:7px}
+  #demoApp .qc{font-family:var(--body);font-size:12px;font-weight:600;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px 12px;cursor:pointer;transition:.16s;text-align:left}
+  #demoApp .qc:hover{border-color:var(--cielo);background:#F4F8FC}
+  #demoApp .qc.hero{border-color:#BFDDF4;background:#EAF3FB;color:#0a5fa3}
+  #demoApp .qc.hero::before{content:"\2605 ";color:var(--cielo)}
+  body.degraded #demoApp .ask{opacity:.32;pointer-events:none}
 
-  .dm-chips{display:flex;gap:8px;flex-wrap:wrap}
-  .dm-chip{background:#fff;border:1px solid var(--line);color:var(--ink);padding:9px 13px;border-radius:20px;cursor:pointer;font-size:12.5px;transition:all .16s}
-  .dm-chip:hover{border-color:var(--cielo);background:#F4F8FC}
-  .dm-chip:disabled{opacity:.4;cursor:default}
-  .dm-hint{font-family:var(--mono);font-size:10.5px;color:#54677C;margin-top:11px;text-align:center}
+  /* ---- tira día a día ---- */
+  #demoApp .daily{margin-top:20px}
+  #demoApp .daily .dt{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--acero);margin-bottom:12px}
+  #demoApp .lsa{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px}
+  @media(max-width:760px){#demoApp .lsa{grid-template-columns:1fr}}
+  #demoApp .lsa .b{background:#fff;border:1px solid var(--line);border-radius:12px;padding:15px}
+  #demoApp .lsa .b .bi{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:#EAF3FB;color:var(--cielo);margin-bottom:9px}
+  #demoApp .lsa .b .bi svg{width:17px;height:17px}
+  #demoApp .lsa .b h4{font-family:var(--display);font-size:15px;font-weight:800;margin-bottom:4px}
+  #demoApp .lsa .b p{font-size:12.5px;color:var(--ink-soft);line-height:1.5}
+  #demoApp .moments{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:760px){#demoApp .moments{grid-template-columns:1fr}}
+  #demoApp .wa{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px;display:flex;gap:11px}
+  #demoApp .wa .wi{width:34px;height:34px;border-radius:9px;flex:0 0 auto;display:grid;place-items:center}
+  #demoApp .wa.alert .wi{background:#FEF6E7;color:var(--ambar)}#demoApp .wa.contra .wi{background:#FCEAE9;color:var(--rojo)}
+  #demoApp .wa .wi svg{width:18px;height:18px}
+  #demoApp .wa .wt{font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--acero);margin-bottom:4px}
+  #demoApp .wa .wm{font-size:12.5px;color:var(--ink);line-height:1.5}
+  #demoApp .wa .wm b{color:var(--ink)}
+
+  /* ---- banda de confianza ---- */
+  #demoApp .trust{margin-top:20px;border:1px solid #D5E3EF;border-radius:14px;background:linear-gradient(180deg,#F4F8FC,#fff);padding:18px 20px}
+  #demoApp .trust .tt{font-family:var(--display);font-size:16px;font-weight:800;margin-bottom:4px;color:var(--ink)}
+  #demoApp .trust .ts{font-size:13px;color:var(--ink-soft);margin-bottom:14px;max-width:70ch}
+  #demoApp .trust .ts b{color:var(--ink)}
+  #demoApp .pills{display:flex;flex-wrap:wrap;gap:8px}
+  #demoApp .pill{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:600;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 13px}
+  #demoApp .pill svg{width:14px;height:14px;color:var(--verde);flex:0 0 auto}
+
+  /* modal cláusula */
+  #demoApp .ov{position:fixed;inset:0;background:rgba(19,40,63,.55);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;padding:22px;z-index:120}
+  #demoApp .ov.on{display:flex;animation:dmfade .2s}
+  @keyframes dmfade{from{opacity:0}to{opacity:1}}
+  #demoApp .modal{max-width:580px;width:100%;background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:0 24px 60px rgba(19,40,63,.3);max-height:88vh;display:flex;flex-direction:column}
+  #demoApp .modal .mh{display:flex;align-items:center;justify-content:space-between;padding:15px 18px;border-bottom:1px solid var(--line)}
+  #demoApp .modal .mh .mt{font-size:14px;font-weight:700;display:flex;align-items:center;gap:9px;color:var(--ink)}#demoApp .modal .mh .mt .ic{width:17px;height:17px;color:var(--cielo)}
+  #demoApp .modal .x{width:30px;height:30px;border-radius:8px;border:1px solid var(--line);background:#fff;color:var(--ink-soft);cursor:pointer;font-size:17px;display:grid;place-items:center}
+  #demoApp .modal .x:hover{border-color:var(--cielo);color:var(--cielo)}
+  #demoApp .modal .mb{padding:18px;overflow-y:auto}
+  #demoApp .modal .mref{font-family:var(--mono);font-size:11px;color:var(--cielo);margin-bottom:4px}
+  #demoApp .modal .mvalid{font-family:var(--mono);font-size:10px;color:var(--verde);margin-bottom:14px}
+  #demoApp .modal .lit-txt{font-size:13.5px;line-height:1.65;color:var(--ink);background:#F2F8FD;border-left:3px solid var(--cielo);padding:14px 16px;border-radius:0 10px 10px 0;font-family:var(--display)}
+  #demoApp .modal .mfoot{margin-top:14px;font-family:var(--mono);font-size:10px;color:var(--acero);line-height:1.6;border-top:1px solid var(--line);padding-top:12px}
 </style>
 </head>
 <body>
@@ -119,214 +270,550 @@
   <div class="wrap">
     <div class="kicker">Demo interactiva</div>
     <h1>Probá AeroClima en vivo.</h1>
-    <p>Cambiá entre escenarios meteorológicos y preguntale al sistema como le preguntarías a un colega. Mirá cómo el mismo dato se convierte en una respuesta lista para decidir.</p>
+    <p>Seleccione el perfil —torre o piloto— y el escenario. El tablero muestra lo que le importa a cada rol y el asistente responde en lenguaje claro, apoyado en las mediciones homologadas del aeropuerto y en la normativa vigente. No decide: asiste para que el operador decida.</p>
   </div>
 </header>
 
-<section style="padding:48px 0 64px">
+<section style="padding:44px 0 60px">
   <div class="wrap">
-
-    <div class="dm-sim">
-      <span class="d"></span>
-      <span>Simulación ilustrativa · Los datos son de ejemplo y no corresponden a un aeropuerto ni a un momento real. Sirven para mostrar cómo funciona el sistema.</span>
+    <div class="dm-sim" style="display:flex;align-items:center;gap:9px;background:#FFF6E6;border:1px solid #E8CF90;color:#7A5B12;font-family:var(--mono);font-size:12px;border-radius:9px;padding:10px 15px;margin-bottom:20px">
+      <span style="width:7px;height:7px;border-radius:50%;background:#B97E10;flex:none"></span>
+      <span>Simulación ilustrativa sobre un aeropuerto regional genérico, con datos meteorológicos públicos de ejemplo. Los textos de cláusulas son representativos del marco normativo (RAC / OACI), no transcripciones oficiales.</span>
     </div>
 
-    <div class="dm-scen" id="dmScen"></div>
-
-    <div class="dm-grid">
-      <!-- DASHBOARD -->
-      <div class="dm-panel">
-        <h3>▣ Tablero operativo</h3>
-        <div class="dm-station">
-          <div class="id" id="dmStid">AEROPUERTO DE EJEMPLO</div>
-          <div class="tm" id="dmTime">—</div>
+    <div id="demoApp">
+      <div class="ctrls">
+        <div class="seg" id="profSeg">
+          <button class="on" data-prof="tower"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v6m0 0-4 13h8L12 8Zm-7 19h14"/></svg>Torre de control</button>
+          <button data-prof="pilot"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5L21 16Z"/></svg>Piloto</button>
         </div>
-        <div class="dm-meta" id="dmMeta">Torre · condiciones de demostración</div>
+        <button class="ghost" id="aiToggle"><span class="dot"></span>IA operativa</button>
+      </div>
 
-        <div class="dm-light" id="dmLight">
-          <div class="orb" id="dmOrb"></div>
-          <div>
-            <div class="lbl">Estado operativo</div>
-            <div class="st" id="dmSt">—</div>
-            <div class="ds" id="dmDs">—</div>
+      <div class="scn" id="scnRow">
+        <span class="lab">Escenario</span>
+        <button class="chip on" data-scn="niebla"><span class="sd"></span>Niebla · techo bajo</button>
+        <button class="chip" data-scn="viento"><span class="sd"></span>Viento fuerte del SO</button>
+        <button class="chip" data-scn="estable"><span class="sd"></span>Estable</button>
+      </div>
+
+      <div class="degbanner">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4m0 4h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>
+        <div><b>Capa de IA no disponible.</b> El dato crudo homologado del AWOS sigue activo y visible — la torre opera con la fuente oficial sin interrupción. La IA es síntesis por encima del dato, nunca un intermediario entre el operador y la medición.</div>
+      </div>
+
+      <div class="decode">
+        <div class="raw"><span class="tg">Lo que los sistemas emiten hoy</span><div id="decodeRaw"></div></div>
+        <div class="arrow">→</div>
+        <div class="clear"><span class="tg">Lo que AeroClima responde</span><div class="ans" id="decodeAns"></div><span class="vd" id="decodeVd"><span class="d"></span><span></span></span></div>
+      </div>
+
+      <div class="grid">
+        <div class="col">
+          <div class="card">
+            <div class="hd"><div class="t"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg><span id="panelTitle">Tablero · Torre</span></div><div class="meta" id="panelClock">Aeropuerto demo · 14:00 UTC</div></div>
+            <div class="bd"><div class="heroes" id="heroes"></div><div id="estadoWrap"></div></div>
+          </div>
+          <div class="card">
+            <div class="hd"><div class="t" id="card2Title">Carta y pista en uso sugerida</div></div>
+            <div class="bd" id="card2"></div>
+          </div>
+          <div class="card"><div class="bd srcs" id="srcs"></div></div>
+        </div>
+
+        <div class="col">
+          <div class="card light chatcard">
+            <div class="hd"><div class="t"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z"/></svg>Asistente operativo</div><div class="meta" id="asisMeta">conoce la normativa</div></div>
+            <div class="regbar">
+              <span class="rl"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></svg>Registro</span>
+              <input type="range" id="regSld" min="0" max="2" step="1" value="1">
+              <span class="rv" id="regVal">Estándar<small>claro y preciso</small></span>
+            </div>
+            <div class="chat" id="chat"></div>
+            <div class="ask"><div class="lab">Seleccione una consulta</div><div class="qchips" id="qchips"></div></div>
           </div>
         </div>
+      </div>
 
-        <div class="dm-metrics">
-          <div class="dm-metric"><div class="k">Viento</div><div class="v" id="dmWind">—</div><div class="x" id="dmWindx">—</div></div>
-          <div class="dm-metric"><div class="k">Visibilidad</div><div class="v" id="dmVis">—</div><div class="x" id="dmVisx">—</div></div>
-          <div class="dm-metric"><div class="k">Techo de nubes</div><div class="v" id="dmCeil">—</div><div class="x" id="dmCeilx">—</div></div>
-          <div class="dm-metric"><div class="k">Tendencia</div><div class="v" id="dmTrend" style="font-size:17px">—</div><div class="x" id="dmTrendx">—</div></div>
+      <div class="daily">
+        <div class="dt">En un turno real — lee · sintetiza · avisa</div>
+        <div class="lsa">
+          <div class="b"><div class="bi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></div><h4>Lee todo lo que se mide</h4><p>AWOS, portal del SMN y modelos numéricos en una sola vista. Lo que hoy está repartido en pantallas y teléfonos, junto.</p></div>
+          <div class="b"><div class="bi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></svg></div><h4>Sintetiza en lenguaje claro</h4><p>En vez de quince gráficos, dice en castellano qué pasa y qué se espera. Listo para decidir en segundos.</p></div>
+          <div class="b"><div class="bi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg></div><h4>Avisa antes de que pase</h4><p>Si las condiciones empiezan a deteriorarse, manda el aviso antes de cruzar el umbral — con tiempo para actuar.</p></div>
         </div>
-
-        <div class="dm-fc">
-          <div class="k" id="dmFck">Pronóstico próximas 6 horas</div>
-          <div class="dm-spark" id="dmSpark"></div>
-          <div class="dm-fclabels" id="dmFcl"></div>
-        </div>
-
-        <div class="dm-sources">
-          <div class="dm-src"><span class="d"></span>AWOS</div>
-          <div class="dm-src"><span class="d"></span>SMN</div>
-          <div class="dm-src"><span class="d"></span>Modelo regional</div>
-          <div class="dm-src"><span class="d"></span>Satelital</div>
+        <div class="moments">
+          <div class="wa alert"><div class="wi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg></div><div><div class="wt">Alerta proactiva · WhatsApp / Telegram / push</div><div class="wm">Visibilidad bajando: <b>1.800 → 1.400 m</b> en 20 min. Al ritmo actual, el umbral ámbar (1.500 m) se cruzaría en <b>~25 min</b>. Conviene preparar procedimientos de baja visibilidad.</div></div></div>
+          <div class="wa contra"><div class="wi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4m0 4h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg></div><div><div class="wt">Contradicción pronóstico ↔ sensor</div><div class="wm">El <b>TAF</b> proyecta BKN030, pero el sensor de techo mide <b>BKN003</b> hace 15 min. AeroClima marca la discrepancia para que el observador la evalúe.</div></div></div>
         </div>
       </div>
 
-      <!-- CHAT -->
-      <div class="dm-panel light dm-chat">
-        <h3>◆ Pregúntele a AeroClima</h3>
-        <div class="dm-win" id="dmWin"></div>
-        <div class="dm-chips" id="dmChips"></div>
-        <div class="dm-hint">Tocá una pregunta — la respuesta usa los datos del escenario activo</div>
+      <div class="trust">
+        <div class="tt">Por qué esto no es “otra app de clima”</div>
+        <div class="ts">No es una herramienta pública tipo Windy. Se apoya en las <b>mediciones homologadas</b> del propio aeropuerto y en la <b>normativa vigente</b>; no inventa datos, no decide, y deja todo trazable. La capa que EANA podría enchufar sobre los sistemas que la torre ya usa.</div>
+        <div class="pills">
+          <span class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>Homologado · no inventa</span>
+          <span class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>El observador certificado firma</span>
+          <span class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>La torre decide</span>
+          <span class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>Auditado: fuente + hora</span>
+          <span class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>Presentable ante ANAC</span>
+        </div>
       </div>
+
+      <div class="ov" id="ov"><div class="modal">
+        <div class="mh"><div class="mt"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg>Texto de referencia de la cláusula</div><button class="x" id="ovClose">&times;</button></div>
+        <div class="mb"><div class="mref" id="ovRef"></div><div class="mvalid" id="ovValid"></div><div class="lit-txt" id="ovTxt"></div><div class="mfoot" id="ovFoot"></div></div>
+      </div></div>
     </div>
-
   </div>
 </section>
 
-<!-- banda CTA -->
 <section class="page-hero" style="padding:56px 0">
   <div class="wrap" style="text-align:center">
-    <div class="kicker" style="justify-content:center">¿Lo querés ver con tus datos?</div>
-    <h2 style="margin:0 auto">Coordinemos una demostración a medida.</h2>
-    <p style="margin:14px auto 26px">Esta es una muestra con datos de ejemplo. Con las fuentes reales de su aeropuerto, se vería igual — pero con los valores del momento.</p>
+    <div class="kicker" style="justify-content:center">El próximo paso</div>
+    <h2 style="margin:0 auto">Llevémoslo a su torre, con sus datos.</h2>
+    <p style="margin:14px auto 26px">Esta es una muestra con datos públicos. Con las fuentes homologadas del aeropuerto y la normativa cargada, asiste sobre la operación real — del lado del proveedor de servicios de navegación aérea, que es quien puede integrar la capa.</p>
     <a class="btn btn-primary" href="contacto.html">Conversemos →</a>
   </div>
 </section>
 </main>
+<div id="footer-slot"></div>
 
+<style>
+  /* ===== capa de recorrido guiado (coachmarks) ===== */
+  #tourBlock{position:fixed;inset:0;z-index:1400;display:none;cursor:pointer}
+  #tourBlock.on{display:block}
+  #tourHole{position:fixed;z-index:1401;border-radius:12px;box-shadow:0 0 0 9999px rgba(8,18,28,.62);border:2px solid #0778CE;transition:top .32s cubic-bezier(.4,0,.2,1),left .32s cubic-bezier(.4,0,.2,1),width .32s,height .32s;pointer-events:none}
+  #tourCard{position:fixed;z-index:1402;width:332px;max-width:calc(100vw - 32px);background:#fff;border:1px solid #D5E3EF;border-radius:14px;box-shadow:0 18px 50px rgba(19,40,63,.32);padding:17px 18px;transition:top .3s,left .3s;font-family:'Inter',system-ui,sans-serif;cursor:default}
+  #tourCard .tcnum{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#0778CE;margin-bottom:8px}
+  #tourCard .tctitle{font-family:'Archivo',sans-serif;font-weight:800;font-size:16.5px;color:#13283F;margin-bottom:7px;line-height:1.2;padding-right:18px}
+  #tourCard .tcbody{font-size:13px;line-height:1.58;color:#3D5570;margin-bottom:15px}
+  #tourCard .tcfoot{display:flex;align-items:center;gap:8px}
+  #tourCard .tcdots{display:flex;gap:5px;margin-right:auto}
+  #tourCard .tcdot{width:6px;height:6px;border-radius:50%;background:#C9D4DE;transition:.2s}
+  #tourCard .tcdot.on{background:#0778CE;transform:scale(1.3)}
+  #tourCard button{font-family:'Inter',sans-serif;font-size:12.5px;font-weight:700;border-radius:9px;padding:8px 14px;cursor:pointer;border:1px solid;transition:.15s}
+  #tourCard .tcnext{background:#0778CE;color:#fff;border-color:transparent}
+  #tourCard .tcnext:hover{background:#0a5fa3}
+  #tourCard .tcprev{background:#fff;color:#3D5570;border-color:#D5E3EF}
+  #tourCard .tcprev:hover{border-color:#0778CE;color:#0778CE}
+  #tourCard .tcprev:disabled{opacity:.38;cursor:default}
+  #tourCard .tcskip{position:absolute;top:13px;right:14px;background:none;border:0;color:#90A4B5;font-size:18px;line-height:1;cursor:pointer;padding:0}
+  #tourCard .tcskip:hover{color:#13283F}
+  @media(max-width:560px){#tourCard{width:calc(100vw - 28px)}}
+</style>
 <script src="main.js"></script>
 <script>
-// ====== ESCENARIOS (genéricos) ======
-const SCEN = {
-  viento: {
-    label:"Viento fuerte", ic:"🌬️",
-    state:"warn", stateTxt:"PRECAUCIÓN", stateDs:"Viento cruzado por ráfagas sobre la pista en uso",
-    wind:"18 <small>kt</small>", windx:"WSW 240° · ráfagas 30 kt", windxc:"warn",
-    vis:"10+ <small>km</small>", visx:"Sin restricción", visxc:"",
-    ceil:"4000 <small>ft</small>", ceilx:"SCT025 BKN040", ceilxc:"",
-    trend:"En aumento", trendx:"Pico hacia la tarde",
-    fck:"Ráfagas máximas · próximas 6 horas (kt)",
-    spark:[18,24,30,35,28,22], thr:32,
-    qa:{
-      viento:{tag:"warn",t:"Viento fuerte del oeste-sudoeste: 18 nudos sostenidos con ráfagas de 30. Hacia la tarde las ráfagas pueden alcanzar 35 nudos. Conviene vigilar la componente cruzada sobre la pista en uso."},
-      pista:{tag:"warn",t:"Con viento del 240°, la pista mejor alineada reduce la componente cruzada. Si la pista en uso queda muy transversal al viento, evaluar el cambio según el tipo de aeronave."},
-      niebla:{tag:"ok",t:"Sin riesgo de niebla: visibilidad sobre 10 km y humedad baja. El viento fuerte mantiene la masa de aire mezclada, lo que aleja la posibilidad de niebla."},
-      resumen:{tag:"warn",t:"Condición dominada por viento: 18 kt del WSW con ráfagas de 30, en aumento hacia la tarde. Visibilidad y techo sin problemas. Recomendación: atención a la componente cruzada durante el pico de ráfagas."},
-      cambio:{tag:"warn",t:"La tendencia es a intensificarse: el pico de ráfagas se espera por la tarde (hasta 35 kt) y luego una baja gradual hacia la noche. No se esperan cambios en visibilidad ni techo."}
-    }
+/* ============================================================
+   AeroClima · demo — lógica
+   Perfiles: torre (visibilidad+techo+normativa) / piloto (viento+NOTAMs+ruta)
+   Datos públicos ilustrativos sobre un aeropuerto genérico. La IA asiste; el humano decide.
+   ============================================================ */
+"use strict";
+
+/* ---- cláusulas de referencia (representativas, no transcripción oficial) ---- */
+const CL = {
+  c204:{ref:"Reglamento de aviación civil (RAC) — Mínimos de utilización de aeródromo · Carta IAC",
+    valid:"Vigente al 29/06/2026 · AIRAC AMDT 05/26",
+    lit:"Los mínimos de utilización de un aeródromo para el aterrizaje se expresan, según el tipo de procedimiento, en términos de visibilidad y/o alcance visual en la pista (RVR) y la altitud/altura de decisión (DA/H) para aproximaciones de precisión, o la altitud/altura mínima de descenso (MDA/H) para aproximaciones que no son de precisión. La carta IAC vigente de cada pista fija esos valores.",
+    foot:"Texto de referencia para la demo. Fuente: reglamento local de cartas aeronáuticas (RAC/RAAC) + carta IAC publicada en la AIP. El sistema verifica la vigencia del documento contra la fecha AIRAC antes de citar."},
+  c91d:{ref:"Reglamento de aviación civil (RAC) — Mínimos meteorológicos · Precedencia del RVR",
+    valid:"Vigente al 29/06/2026",
+    lit:"El valor de RVR informado tendrá precedencia sobre el valor de visibilidad observada. Los mínimos meteorológicos se aplican en la planificación y la operación según se trate de aeródromos controlados con o sin cartas de aproximación por instrumentos.",
+    foot:"Texto de referencia para la demo. Fuente: reglamento de mínimos meteorológicos (RAC) + AIC de la autoridad aeronáutica."},
+  anexo3:{ref:"Anexo 3 OACI — Servicio meteorológico para la navegación aérea",
+    valid:"Marco OACI · transpuesto en el RAC local",
+    lit:"El observador meteorológico competente emite informes especiales (SPECI) ante un cambio significativo en visibilidad, RVR, fenómenos o nubosidad, y firma la observación realizada en vivo. Una observación automática se identifica como tal.",
+    foot:"Texto de referencia para la demo. Fuente: Anexo 3 OACI. La firma del observador certificado no es reemplazable por software."},
+  doc4444:{ref:"Doc 4444 (PANS-ATM) / Anexo 11 — Servicios de tránsito aéreo",
+    valid:"Marco OACI · AIP GEN 3.5",
+    lit:"El servicio automático de información terminal (ATIS) difunde, entre otros, la pista en uso, el viento, la visibilidad/RVR, los fenómenos significativos, la nubosidad por debajo de 1.500 ft y el reglaje QNH. La pista en uso la determina la dependencia ATS.",
+    foot:"Texto de referencia para la demo. Fuente: Doc 4444 / Anexo 11 / AIP GEN 3.5."},
+  anexo14:{ref:"Anexo 14 OACI — Diseño y operaciones de aeródromos",
+    valid:"Marco OACI · transpuesto en el RAC local",
+    lit:"Para la elección de la pista en uso se considera la componente de viento de costado de referencia y se evita la componente de cola. Los valores de referencia de costado dependen de la longitud de campo de la pista.",
+    foot:"Texto de referencia para la demo. Fuente: Anexo 14 OACI."}
+};
+
+/* ---- escenarios (aeropuerto demo) ---- */
+const SC = {
+  niebla:{
+    label:"Niebla · techo bajo",
+    metar:'METAR ZZZZ 291400Z <b>14008KT</b> <b>1200</b> BR <b>BKN003</b> 12/11 Q1014=',
+    taf:'TAF ZZZZ 291100Z 2912/3012 14010KT 3000 BR BKN004<br>TEMPO 2912/2915 <b>0800 FG VV002</b>=',
+    decode:'<b>Niebla</b>: visibilidad <b>1.200 m</b> y techo <b>300 ft</b> (BKN003); temperatura y rocío casi iguales — aire saturado. Con el ascenso térmico de la mañana debería ir levantando. Por debajo de 1.500 m, la referencia operativa pasa a ser el <b>RVR</b> medido sobre la pista.',
+    vd:"bad",
+    vis:{v:"1.200",u:"m",st:"bad",badge:"Bajo mínimo",sub:"Mínima por sector NW",spark:[2600,2200,1900,1600,1400,1200]},
+    ceil:{v:"300",u:"ft",st:"bad",badge:"BKN003",sub:"Plafón en descenso",spark:[900,800,700,500,400,300]},
+    wind:{v:"140°/8",u:"kt",st:"ok",badge:"Calmo",sub:"Sin componente relevante",spark:[7,8,8,7,8,8]},
+    estado:{st:"bad",txt:"RESTRINGIDO",ds:"Visibilidad y plafón bajo mínimos de circling"},
+    cond:{st:"bad",txt:"CERRADO",ds:"Bajo mínimos para aproximación visual"},
+    carta:{carta:"ILS RWY 16",cartaSub:"precisión",pista:"16",pistaSub:"alineada con viento e ILS",nota:"Sólo si el RVR informado ≥ mínimo de carta"},
+    rwys:[["16","ILS · <b>condicionada por RVR</b>","warn"],["34","circling <b>bajo mínimo</b>","bad"],["06","sin procedimiento de precisión","bad"],["24","sin procedimiento de precisión","bad"]],
+    notams:[["A1387/26","<b>PAPI RWY 16</b> fuera de servicio hasta nuevo aviso."],["A1402/26","Niebla frecuente al amanecer; <b>procedimientos de baja visibilidad</b> en vigor."]],
+    alts:[["Alternativa","Aeropuerto regional A","CAVOK · ~150 NM"],["Destino","Hub principal","abierto · BKN030"]]
   },
-  niebla: {
-    label:"Niebla / visibilidad", ic:"🌫️",
-    state:"bad", stateTxt:"RESTRINGIDO", stateDs:"Visibilidad reducida bajo mínimos de aproximación",
-    wind:"4 <small>kt</small>", windx:"Calmo · 120°", windxc:"",
-    vis:"800 <small>m</small>", visx:"Bajo mínimos", visxc:"bad",
-    ceil:"200 <small>ft</small>", ceilx:"Niebla · OVC002", ceilxc:"bad",
-    trend:"Mejora gradual", trendx:"Con el ascenso térmico",
-    fck:"Visibilidad estimada · próximas 6 horas (m)",
-    spark:[800,600,1200,3000,6000,9999], thr:1500, invert:true,
-    qa:{
-      viento:{tag:"ok",t:"Viento calmo, 4 nudos del sudeste. No es un factor ahora — el problema actual es la visibilidad, no el viento."},
-      pista:{tag:"bad",t:"Con 800 metros de visibilidad y techo de 200 pies, el aeropuerto está por debajo de los mínimos de aproximación visual. Cualquier operación dependería de los procedimientos instrumentales aplicables."},
-      niebla:{tag:"bad",t:"Niebla activa: visibilidad 800 metros, techo 200 pies, temperatura y punto de rocío iguales — saturación total. Es niebla de radiación típica de la mañana con viento calmo."},
-      resumen:{tag:"bad",t:"Aeropuerto bajo mínimos por niebla: 800 m de visibilidad y techo de 200 ft. Viento calmo. La buena noticia: con el correr de la mañana y el ascenso de temperatura, el modelo espera mejora progresiva."},
-      cambio:{tag:"warn",t:"Mejora esperada: la niebla debería empezar a levantar hacia media mañana a medida que sube la temperatura. El modelo proyecta visibilidad superando los 3 km en unas horas y condiciones despejadas hacia el mediodía."}
-    }
+  viento:{
+    label:"Viento fuerte del SO",
+    metar:'METAR ZZZZ 291700Z <b>24028G42KT</b> 9999 SCT045 16/04 Q1009=',
+    taf:'TAF ZZZZ 291500Z 2915/3015 <b>24025G40KT</b> 9999 SCT040<br>TEMPO 2917/2921 <b>24030G48KT</b>=',
+    decode:'<b>Viento fuerte del oeste-sudoeste</b>: 24 nudos sostenidos con ráfagas de 42. Visibilidad y techo sin problemas; lo que hay que vigilar es la <b>componente cruzada</b> sobre la pista en uso.',
+    vd:"warn",
+    vis:{v:"10+",u:"km",st:"ok",badge:"CAVOK",sub:"Sin restricción",spark:[10,10,10,10,10,10]},
+    ceil:{v:"Sin techo",u:"",st:"ok",badge:"SCT045",sub:"Dispersas — no constituyen techo (BKN/OVC)",spark:[40,42,45,45,45,45]},
+    wind:{v:"240°/28",u:"kt",st:"warn",badge:"G42",sub:"Ráfagas a 42 kt",spark:[18,20,23,25,27,28]},
+    estado:{st:"warn",txt:"PRECAUCIÓN",ds:"Viento intenso del SO con ráfagas"},
+    cond:{st:"warn",txt:"ABIERTO",ds:"Atención a la cruzada al aterrizar"},
+    carta:{carta:"Aproximación a RWY 24",cartaSub:"alineada al viento",pista:"24",pistaSub:"prácticamente de frente al viento",nota:"06 quedaría con viento de cola — se evita"},
+    rwys:[["24","de frente al viento","ok"],["16","cruzada fuerte ~28 kt","warn"],["34","cruzada fuerte","warn"],["06","<b>viento de cola</b> — se evita","bad"]],
+    notams:[["A1390/26","<b>RWY 06/24</b>: obras de bacheo fuera de franja, sin afectar operación."],["A1377/26","Aves en cercanías del umbral 24 al atardecer."]],
+    alts:[["Alternativa","El propio aeropuerto","viento dentro de límites"],["Destino","Aeropuerto regional B","abierto · 24015KT"]]
   },
-  tormenta: {
-    label:"Tormenta", ic:"⛈️",
-    state:"bad", stateTxt:"RESTRINGIDO", stateDs:"Cumulonimbus en aproximación · actividad eléctrica",
-    wind:"22 <small>kt</small>", windx:"NW 310° · ráfagas 40 kt", windxc:"bad",
-    vis:"3 <small>km</small>", visx:"Lluvia · TSRA", visxc:"warn",
-    ceil:"1500 <small>ft</small>", ceilx:"CB · BKN015", ceilxc:"bad",
-    trend:"Pico inminente", trendx:"Luego desplaza",
-    fck:"Probabilidad de tormenta · próximas 6 horas (%)",
-    spark:[40,75,90,70,35,15], thr:60,
-    qa:{
-      viento:{tag:"bad",t:"Viento del noroeste a 22 nudos con ráfagas de 40, variable en dirección por la actividad convectiva. Las ráfagas de tormenta pueden cambiar de dirección bruscamente — el dato a vigilar es la variabilidad, no solo la intensidad."},
-      pista:{tag:"bad",t:"Con cumulonimbus en aproximación y ráfagas de 40 nudos variables, la recomendación es cautela máxima. La pista en uso puede tener que cambiar rápido según se mueva la celda."},
-      niebla:{tag:"ok",t:"No hay niebla — el fenómeno actual es una tormenta. La visibilidad está reducida a 3 km pero por lluvia, no por niebla."},
-      resumen:{tag:"bad",t:"Tormenta activa: cumulonimbus, lluvia, viento del NW a 22 kt con ráfagas de 40 y actividad eléctrica. Visibilidad 3 km por lluvia. El pico de la celda se espera pronto; luego desplazamiento y mejora gradual."},
-      cambio:{tag:"warn",t:"La celda está en su fase más intensa ahora y en la próxima hora. El modelo proyecta desplazamiento hacia el este-sudeste y disminución de la probabilidad de tormenta por debajo del 20% en unas horas."}
-    }
-  },
-  tranquilo: {
-    label:"Día tranquilo", ic:"☀️",
-    state:"ok", stateTxt:"NORMAL", stateDs:"Condiciones óptimas para la operación",
-    wind:"6 <small>kt</small>", windx:"N 360° · sin ráfagas", windxc:"",
-    vis:"10+ <small>km</small>", visx:"Cielo despejado", visxc:"",
-    ceil:"—", ceilx:"Sin nubes bajas", ceilxc:"",
-    trend:"Estable", trendx:"Sin cambios previstos",
-    fck:"Viento sostenido · próximas 6 horas (kt)",
-    spark:[6,8,7,9,8,6], thr:99,
-    qa:{
-      viento:{tag:"ok",t:"Viento suave del norte, 6 nudos, sin ráfagas. Condición ideal — bien alineado con la pista, sin componente cruzada significativa."},
-      pista:{tag:"ok",t:"La pista alineada con el norte es la natural con este viento: prácticamente sin viento cruzado. Operación sin restricciones por viento."},
-      niebla:{tag:"ok",t:"Sin riesgo de niebla: visibilidad superior a 10 km, buena separación entre temperatura y punto de rocío. Nada que vigilar en ese frente."},
-      resumen:{tag:"ok",t:"Condiciones óptimas: cielo despejado, viento suave del norte de 6 nudos, sin nubes bajas. Operación normal sin restricciones. El pronóstico mantiene estas condiciones estables."},
-      cambio:{tag:"ok",t:"Estabilidad: el modelo no proyecta cambios significativos en las próximas 6 horas. Viento suave constante, visibilidad ilimitada. Buena ventana operativa."}
-    }
+  estable:{
+    label:"Estable",
+    metar:'METAR ZZZZ 291200Z <b>36006KT</b> <b>CAVOK</b> 19/07 Q1018=',
+    taf:'TAF ZZZZ 291100Z 2912/3012 36006KT CAVOK=',
+    decode:'<b>Condiciones óptimas</b>: CAVOK y viento suave del norte de 6 nudos. Visibilidad ilimitada, sin nubes bajas. Operación normal, sin restricciones.',
+    vd:"ok",
+    vis:{v:"10+",u:"km",st:"ok",badge:"CAVOK",sub:"Cielo despejado",spark:[10,10,10,10,10,10]},
+    ceil:{v:"—",u:"",st:"ok",badge:"Sin nubes bajas",sub:"CAVOK",spark:[45,45,45,45,45,45]},
+    wind:{v:"360°/6",u:"kt",st:"ok",badge:"Suave",sub:"Sin ráfagas",spark:[5,6,6,5,6,6]},
+    estado:{st:"ok",txt:"NORMAL",ds:"Condiciones óptimas para la operación"},
+    cond:{st:"ok",txt:"ABIERTO",ds:"Sin restricciones meteorológicas"},
+    carta:{carta:"Aproximación visual",cartaSub:"VMC",pista:"34",pistaSub:"alineada con viento del norte",nota:"Sin condicionamientos por meteorología"},
+    rwys:[["34","de frente al viento","ok"],["16","viento de cola leve","warn"],["06","cruzada leve","ok"],["24","cruzada leve","ok"]],
+    notams:[["A1402/26","Trabajos de pintura en plataforma, sin impacto en pista."]],
+    alts:[["Alternativa","Aeropuerto regional A","CAVOK"],["Destino","Hub principal","CAVOK"]]
   }
 };
-const QLABELS={viento:"¿Cómo viene el viento?",pista:"¿Qué pista conviene usar?",niebla:"¿Hay riesgo de niebla?",resumen:"Resumime el turno",cambio:"¿Cómo evoluciona?"};
-const COLORS={ok:'#3FB67A',warn:'#E0A340',bad:'#E0584F'};
-let current="viento", busy=false;
+const ZULU = {niebla:"14:00",viento:"17:00",estable:"12:00"};
 
-const scenEl=document.getElementById('dmScen');
-Object.entries(SCEN).forEach(([k,v])=>{
-  const b=document.createElement('button');
-  b.innerHTML=`<span class="ic">${v.ic}</span> ${v.label}`;b.dataset.k=k;
-  b.onclick=()=>selectScen(k);scenEl.appendChild(b);
-});
-function selectScen(k){
-  current=k;
-  document.querySelectorAll('.dm-scen button').forEach(b=>b.classList.toggle('on',b.dataset.k===k));
-  renderDash();resetChat();
+/* ---- respuestas del asistente (por perfil → escenario) ---- */
+function pick(v,reg){ return (typeof v==="string") ? v : (reg===0?v.tec:reg===2?v.llano:v.std); }
+
+const ANS = {
+  tower:[
+    {key:"carta", hero:true, q:"Con esta visibilidad y techo, ¿qué carta y pista en uso corresponde?",
+      build:s=>({
+        meas:`Visibilidad ${s.vis.v} ${s.vis.u} · Techo ${s.ceil.v} ${s.ceil.u} · Fuente AWOS homologado`,
+        v:{tag:s.estado.st, text:{
+          niebla:{tec:"VIS 1200 m / BKN003 (300 ft): circling y VOR bajo OCA/H. Sólo ILS RWY 16 CAT I, supeditada a RVR ≥ mínimo de carta IAC.",
+            std:"Con 1.200 m y techo 300 ft, el circling y la aproximación VOR quedan bajo mínimos. Sólo la aproximación de precisión ILS a la 16 puede autorizarse, y únicamente si el RVR informado iguala o supera el mínimo publicado en su carta IAC.",
+            llano:"Está muy cerrado. Lo único que podría entrar es por el sistema de precisión de la pista 16, y sólo si el equipo que mide la visibilidad sobre la pista (RVR) marca igual o más que el mínimo de la carta."},
+          viento:"Visibilidad y techo no son el limitante. La pista en uso natural es la 24, de frente al viento; la 06 quedaría con viento de cola y se evita. La cruzada sobre 16/34 es alta.",
+          estable:"Sin condicionamientos por meteorología: corresponde aproximación visual y pista 34, alineada con el viento del norte. Operación normal."
+        }[scn]},
+        clause: scn==="niebla"?CL.c204:scn==="viento"?CL.anexo14:CL.doc4444,
+        elicit:true })},
+    {key:"baja", q:"¿Cuándo activo procedimientos de baja visibilidad?",
+      build:s=>({
+        meas:`Visibilidad ${s.vis.v} ${s.vis.u} · RVR con precedencia · Techo ${s.ceil.v} ${s.ceil.u}`,
+        v:{tag:s.estado.st, text:{
+          niebla:"Ya se está en el umbral: 1.200 m y techo 300 ft, con tendencia a empeorar. Conviene preparar los procedimientos de baja visibilidad. Recuerde: el RVR informado tiene precedencia sobre la visibilidad observada.",
+          viento:"No hace falta: la visibilidad es ilimitada (CAVOK). El factor del momento es el viento, no la visibilidad.",
+          estable:"No hace falta: CAVOK, visibilidad ilimitada y sin nubes bajas."
+        }[scn]},
+        clause:CL.c91d, elicit:false })},
+    {key:"iac", q:"¿Qué fija la carta IAC de la 16?",
+      build:s=>({
+        meas:`Carta IAC ILS RWY 16 · AIRAC AMDT 05/26`,
+        v:{tag:"ok", text:"La carta IAC de cada pista fija los mínimos en visibilidad/RVR y la altitud/altura de decisión (DA/H) para precisión, o la mínima de descenso (MDA/H) para no precisión. AeroClima cita el valor exacto de la carta vigente — no lo estima."},
+        clause:CL.c204, elicit:false })},
+    {key:"turno", q:"Resuma el turno",
+      build:s=>({
+        meas:`Aeropuerto demo · ${ZULU[scn]} UTC · viento ${s.wind.v} ${s.wind.u}`,
+        v:{tag:s.estado.st, text:{
+          niebla:"Turno dominado por niebla: 1.200 m de visibilidad y techo de 300 ft, con tendencia a empeorar al amanecer y mejora esperada con el ascenso térmico. Viento calmo. Operación restringida; sólo ILS 16 supeditada a RVR. PAPI 16 fuera de servicio (NOTAM).",
+          viento:"Turno dominado por viento del SO: 24 kt con ráfagas de 42, en aumento. Visibilidad y techo sin problemas. Pista en uso 24, de frente al viento. Atención a la cruzada si se opera 16/34.",
+          estable:"Turno tranquilo: CAVOK, viento suave del norte de 6 kt. Sin restricciones. Pista 34. Sin pronóstico de cambios en las próximas horas."
+        }[scn]},
+        elicit:false })}
+  ],
+  pilot:[
+    {key:"viento", hero:true, q:"¿Con qué viento me voy a encontrar al aterrizar?",
+      build:s=>({
+        meas:`Viento ${s.wind.v} ${s.wind.u} · ${s.wind.badge} · Fuente AWOS homologado`,
+        v:{tag:s.wind.st, text:{
+          viento:{tec:"240/24 G42. RWY 24 ≈ headwind puro. Si se asigna 16/34, xwind ~28 kt + ráfagas; deriva pronunciada en final.",
+            std:"Viento del 240° a 24 kt con ráfagas de 42. Si se asigna la 24, queda casi de frente. Si por tráfico corresponde 16 o 34, debe preverse una componente cruzada fuerte (~28 kt) con ráfagas y deriva pronunciada en la recta final.",
+            llano:"Sopla fuerte del sudoeste, hasta 42 de ráfaga. Por la pista 24 el viento entra de frente, cómodo. Por la 16 o la 34 cruza fuerte y el aterrizaje se complica."},
+          niebla:"El viento no es el problema: calmo del 140° a 8 kt. Lo que condiciona la operación es la visibilidad (1.200 m) y el techo (300 ft) — verifique los mínimos de su carta.",
+          estable:"Viento suave del norte a 6 kt, sin ráfagas. Aterrizaje cómodo, probablemente por la 34."
+        }[scn]},
+        clause:CL.anexo14, elicit:false })},
+    {key:"notams", q:"¿Qué NOTAMs hay vigentes?",
+      build:s=>({
+        meas:`NOTAMs vigentes · fuente pública (AIS/AIP)`,
+        v:{tag:"ok", text:"Estos son los NOTAMs vigentes del aeropuerto. Son información pública; AeroClima los consolida y los presenta en claro junto al resto:"},
+        notamList:s.notams, clause:CL.doc4444, elicit:false })},
+    {key:"alt", q:"¿Tengo alternativa si no puedo entrar?",
+      build:s=>({
+        meas:`Alternativa y destino · condición actual`,
+        v:{tag:s.cond.st, text:{
+          niebla:"Con el aeropuerto bajo mínimos, conviene tener alternativa firme. El aeropuerto regional A está CAVOK a ~150 NM; el hub principal, abierto. Prevea combustible para alternativa.",
+          viento:"El aeropuerto se mantiene operable dentro de límites de viento. Como alternativa, el aeropuerto regional B, con viento más manejable.",
+          estable:"Sin necesidad operativa de alternativa: aeropuerto y destino abiertos y estables."
+        }[scn]},
+        alts:s.alts, elicit:false })},
+    {key:"ruta", q:"Resuma la ruta y el destino",
+      build:s=>({
+        meas:`Ruta · NOTAMs · meteo de destino y alternativa`,
+        v:{tag:s.cond.st, text:{
+          niebla:"Salida condicionada por niebla en origen: 1.200 m y techo 300 ft. Destino (hub principal) abierto (BKN030). Alternativa CAVOK. Revise el NOTAM de baja visibilidad y el PAPI 16 U/S.",
+          viento:"Ruta sin restricción de visibilidad; el factor es el viento del SO con ráfagas a 42. Destino abierto. Sin NOTAMs que afecten la operación.",
+          estable:"Ruta despejada: CAVOK en origen, destino y alternativa. Sin NOTAMs operativos relevantes. Vuelo sin condicionamientos meteorológicos."
+        }[scn]},
+        elicit:false })}
+  ]
+};
+
+/* ---- estado ---- */
+let prof="tower", scn="niebla", reg=1, busy=false;
+const COL={ok:"#3FB67A",warn:"#E0A340",bad:"#E0584F"};
+const $=id=>document.getElementById(id);
+/* ---- helpers de render ---- */
+function spark(arr){
+  const w=100,h=26,mn=Math.min(...arr),mx=Math.max(...arr),rg=(mx-mn)||1;
+  const pts=arr.map((v,i)=>`${(i/(arr.length-1))*w},${h-2-((v-mn)/rg)*(h-4)}`).join(" ");
+  return `<svg class="spark" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><polyline points="${pts}" fill="none" stroke="#5BB4F2" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 }
+function tile(k,t,pri){
+  return `<div class="htile is-${t.st}">
+    <div class="k">${k}<span class="kr">${pri?'<span class="pr">'+pri+'</span>':''}<span class="badge">${t.badge}</span></span></div>
+    <div class="v">${t.v}${t.u?'<small>'+t.u+'</small>':''}</div>
+    <div class="sub">${t.sub}</div>
+    ${t.spark?spark(t.spark):''}
+  </div>`;
+}
+function estadoHTML(e){
+  return `<div class="estado" style="border-color:${COL[e.st]};background:${e.st==='ok'?'rgba(63,182,122,.07)':e.st==='warn'?'rgba(224,163,64,.07)':'rgba(224,88,79,.07)'}">
+    <div class="orb" style="background:${COL[e.st]}"></div>
+    <div><div class="lbl">${e.lbl||'Estado operativo'}</div><div class="stt" style="color:${COL[e.st]}">${e.txt}</div><div class="dsc">${e.ds}</div></div></div>`;
+}
+
+function renderDecode(){
+  const s=SC[scn];
+  $("decodeRaw").innerHTML = s.metar + '<div style="margin-top:10px">'+s.taf+'</div>';
+  $("decodeAns").innerHTML = s.decode;
+  const vd=$("decodeVd"), names={ok:"Normal",warn:"Precaución operativa",bad:"Restringido"};
+  vd.className="vd "+s.vd; vd.querySelector("span:last-child").textContent=names[s.vd];
+}
+
 function renderDash(){
-  const s=SCEN[current];
-  const now=new Date();
-  document.getElementById('dmTime').textContent=now.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'})+" LT";
-  const orb=document.getElementById('dmOrb');orb.style.background=COLORS[s.state];
-  const L=document.getElementById('dmLight');L.style.borderColor=COLORS[s.state];
-  L.style.background=s.state==='ok'?'rgba(63,182,122,.08)':s.state==='warn'?'rgba(224,163,64,.08)':'rgba(224,88,79,.08)';
-  const st=document.getElementById('dmSt');st.textContent=s.stateTxt;st.style.color=COLORS[s.state];
-  document.getElementById('dmDs').textContent=s.stateDs;
-  set('dmWind',s.wind);set('dmWindx',s.windx,s.windxc);
-  set('dmVis',s.vis);set('dmVisx',s.visx,s.visxc);
-  set('dmCeil',s.ceil);set('dmCeilx',s.ceilx,s.ceilxc);
-  set('dmTrend',s.trend);set('dmTrendx',s.trendx);
-  document.getElementById('dmFck').textContent=s.fck;
-  const max=Math.max(...s.spark, s.thr<99?s.thr:0);
-  const spark=document.getElementById('dmSpark');spark.innerHTML='';
-  const labels=document.getElementById('dmFcl');labels.innerHTML='';
-  s.spark.forEach((val,i)=>{
-    const bar=document.createElement('div');bar.className='bar';
-    const disp=(s.invert&&val>=9999)?'OK':val;
-    const pct=s.invert?(1-Math.min(val,max)/max)*100:(val/max)*100;
-    bar.style.height=Math.max(8,pct)+'%';
-    if(!s.invert&&s.thr<99&&val>=s.thr)bar.classList.add(val>=s.thr*1.1?'cr':'hi');
-    if(s.invert&&val<=s.thr)bar.classList.add('cr');
-    const sp=document.createElement('span');sp.textContent=disp;bar.appendChild(sp);spark.appendChild(bar);
-    const lb=document.createElement('span');lb.textContent='+'+i+'h';labels.appendChild(lb);
+  const s=SC[scn];
+  $("panelTitle").textContent = prof==="tower" ? "Tablero · Torre" : "Tablero · Piloto";
+  $("panelClock").textContent = "Aeropuerto demo · "+ZULU[scn]+" UTC";
+  if(prof==="tower"){
+    $("heroes").innerHTML = tile("Visibilidad",s.vis,"Prioritario") + tile("Techo / plafón",s.ceil,"Prioritario");
+    $("estadoWrap").innerHTML = estadoHTML(s.estado);
+    $("card2Title").textContent = "Carta y pista en uso sugerida";
+    const c=s.carta;
+    $("card2").innerHTML = `
+      <div class="carta">
+        <div class="ct"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/></svg>Sugerencia para confirmar por la torre</div>
+        <div class="rows">
+          <div class="r"><span class="rk">Carta en uso</span><span class="rv">${c.carta} <small>· ${c.cartaSub}</small></span></div>
+          <div class="r"><span class="rk">Pista en uso</span><span class="rv">RWY ${c.pista} <small>· ${c.pistaSub}</small></span></div>
+          <div class="r"><span class="rk">Condición</span><span class="rv" style="font-weight:500;color:var(--dmute);font-size:12.5px">${c.nota}</span></div>
+        </div>
+        <div class="foot"><span class="conf">▲ La torre confirma · la IA no decide</span><span class="rule" data-cl="${prof==='tower'&&scn==='niebla'?'c204':scn==='viento'?'anexo14':'doc4444'}">Ver norma aplicable</span></div>
+      </div>
+      <div style="margin-top:13px"><div style="font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--dsteel);margin-bottom:8px">Estado por cabecera</div>
+      <div class="rwys">${s.rwys.map(r=>`<div class="rwy"><span class="sem ${r[2]}"></span><span class="id">${r[0]}</span><span class="why">${r[1]}</span><span class="st ${r[2]}">${r[2]==='ok'?'OK':r[2]==='warn'?'Atención':'No apta'}</span></div>`).join("")}</div></div>`;
+    $("card2").querySelector(".rule").onclick=function(){ openModal(CL[this.dataset.cl]); };
+  } else {
+    const condTile={v:s.cond.txt,u:"",st:s.cond.st,badge:s.cond.txt==="ABIERTO"?"Operable":"Cerrado",sub:s.cond.ds};
+    $("heroes").innerHTML = tile("Viento",s.wind,"Prioritario") + tile("Condición de pista",condTile,"");
+    $("estadoWrap").innerHTML = estadoHTML({st:s.cond.st,txt:s.cond.txt,ds:s.cond.ds,lbl:"Condición para el piloto"});
+    $("card2Title").textContent = "NOTAMs vigentes y alternativas";
+    $("card2").innerHTML = `
+      <div class="notams">${s.notams.map(n=>`<div class="notam"><span class="nid">${n[0]}</span><span class="ntx">${n[1]}</span></div>`).join("")}</div>
+      <div class="alts">${s.alts.map(a=>`<div class="alt"><div class="ak">${a[0]}</div><div class="av">${a[1]}</div><div class="as">${a[2]}</div></div>`).join("")}</div>`;
+  }
+  renderSources();
+}
+function renderSources(){
+  const common=[
+    ['AWOS del aeropuerto — viento, visibilidad, RVR, techo','hom','Homologado'],
+    ['Portal del Servicio Meteorológico — METAR / TAF / SIGMET','pub','Público']];
+  const extra = prof==="tower"
+    ? [['Reglamento de aviación civil (RAC) · Anexos OACI 3/11 · Cartas IAC','nor','Normativa']]
+    : [['NOTAMs (AIS/AIP) · rutas y alternativas','pub','Público'],['RAC · Anexo 14 (viento) · cartas','nor','Normativa']];
+  $("srcs").innerHTML = `<div class="sttl">Fuentes conectadas</div>` +
+    common.concat(extra).map(x=>`<div class="src${x[1]==='nor'?' ai':''}"><span class="d"></span><span class="nm2">${x[0]}</span><span class="tg ${x[1]}">${x[2]}</span></div>`).join("");
+}
+
+/* ---- chat ---- */
+const chat=$("chat"), qchips=$("qchips");
+function seed(){
+  const t = prof==="tower"
+    ? "Soy el asistente operativo para <b>torre de control</b>. Me apoyo en las mediciones homologadas del aeropuerto y en la normativa cargada (RAC, cartas IAC). Realice una consulta y respondo en lenguaje claro; la decisión es del operador."
+    : "Soy el asistente operativo para <b>piloto</b>. Resumo viento, NOTAMs, ruta y alternativas del aeropuerto a partir de las fuentes homologadas y públicas. Consulte lo que necesite para planificar.";
+  chat.innerHTML="";
+  addBub("a", `<p>${t}</p><p style="color:var(--acero);font-size:12px;margin:0">Use el control <b>Registro</b> (arriba) para ajustar el nivel técnico de las respuestas.</p>`);
+  buildChips();
+}
+function buildChips(){
+  qchips.innerHTML="";
+  ANS[prof].forEach((it,i)=>{
+    const b=document.createElement("button");
+    b.className="qc"+(it.hero?" hero":"");
+    b.textContent=it.q;
+    b.onclick=()=>ask(i,b);
+    qchips.appendChild(b);
   });
 }
-function set(id,html,cls){const el=document.getElementById(id);el.innerHTML=html;if(id.endsWith('x')||id==='dmTrendx')el.className='x'+(cls?' '+cls:'')}
-const win=document.getElementById('dmWin'),chipsEl=document.getElementById('dmChips');
-function resetChat(){win.innerHTML='';addA({who:'AEROCLIMA',t:'Estoy conectado a las fuentes del aeropuerto. Preguntame sobre el escenario activo ('+SCEN[current].label.toLowerCase()+') y te respondo en lenguaje claro.',tag:null},false);buildChips();}
-function buildChips(){chipsEl.innerHTML='';Object.keys(QLABELS).forEach(q=>{const c=document.createElement('button');c.className='dm-chip';c.textContent=QLABELS[q];c.onclick=()=>ask(q,c);chipsEl.appendChild(c);});}
-function ask(q,chip){if(busy)return;busy=true;chip.disabled=true;addQ(QLABELS[q]);
-  const typ=document.createElement('div');typ.className='dm-typing';typ.innerHTML='<i></i><i></i><i></i>';win.appendChild(typ);down();
-  const ans=SCEN[current].qa[q];
-  setTimeout(()=>{typ.remove();addA({who:'AEROCLIMA',t:ans.t,tag:ans.tag});busy=false;},1100+Math.random()*500);
+function addBub(role,html){
+  const m=document.createElement("div"); m.className="msg "+role;
+  m.innerHTML=`<div class="av">${role==='a'?'AC':'TÚ'}</div><div class="bub">${html}</div>`;
+  chat.appendChild(m); chat.scrollTop=chat.scrollHeight; return m;
 }
-function addQ(t){const b=document.createElement('div');b.className='dm-bub q';b.textContent=t;win.appendChild(b);down();}
-function addA(o,scroll=true){const b=document.createElement('div');b.className='dm-bub a';
-  let tag='';if(o.tag){const n={ok:'NORMAL',warn:'PRECAUCIÓN',bad:'RESTRINGIDO'};tag=`<div class="tag ${o.tag}"><span class="d"></span>${n[o.tag]}</div>`;}
-  b.innerHTML=`<div class="who">${o.who}</div>${o.t}${tag}`;win.appendChild(b);if(scroll)down();}
-function down(){win.scrollTop=win.scrollHeight}
-selectScen('viento');
+function ask(i,btn){
+  if(busy) return; busy=true; if(btn) btn.disabled=true;
+  const it=ANS[prof][i]; addBub("u", it.q);
+  const typ=document.createElement("div"); typ.className="msg a";
+  typ.innerHTML='<div class="av">AC</div><div class="bub"><div class="typing"><i></i><i></i><i></i></div></div>';
+  chat.appendChild(typ); chat.scrollTop=chat.scrollHeight;
+  setTimeout(()=>{ typ.remove(); renderAnswer(it.build(SC[scn])); busy=false; }, 950+Math.random()*500);
+}
+function renderAnswer(o){
+  let html="";
+  if(o.meas) html+=`<div class="meas"><span>${o.meas}</span></div>`;
+  html+=`<div class="verdict ${o.v.tag}">${pick(o.v.text,reg)}</div>`;
+  if(o.notamList) html+=o.notamList.map(n=>`<div style="display:flex;gap:9px;font-family:var(--mono);font-size:11px;color:#34536e;padding:7px 9px;background:#F1F5F9;border:1px solid #E0E8EF;border-radius:8px;margin:5px 0"><span style="color:var(--cielo);font-weight:700;flex:0 0 auto">${n[0]}</span><span>${n[1]}</span></div>`).join("");
+  if(o.alts) html+=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:7px 0">`+o.alts.map(a=>`<div style="padding:9px 11px;border:1px solid #E0EAF3;border-radius:9px;background:#F7FAFD"><div style="font-family:var(--mono);font-size:9px;letter-spacing:.05em;text-transform:uppercase;color:var(--acero)">${a[0]}</div><div style="font-size:13px;font-weight:700;color:var(--ink);margin-top:2px">${a[1]}</div><div style="font-size:11px;color:var(--ink-soft)">${a[2]}</div></div>`).join("")+`</div>`;
+  if(o.clause){
+    const c=o.clause;
+    html+=`<div class="clause"><div class="ch"><span class="ref">${c.ref}</span><span class="valid"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>${c.valid}</span></div>
+      <div class="ex">Cita la cláusula aplicable; no la afirma de memoria. Verificá el texto.</div>
+      <button class="lit"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>Ver texto de la cláusula</button></div>`;
+  }
+  if(o.elicit){
+    html+=`<div class="elicit"><div class="et"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4m0 4h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>Esta regla condiciona una decisión operativa. AeroClima no la da por aplicada hasta que la confirmes.</div>
+      <div class="ebtns"><button class="ebtn go">Confirmar regla aplicable</button><button class="ebtn rev">Revisar fuente</button></div></div>`;
+  }
+  html+=`<div class="audit"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg>Fuente: AWOS del aeropuerto · ${ZULU[scn]} UTC${o.clause?' · '+o.clause.ref.split('—')[0].trim():''} · queda auditado</div>`;
+  const m=addBub("a",html);
+  const lit=m.querySelector(".lit"); if(lit&&o.clause) lit.onclick=()=>openModal(o.clause);
+  const go=m.querySelector(".ebtn.go");
+  if(go) go.onclick=()=>{ m.querySelector(".elicit").outerHTML=`<div style="display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:10.5px;color:var(--verde);background:#E7F6EE;border:1px solid #B6E0C8;border-radius:9px;padding:9px 11px;margin:9px 0 2px"><svg style="width:14px;height:14px;flex:0 0 auto" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>Regla confirmada por el operador — queda registrada con fuente y hora.</div>`; };
+  const rev=m.querySelector(".ebtn.rev"); if(rev&&o.clause) rev.onclick=()=>openModal(o.clause);
+}
+
+/* ---- modal ---- */
+function openModal(c){ $("ovRef").textContent=c.ref; $("ovValid").textContent=c.valid; $("ovTxt").textContent=c.lit; $("ovFoot").textContent=c.foot; $("ov").classList.add("on"); }
+$("ovClose").onclick=()=>$("ov").classList.remove("on");
+$("ov").onclick=e=>{ if(e.target===$("ov")) $("ov").classList.remove("on"); };
+
+/* ---- toggles ---- */
+$("profSeg").querySelectorAll("button").forEach(b=>b.onclick=()=>{
+  prof=b.dataset.prof; document.body.classList.toggle("prof-pilot",prof==="pilot");
+  $("profSeg").querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===b));
+  renderDash(); seed();
+});
+$("scnRow").querySelectorAll(".chip").forEach(b=>b.onclick=()=>{
+  scn=b.dataset.scn;
+  $("scnRow").querySelectorAll(".chip").forEach(x=>x.classList.toggle("on",x===b));
+  renderDecode(); renderDash(); seed();
+});
+$("aiToggle").onclick=function(){
+  const on=document.body.classList.toggle("degraded");
+  this.classList.toggle("armed",on);
+  this.querySelector(".dot");
+  this.childNodes[1].nodeValue = on ? "IA caída (simular)" : "IA operativa";
+};
+const regNames=[["Técnico","jerga aeronáutica"],["Estándar","claro y preciso"],["Llano","sin tecnicismos"]];
+$("regSld").oninput=function(){ reg=+this.value; $("regVal").innerHTML=regNames[reg][0]+"<small>"+regNames[reg][1]+"</small>"; };
+
+/* ---- init ---- */
+renderDecode(); renderDash(); seed();
+
+/* ============================================================
+   Capa de recorrido guiado (coachmarks con spotlight)
+   Acompaña al usuario por las partes clave de la demo.
+   Tono neutro/profesional · sin dependencias externas.
+   ============================================================ */
+const TOUR=[
+  {sel:'#profSeg',  title:'Dos perfiles, una sola fuente',
+    body:'La misma información, leída según el rol. La torre prioriza visibilidad y techo; el piloto, viento, NOTAMs y ruta. Cambie de perfil y observe cómo se reorganiza el tablero.'},
+  {sel:'#scnRow',   title:'Escenarios meteorológicos',
+    body:'Tres situaciones de ejemplo. Al seleccionarlas, el tablero y el asistente se recalculan en tiempo real con esos datos.'},
+  {sel:'.decode',   title:'Del dato críptico al lenguaje claro',
+    body:'A la izquierda, lo que los sistemas emiten hoy (METAR y TAF). A la derecha, la misma información explicada y lista para decidir en segundos.'},
+  {sel:'#heroes',   title:'Lo que importa primero',
+    body:'En el perfil de torre, visibilidad y plafón encabezan el tablero, en ese orden. El color resume el estado operativo de un vistazo.'},
+  {sel:'#card2',    title:'Sugerencia normativa',
+    body:'El sistema propone carta y pista en uso a partir de las mediciones y la regla aplicable. La torre confirma: el sistema asiste, no decide.'},
+  {sel:'#qchips',   title:'Asistente conversacional',
+    body:'Consulte en lenguaje natural. Cada respuesta cita la norma vigente, indica la fuente homologada y queda registrada con fecha y hora.'},
+  {sel:'#aiToggle', title:'Continuidad operativa',
+    body:'Si la capa de IA deja de estar disponible, el dato homologado sigue visible. La IA suma síntesis; nunca se interpone entre el operador y la medición.'},
+  {sel:'.trust',    title:'Por qué no es una app de clima',
+    body:'Se apoya en mediciones homologadas y en la normativa vigente; no inventa, no decide y deja todo trazable. Esa es la diferencia.'}
+];
+let ti=0, tourOn=false;
+
+/* construir elementos del tour una sola vez */
+const tBlock=document.createElement('div'); tBlock.id='tourBlock';
+const tHole=document.createElement('div');  tHole.id='tourHole';
+const tCard=document.createElement('div');  tCard.id='tourCard';
+tCard.innerHTML=`<button class="tcskip" aria-label="Cerrar recorrido">&times;</button>
+  <div class="tcnum"></div><div class="tctitle"></div><div class="tcbody"></div>
+  <div class="tcfoot"><div class="tcdots"></div>
+    <button class="tcprev">Anterior</button><button class="tcnext">Siguiente</button></div>`;
+document.body.appendChild(tBlock); document.body.appendChild(tHole); document.body.appendChild(tCard);
+tBlock.style.display='none'; tHole.style.display='none'; tCard.style.display='none';
+tCard.querySelector('.tcdots').innerHTML=TOUR.map(()=>'<span class="tcdot"></span>').join('');
+
+function placeTour(){
+  const el=document.querySelector(TOUR[ti].sel); if(!el) return;
+  const r=el.getBoundingClientRect(), p=8;
+  tHole.style.top=(r.top-p)+'px'; tHole.style.left=(r.left-p)+'px';
+  tHole.style.width=(r.width+2*p)+'px'; tHole.style.height=(r.height+2*p)+'px';
+  const cw=tCard.offsetWidth||332, ch=tCard.offsetHeight||170, m=14, vw=innerWidth, vh=innerHeight;
+  let top=r.bottom+p+12; if(top+ch>vh-m) top=r.top-p-12-ch; if(top<m) top=m;
+  let left=r.left+r.width/2-cw/2; left=Math.max(m,Math.min(left,vw-cw-m));
+  tCard.style.top=top+'px'; tCard.style.left=left+'px';
+}
+function showStep(i){
+  ti=Math.max(0,Math.min(i,TOUR.length-1));
+  const st=TOUR[ti], el=document.querySelector(st.sel);
+  if(!el){ return ti<TOUR.length-1 ? showStep(ti+1) : endTour(); }
+  tCard.querySelector('.tcnum').textContent=`Paso ${ti+1} de ${TOUR.length}`;
+  tCard.querySelector('.tctitle').textContent=st.title;
+  tCard.querySelector('.tcbody').textContent=st.body;
+  tCard.querySelectorAll('.tcdot').forEach((d,k)=>d.classList.toggle('on',k===ti));
+  tCard.querySelector('.tcprev').disabled = ti===0;
+  tCard.querySelector('.tcnext').textContent = ti===TOUR.length-1 ? 'Finalizar' : 'Siguiente';
+  el.scrollIntoView({behavior:'smooth',block:'center'});
+  setTimeout(placeTour,360); setTimeout(placeTour,560);
+}
+function startTour(){ tourOn=true; tBlock.style.display='block'; tHole.style.display='block'; tCard.style.display='block'; showStep(0); }
+function endTour(){ tourOn=false; tBlock.style.display='none'; tHole.style.display='none'; tCard.style.display='none'; }
+
+tCard.querySelector('.tcnext').onclick=()=>{ ti===TOUR.length-1 ? endTour() : showStep(ti+1); };
+tCard.querySelector('.tcprev').onclick=()=>showStep(ti-1);
+tCard.querySelector('.tcskip').onclick=endTour;
+tBlock.onclick=()=>{ ti===TOUR.length-1 ? endTour() : showStep(ti+1); };
+addEventListener('resize',()=>{ if(tourOn) placeTour(); });
+addEventListener('scroll',()=>{ if(tourOn) placeTour(); },{passive:true});
+addEventListener('keydown',e=>{ if(!tourOn)return;
+  if(e.key==='Escape') endTour();
+  else if(e.key==='ArrowRight') (ti===TOUR.length-1?endTour():showStep(ti+1));
+  else if(e.key==='ArrowLeft') showStep(ti-1); });
+
+/* botón "Recorrido guiado" junto al toggle de IA */
+(function(){
+  const ai=$("aiToggle"); if(!ai) return;
+  const wrap=document.createElement('div'); wrap.style.cssText='display:flex;gap:8px;align-items:center;flex-wrap:wrap';
+  const tb=document.createElement('button'); tb.id='tourBtn'; tb.className='ghost';
+  tb.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>Recorrido guiado';
+  ai.parentNode.insertBefore(wrap,ai); wrap.appendChild(tb); wrap.appendChild(ai);
+  tb.onclick=startTour;
+})();
+
+/* arranque automático una vez (en pantallas amplias), para que se entienda sola */
+if(innerWidth>700){ setTimeout(startTour,1000); }
 </script>
 </body>
 </html>

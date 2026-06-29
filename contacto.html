@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Contacto — AeroClima | Pulsar</title>
-<meta name="description" content="Hablemos sobre cómo AeroClima podría ayudar a tu aeropuerto. Escribinos por WhatsApp o dejanos un mensaje.">
+<meta name="description" content="Hablemos sobre cómo AeroClima podría ayudar a tu torre o aeropuerto. Pedí una demostración en vivo con tus propias fuentes, escribinos por WhatsApp o dejanos un mensaje.">
 <link rel="icon" type="image/png" sizes="48x48" href="favicon-48.png">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -13,14 +13,14 @@
 <meta property="og:site_name" content="AeroClima">
 <meta property="og:locale" content="es_AR">
 <meta property="og:title" content="Contacto — AeroClima">
-<meta property="og:description" content="Conversemos sobre tu aeropuerto. WhatsApp directo o dejanos un mensaje.">
+<meta property="og:description" content="Conversemos sobre tu aeropuerto. Pedí una demo en vivo, WhatsApp directo o dejanos un mensaje.">
 <meta property="og:url" content="https://aeroclima.pulsar-avitech.ai/contacto.html">
 <meta property="og:image" content="https://aeroclima.pulsar-avitech.ai/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Contacto — AeroClima">
-<meta name="twitter:description" content="Conversemos sobre tu aeropuerto. WhatsApp directo o dejanos un mensaje.">
+<meta name="twitter:description" content="Conversemos sobre tu aeropuerto. Pedí una demo en vivo o escribinos.">
 <meta name="twitter:image" content="https://aeroclima.pulsar-avitech.ai/og-image.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -29,23 +29,40 @@
 <style>
 .contact-grid{display:grid;grid-template-columns:1fr 1.2fr;gap:48px;align-items:start}
 .contact-side .lead{font-size:18px;color:var(--ink-soft);max-width:42ch}
-.contact-methods{margin-top:30px;display:flex;flex-direction:column;gap:14px}
-.method{display:flex;align-items:center;gap:15px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px 20px;transition:border-color .15s,transform .12s}
+.trust{margin-top:24px;display:flex;flex-direction:column;gap:12px}
+.trust .t{display:flex;gap:11px;align-items:flex-start;font-size:14.5px;color:var(--ink);line-height:1.45}
+.trust .t svg{width:18px;height:18px;color:var(--verde);flex:none;margin-top:2px}
+.contact-methods{margin-top:26px;display:flex;flex-direction:column;gap:14px}
+.method{display:flex;align-items:center;gap:15px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px 20px;transition:border-color .15s,transform .12s}
 .method:hover{border-color:var(--cielo);transform:translateY(-1px)}
 .method .mic{width:46px;height:46px;border-radius:11px;display:grid;place-items:center;flex:none}
 .method.wa .mic{background:#E5F9ED}
 .method.mail .mic{background:#EAF2F9}
-.method .mt{font-weight:600;font-size:15.5px}
+.method .mt{display:block;font-weight:600;font-size:15.5px}
+.method .ms{display:block}
 .method .ms{font-size:13.5px;color:var(--ink-soft);margin-top:2px}
 form{background:#fff;border:1px solid var(--line);border-radius:14px;padding:30px}
+.form-h{font-family:var(--display);font-weight:800;font-size:20px;margin-bottom:4px}
+.form-sub{font-size:14px;color:var(--ink-soft);margin-bottom:22px}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .field{margin-bottom:18px}
 .field label{display:block;font-size:14px;font-weight:600;margin-bottom:7px}
-.field input,.field textarea{width:100%;font-family:var(--body);font-size:15.5px;color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:9px;padding:12px 14px;transition:border-color .15s}
-.field input:focus,.field textarea:focus{outline:none;border-color:var(--cielo)}
-.field textarea{resize:vertical;min-height:120px}
+.field label .opt{font-weight:400;color:var(--acero);font-size:13px}
+.field input,.field select,.field textarea{width:100%;font-family:var(--body);font-size:15.5px;color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:9px;padding:12px 14px;transition:border-color .15s}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--cielo)}
+.field textarea{resize:vertical;min-height:110px}
+.field select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='none' stroke='%2354677C' stroke-width='2'%3E%3Cpath d='M3 5l4 4 4-4'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px}
+.field input#oaci{text-transform:uppercase;letter-spacing:.08em}
+.hp{position:absolute!important;left:-9999px;width:1px;height:1px;overflow:hidden}
 .form-note{font-family:var(--mono);font-size:12px;color:var(--ink-soft);margin-top:14px;line-height:1.5}
-.setup-banner{background:#FFF6E6;border:1px solid #E8CF90;color:#7A5B12;font-size:13px;border-radius:9px;padding:13px 16px;margin-bottom:22px;font-family:var(--mono);line-height:1.55}
+.form-state{display:none;text-align:center;padding:18px 4px}
+.form-state svg{width:50px;height:50px;margin-bottom:12px}
+.form-state.ok svg{color:var(--verde)}.form-state.err svg{color:var(--rojo)}
+.form-state h3{font-family:var(--display);font-size:21px;margin-bottom:8px}
+.form-state p{font-size:14.5px;color:var(--ink-soft);line-height:1.55;max-width:40ch;margin:0 auto}
+.form-state a{color:var(--cielo)}
 @media (max-width:820px){.contact-grid{grid-template-columns:1fr;gap:32px}}
+@media (max-width:520px){.field-row{grid-template-columns:1fr}}
 .skip{position:absolute;left:-9999px;top:0;background:#fff;color:var(--ink);padding:10px 16px;border-radius:0 0 8px 0;z-index:99;font-weight:600}.skip:focus{left:0}
 </style>
 </head>
@@ -57,8 +74,8 @@ form{background:#fff;border:1px solid var(--line);border-radius:14px;padding:30p
 <header class="page-hero">
   <div class="wrap">
     <div class="kicker">Hablemos</div>
-    <h1>Conversemos sobre tu aeropuerto.</h1>
-    <p>Sin compromiso. Contanos tu operación y te mostramos cómo AeroClima podría ayudar.</p>
+    <h1>Llevá AeroClima a tu torre.</h1>
+    <p>Contanos sobre tu aeropuerto y coordinamos una demostración en vivo con tus propias fuentes — AWOS y portal del SMN. Sin compromiso.</p>
   </div>
 </header>
 
@@ -66,9 +83,14 @@ form{background:#fff;border:1px solid var(--line);border-radius:14px;padding:30p
   <div class="wrap">
     <div class="contact-grid">
       <div class="contact-side reveal">
-        <p class="lead">La forma más rápida de empezar es escribirnos directo. Te respondemos a la brevedad.</p>
+        <p class="lead">La forma más rápida de empezar es escribirnos directo. Te respondemos dentro de 48&nbsp;h hábiles.</p>
+        <div class="trust">
+          <div class="t"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 6 9 17l-5-5"/></svg><span>Demo en vivo con los datos de tu propio aeródromo</span></div>
+          <div class="t"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 6 9 17l-5-5"/></svg><span>Una capa que se enchufa: no reemplaza tu AWOS ni tus sistemas</span></div>
+          <div class="t"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 6 9 17l-5-5"/></svg><span>Asistencia normativa con cita verificable; el humano decide y firma</span></div>
+        </div>
         <div class="contact-methods">
-          <a class="method wa" href="https://wa.me/5492915070323?text=Hola%2C%20me%20interesa%20conocer%20AeroClima" target="_blank" rel="noopener">
+          <a class="method wa" href="https://wa.me/5492915070323?text=Hola%2C%20me%20interesa%20conocer%20AeroClima%20para%20mi%20torre%2Faeropuerto" target="_blank" rel="noopener">
             <span class="mic"><svg width="24" height="24" viewBox="0 0 24 24" fill="#25D366"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.7 4.8-1.3A10 10 0 1 0 12 2zm0 1.8a8.2 8.2 0 0 1 6.9 12.6l-.2.3.7 2.6-2.6-.7-.3.2A8.2 8.2 0 1 1 12 3.8zm-3 4c-.2 0-.5 0-.7.3-.3.3-1 1-1 2.4s1 2.8 1.2 3 2 3.2 5 4.4c2.4 1 2.9.8 3.4.8.5 0 1.6-.7 1.9-1.3.2-.7.2-1.2.1-1.3l-.6-.3-1.7-.8c-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.4-3c-.1-.3 0-.4.1-.5l.5-.6c.1-.2.1-.3 0-.5l-.8-1.9c-.2-.4-.4-.4-.5-.4z"/></svg></span>
             <span><span class="mt">WhatsApp</span><span class="ms">La vía más directa · respuesta rápida</span></span>
           </a>
@@ -80,26 +102,55 @@ form{background:#fff;border:1px solid var(--line);border-radius:14px;padding:30p
       </div>
 
       <div class="reveal">
-        <form action="https://formspree.io/f/xaqgbwek" method="POST">
-          <div class="field">
-            <label for="nombre">Nombre</label>
-            <input type="text" id="nombre" name="nombre" required placeholder="Tu nombre">
+        <form id="cf" action="https://formspree.io/f/xaqgbwek" method="POST">
+          <div class="form-h">Pedí una demostración</div>
+          <div class="form-sub">Completá y te contactamos para mostrarte AeroClima funcionando con tus fuentes.</div>
+          <div class="field-row">
+            <div class="field"><label for="nombre">Nombre y apellido</label><input type="text" id="nombre" name="nombre" required placeholder="Tu nombre"></div>
+            <div class="field"><label for="email">Email</label><input type="email" id="email" name="email" required placeholder="vos@dominio.com"></div>
           </div>
-          <div class="field">
-            <label for="org">Aeropuerto u organización</label>
-            <input type="text" id="org" name="organizacion" placeholder="Opcional">
+          <div class="field-row">
+            <div class="field"><label for="org">Organización / aeropuerto</label><input type="text" id="org" name="organizacion" required placeholder="Aeropuerto, EANA, empresa…"></div>
+            <div class="field"><label for="oaci">Código OACI <span class="opt">(opcional)</span></label><input type="text" id="oaci" name="oaci" maxlength="4" placeholder="Ej.: SAZB"></div>
           </div>
-          <div class="field">
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" required placeholder="tu@correo.com">
+          <div class="field-row">
+            <div class="field"><label for="rol">Tu rol</label>
+              <select id="rol" name="rol" required>
+                <option value="" disabled selected>Elegí una opción</option>
+                <option>Torre de control</option>
+                <option>Observación meteorológica</option>
+                <option>Dirección / jefatura de aeropuerto</option>
+                <option>EANA</option>
+                <option>ANAC</option>
+                <option>Operador / línea aérea</option>
+                <option>Otro</option>
+              </select></div>
+            <div class="field"><label for="tel">WhatsApp / teléfono <span class="opt">(opcional)</span></label><input type="tel" id="tel" name="telefono" placeholder="+54 9 …"></div>
           </div>
-          <div class="field">
-            <label for="msg">Mensaje</label>
-            <textarea id="msg" name="mensaje" required placeholder="Contanos brevemente sobre tu operación y qué te interesa de AeroClima."></textarea>
-          </div>
-          <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center">Enviar mensaje</button>
-          <p class="form-note">Al enviar aceptás que te contactemos en relación a tu consulta. No compartimos tus datos con terceros.</p>
+          <div class="field"><label for="interes">Me interesa</label>
+            <select id="interes" name="interes" required>
+              <option value="" disabled selected>Elegí una opción</option>
+              <option>Ver una demo en vivo</option>
+              <option>Asistencia normativa para torre</option>
+              <option>Integración con AWOS / SMN</option>
+              <option>Conversar comercialmente</option>
+              <option>Otro</option>
+            </select></div>
+          <div class="field"><label for="msg">Mensaje <span class="opt">(opcional)</span></label><textarea id="msg" name="mensaje" placeholder="Contanos brevemente tu situación: qué sistemas usan, qué querés resolver…"></textarea></div>
+          <input type="text" name="_gotcha" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <button type="submit" class="btn btn-primary" id="submitBtn" style="width:100%;justify-content:center">Solicitar demostración</button>
+          <p class="form-note">Tus datos llegan directo a nuestro correo y se usan sólo para responderte. No los compartimos con terceros. AeroClima es una capa de software de síntesis, no un servicio meteorológico certificado.</p>
         </form>
+        <div class="form-state ok" id="okState">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4 12 14.01l-3-3"/></svg>
+          <h3>¡Recibido!</h3>
+          <p>Gracias por escribirnos. Te respondemos a la brevedad para coordinar la demostración con los datos de tu aeródromo.</p>
+        </div>
+        <div class="form-state err" id="errState">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/></svg>
+          <h3>No se pudo enviar</h3>
+          <p>Probá de nuevo o escribinos directo a <a href="mailto:contacto@pulsar.com.ar">contacto@pulsar.com.ar</a> y lo resolvemos.</p>
+        </div>
       </div>
     </div>
   </div>
@@ -108,5 +159,26 @@ form{background:#fff;border:1px solid var(--line);border-radius:14px;padding:30p
 </main>
 <div id="footer-slot"></div>
 <script src="main.js"></script>
+<script>
+(function(){
+  var oaci=document.getElementById('oaci');
+  if(oaci) oaci.addEventListener('input',function(){ this.value=this.value.toUpperCase().replace(/[^A-Z]/g,'').slice(0,4); });
+  var form=document.getElementById('cf'), btn=document.getElementById('submitBtn');
+  if(!form) return;
+  form.addEventListener('submit', async function(e){
+    e.preventDefault();
+    btn.disabled=true; btn.textContent='Enviando…';
+    var data=new FormData(form);
+    data.set('_subject','Nuevo contacto AeroClima — '+(data.get('rol')||'consulta'));
+    try{
+      var res=await fetch(form.action,{method:'POST',body:data,headers:{'Accept':'application/json'}});
+      if(res.ok){ form.style.display='none'; document.getElementById('okState').style.display='block'; }
+      else throw new Error('formspree');
+    }catch(err){
+      form.style.display='none'; document.getElementById('errState').style.display='block';
+    }
+  });
+})();
+</script>
 </body>
 </html>
