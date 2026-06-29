@@ -812,8 +812,7 @@ addEventListener('keydown',e=>{ if(!tourOn)return;
   tb.onclick=startTour;
 })();
 
-/* arranque automático una vez (en pantallas amplias), para que se entienda sola */
-if(innerWidth>700){ setTimeout(startTour,1000); }
+/* el recorrido arranca únicamente con el botón "Recorrido guiado" */
 </script>
 </body>
 </html>
