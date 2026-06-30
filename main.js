@@ -10,8 +10,7 @@ const NAV = `
     <ul class="nav-links">
       <li><a data-page href="index.html">Inicio</a></li>
       <li><a data-page href="producto.html">Producto</a></li>
-      <li><a data-page href="demo.html">Demo</a></li>
-      <li><a data-page href="dashboard.html">Dashboard</a></li>
+      <li><a href="demo.html" target="_blank" rel="noopener">Demo</a></li>
       <li><a data-page href="nosotros.html">Nosotros</a></li>
       <li><a class="nav-cta" href="contacto.html">Contacto</a></li>
     </ul>
@@ -29,8 +28,7 @@ const FOOTER = `
         <h4>Navegación</h4>
         <a href="index.html">Inicio</a>
         <a href="producto.html">Producto</a>
-        <a href="demo.html">Demo</a>
-        <a href="dashboard.html">Dashboard</a>
+        <a href="demo.html" target="_blank" rel="noopener">Demo</a>
         <a href="nosotros.html">Nosotros</a>
         <a href="contacto.html">Contacto</a>
       </div>

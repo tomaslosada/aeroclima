@@ -66,9 +66,9 @@ button{font-family:var(--body)}
 #login .fld label{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin-bottom:7px}
 #login .fld select,#login .fld input{width:100%;background:#0C1A25;border:1px solid var(--line2);border-radius:10px;color:var(--tx);font-family:var(--body);font-size:14px;padding:11px 13px;cursor:pointer}
 #login .fld select:focus,#login .fld input:focus{border-color:var(--acc)}
-#login .roleseg{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
-#login .roleseg button{background:#0C1A25;border:1px solid var(--line2);border-radius:11px;color:var(--mut);font-size:12.5px;font-weight:600;padding:13px 6px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;transition:.16s}
-#login .roleseg button svg{width:20px;height:20px}
+#login .roleseg{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+#login .roleseg button{background:#0C1A25;border:1px solid var(--line2);border-radius:10px;color:var(--mut);font-size:13.5px;font-weight:600;padding:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:.16s}
+#login .roleseg button svg{width:16px;height:16px}
 #login .roleseg button.on{border-color:var(--acc);background:var(--accdim);color:var(--acc2)}
 #login .enter{width:100%;margin-top:9px;background:linear-gradient(135deg,var(--acc),#0c9a8e);color:#04161a;font-weight:800;font-size:15px;border:0;border-radius:11px;padding:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;transition:.16s}
 #login .enter:hover{filter:brightness(1.08)}
@@ -378,51 +378,11 @@ body.degraded .main .ask{opacity:.32;pointer-events:none}
 #tourCard .tcskip{position:absolute;top:13px;right:14px;background:none;border:0;color:var(--faint);font-size:18px;line-height:1;cursor:pointer;padding:0}
 #tourCard .tcskip:hover{color:var(--tx)}
 @media(max-width:560px){#tourCard{width:calc(100vw - 28px)}}
-/* ===== roles + configuración ===== */
-.topbar .user .av svg{width:15px;height:15px}
-.side .navadmin{display:none}
-body.role-admin .side .navadmin{display:flex}
-.main .ctrlleft{display:flex;align-items:center;gap:11px;flex-wrap:wrap}
-.main .previewlab{display:none;font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint)}
-body.role-admin .main .previewlab{display:inline}
-.main .rolelock{display:none;align-items:center;gap:9px;padding:9px 15px;border-radius:999px;background:var(--accdim);border:1px solid var(--accbd);color:var(--acc2);font-size:13px;font-weight:700}
-.main .rolelock svg{width:16px;height:16px}
-body.role-tower .main #profSeg,body.role-pilot .main #profSeg{display:none}
-body.role-tower .main .rolelock,body.role-pilot .main .rolelock{display:flex}
-.main .cfg{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-@media(max-width:760px){.main .cfg{grid-template-columns:1fr}}
-.main .cfgcard{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
-.main .cfgcard .cfgt{font-family:var(--body);font-size:13px;font-weight:700;color:var(--tx);display:flex;align-items:center;gap:9px;margin-bottom:14px;padding-bottom:11px;border-bottom:1px solid var(--line)}
-.main .cfgcard .cfgt svg{width:16px;height:16px;color:var(--acc2);flex:0 0 auto}
-.main .cfgrow{margin-bottom:15px}.main .cfgrow:last-child{margin-bottom:0}
-.main .cfgrow .cl{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}
-.main .cfgrow .cl label{font-size:12.5px;color:var(--mut)}
-.main .cfgrow .cl .cv{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--acc2);flex:0 0 auto}
-.main .cfgrow input[type=range]{width:100%;-webkit-appearance:none;appearance:none;height:5px;border-radius:5px;background:#24414F;outline:none}
-.main .cfgrow input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;height:17px;border-radius:50%;background:var(--acc);border:3px solid var(--panel);cursor:pointer}
-.main .cfgrow input[type=range]::-moz-range-thumb{width:15px;height:15px;border-radius:50%;background:var(--acc);border:3px solid var(--panel);cursor:pointer}
-.main .cfgactions{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:16px}
-.main .cfgnote{font-size:12px;color:var(--faint)}
-.main .cfgprev{margin-top:18px}
-.main .cfgprev .pvt{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin-bottom:9px}
-.main .pvrow{display:flex;align-items:center;gap:10px;padding:11px 13px;border:1px solid var(--line);border-radius:10px;background:var(--panel);margin-bottom:8px;flex-wrap:wrap}
-.main .pvrow .pvn{font-size:12.5px;font-weight:700;color:var(--tx);min-width:140px}
-.main .pvrow .pvk{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.06em;color:var(--faint)}
-.main .pvrow .pvchip{font-family:var(--mono);font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px}
-.main .pvchip.ok{background:var(--okbg);color:var(--ok)}.main .pvchip.warn{background:var(--warnbg);color:var(--warn)}.main .pvchip.bad{background:var(--badbg);color:var(--bad)}
-.main .pvrow .pvrwy{font-family:var(--mono);font-size:11px;color:var(--mut);margin-left:auto}
-.main .scnhint{font-size:11.5px;color:var(--faint);margin:-6px 0 16px}
-.main .scnhint b{color:var(--mut)}
-.main .stale{display:none;align-items:center;gap:8px;font-size:12px;color:#F0C77A;background:var(--warnbg);border:1px solid rgba(224,163,64,.4);border-radius:9px;padding:9px 12px;margin-bottom:11px}
-.main .stale.on{display:flex}
-.main .stale svg{width:15px;height:15px;flex:0 0 auto;color:var(--warn)}
-.main .chat:empty::before{content:'Sin mensajes en este turno.';color:var(--faint);font-size:12.5px}
-.main .feedsep{flex-wrap:wrap}
 </style>
 </head>
 <body>
 <style>
-/* ===== responsive demo ===== */
+/* ===== responsive consola ===== */
 #shell{overflow-x:hidden}
 .work{min-width:0}
 .main{min-width:0;overflow-x:hidden}
@@ -483,9 +443,8 @@ body.role-tower .main .rolelock,body.role-pilot .main .rolelock{display:flex}
     <div class="fld">
       <label>Perfil de acceso</label>
       <div class="roleseg" id="lgRole">
-        <button class="on" data-prof="tower"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v6m0 0-4 13h8L12 8Zm-7 19h14"/></svg><span>Torre</span></button>
-        <button data-prof="pilot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5L21 16Z"/></svg><span>Piloto</span></button>
-        <button data-prof="admin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg><span>Admin</span></button>
+        <button class="on" data-prof="tower"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v6m0 0-4 13h8L12 8Zm-7 19h14"/></svg>Torre de control</button>
+        <button data-prof="pilot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5L21 16Z"/></svg>Piloto</button>
       </div>
     </div>
     <button class="enter" id="lgEnter">Ingresar a la demo
@@ -494,7 +453,7 @@ body.role-tower .main .rolelock,body.role-pilot .main .rolelock{display:flex}
   </div>
 </div>
 
-<!-- ===================== DEMO ===================== -->
+<!-- ===================== CONSOLA ===================== -->
 <div id="shell">
   <!-- barra superior -->
   <header class="topbar">
@@ -516,7 +475,6 @@ body.role-tower .main .rolelock,body.role-pilot .main .rolelock{display:flex}
     <!-- sidebar -->
     <aside class="side" id="side">
       <div class="sh">Navegación</div>
-      <button class="nav navadmin" data-view="config"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg>Configuración</button>
       <button class="nav on" data-view="operacion"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>Operación</button>
       <button class="nav" data-view="bitacora"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg>Bitácora del turno</button>
       <button class="nav" data-view="cumplimiento"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg>Cumplimiento</button>
@@ -534,13 +492,9 @@ body.role-tower .main .rolelock,body.role-pilot .main .rolelock{display:flex}
           <p>Tablero según el perfil y un asistente que responde en lenguaje claro, apoyado en las mediciones homologadas y en la normativa vigente. El sistema asiste; la decisión es del operador.</p></div>
 
         <div class="ctrls">
-          <div class="ctrlleft">
-            <span class="previewlab" id="previewLab">Vista previa como</span>
-            <div class="seg" id="profSeg">
-              <button class="on" data-prof="tower"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v6m0 0-4 13h8L12 8Zm-7 19h14"/></svg>Torre de control</button>
-              <button data-prof="pilot"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5L21 16Z"/></svg>Piloto</button>
-            </div>
-            <div class="rolelock" id="roleLock"></div>
+          <div class="seg" id="profSeg">
+            <button class="on" data-prof="tower"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v6m0 0-4 13h8L12 8Zm-7 19h14"/></svg>Torre de control</button>
+            <button data-prof="pilot"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5L21 16Z"/></svg>Piloto</button>
           </div>
           <button class="ghost" id="aiToggle"><span class="dot"></span>IA operativa</button>
         </div>
@@ -550,7 +504,6 @@ body.role-tower .main .rolelock,body.role-pilot .main .rolelock{display:flex}
           <button class="chip" data-scn="viento"><span class="sd"></span>Viento fuerte del SO</button>
           <button class="chip" data-scn="estable"><span class="sd"></span>Estable</button>
         </div>
-        <div class="scnhint">Escenarios de ejemplo (fijos). El Administrador ajusta los <b>umbrales</b>, no los datos meteorológicos.</div>
 
         <div class="degbanner">
           <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4m0 4h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>
@@ -561,7 +514,7 @@ body.role-tower .main .rolelock,body.role-pilot .main .rolelock{display:flex}
           <div class="hd"><div class="t"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4.9 16.1a9 9 0 0 1 0-8.2M7.8 13.8a5 5 0 0 1 0-3.6M19.1 7.9a9 9 0 0 1 0 8.2M16.2 10.2a5 5 0 0 1 0 3.6"/><circle cx="12" cy="12" r="1.4"/></svg>Observación vigente</div><div class="meta">METAR · TAF</div></div>
           <div class="bd">
             <div class="feedraw">
-              <div class="rawhd"><span class="ftag">Crudo · sin editar</span><span class="rawsrc" id="decodeSrc"><span class="ld"></span>AWOS · ZZZZ</span></div>
+              <div class="rawhd"><span class="ftag">Crudo · sin editar</span><span class="rawsrc"><span class="ld"></span>AWOS · ZZZZ</span></div>
               <div id="decodeRaw" class="rawtxt"></div>
             </div>
             <div class="feedsep"><span class="seplab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>Lectura asistida · AeroClima</span></div>
@@ -590,7 +543,7 @@ body.role-tower .main .rolelock,body.role-pilot .main .rolelock{display:flex}
                 <span class="rv" id="regVal">Estándar<small>claro y preciso</small></span>
               </div>
               <div class="chat" id="chat"></div>
-              <div class="ask"><div class="stale" id="chatStale"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4m0 4h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>Umbrales actualizados — vuelva a consultar para ver el efecto.</div><div class="lab">Seleccione una consulta</div><div class="qchips" id="qchips"></div></div>
+              <div class="ask"><div class="lab">Seleccione una consulta</div><div class="qchips" id="qchips"></div></div>
             </div>
           </div>
         </div>
@@ -627,18 +580,6 @@ body.role-tower .main .rolelock,body.role-pilot .main .rolelock{display:flex}
           </div>
         </div>
       </section>
-      <!-- ===== CONFIGURACIÓN (admin) ===== -->
-      <section class="view" id="view-config">
-        <div class="vhead"><div class="vk">Administración · umbrales operativos</div><h2>Configuración de la operación</h2>
-          <p>Estos umbrales definen cuándo cada variable pasa a <b>precaución</b> o <b>restricción</b>. Se aplican en vivo a las vistas de Torre y Piloto: ajuste un valor y verá cambiar los estados, los semáforos de cabecera y las respuestas del asistente. Use “Vista previa” aquí debajo o ingrese como Torre/Piloto.</p></div>
-        <div id="cfgBody" class="cfg"></div>
-        <div class="cfgactions">
-          <button id="cfgReset" class="ghost"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M3 12a9 9 0 1 0 9-9 9 9 0 0 0-6.4 2.6L3 8M3 3v5h5"/></svg>Restaurar valores por defecto</button>
-          <span class="cfgnote">Los cambios se aplican al instante a todas las vistas.</span>
-        </div>
-        <div class="cfgprev" id="cfgPrev"></div>
-      </section>
-
     </main>
   </div>
 </div>
@@ -686,7 +627,6 @@ const CL = {
 const SC = {
   niebla:{
     label:"Niebla · techo bajo",
-    visM:1200, ceilFt:300, windDir:140, windSpd:8, windGust:0, obsAge:7,
     metar:'METAR ZZZZ 291400Z <b>14008KT</b> <b>1200</b> BR <b>BKN003</b> 12/11 Q1014=',
     taf:'TAF ZZZZ 291100Z 2912/3012 14010KT 3000 BR BKN004<br>TEMPO 2912/2915 <b>0800 FG VV002</b>=',
     decode:'<b>Niebla</b>: visibilidad <b>1.200 m</b> y techo <b>300 ft</b> (BKN003); temperatura y rocío casi iguales — aire saturado. Con el ascenso térmico de la mañana debería ir levantando. Por debajo de 1.500 m, la referencia operativa pasa a ser el <b>RVR</b> medido sobre la pista.',
@@ -703,7 +643,6 @@ const SC = {
   },
   viento:{
     label:"Viento fuerte del SO",
-    visM:9999, ceilFt:null, windDir:240, windSpd:28, windGust:42, obsAge:4,
     metar:'METAR ZZZZ 291700Z <b>24028G42KT</b> 9999 SCT045 16/04 Q1009=',
     taf:'TAF ZZZZ 291500Z 2915/3015 <b>24025G40KT</b> 9999 SCT040<br>TEMPO 2917/2921 <b>24030G48KT</b>=',
     decode:'<b>Viento fuerte del oeste-sudoeste</b>: 24 nudos sostenidos con ráfagas de 42. Visibilidad y techo sin problemas; lo que hay que vigilar es la <b>componente cruzada</b> sobre la pista en uso.',
@@ -720,7 +659,6 @@ const SC = {
   },
   estable:{
     label:"Estable",
-    visM:9999, ceilFt:null, windDir:360, windSpd:6, windGust:0, obsAge:12,
     metar:'METAR ZZZZ 291200Z <b>36006KT</b> <b>CAVOK</b> 19/07 Q1018=',
     taf:'TAF ZZZZ 291100Z 2912/3012 36006KT CAVOK=',
     decode:'<b>Condiciones óptimas</b>: CAVOK y viento suave del norte de 6 nudos. Visibilidad ilimitada, sin nubes bajas. Operación normal, sin restricciones.',
@@ -818,7 +756,7 @@ const ANS = {
 };
 
 /* ---- estado ---- */
-let prof="tower", scn="niebla", reg=1, busy=false, role="tower";
+let prof="tower", scn="niebla", reg=1, busy=false;
 const COL={ok:"#3FB67A",warn:"#E0A340",bad:"#E0584F"};
 const $=id=>document.getElementById(id);
 /* ---- helpers de render ---- */
@@ -841,76 +779,8 @@ function estadoHTML(e){
     <div><div class="lbl">${e.lbl||'Estado operativo'}</div><div class="stt" style="color:${COL[e.st]}">${e.txt}</div><div class="dsc">${e.ds}</div></div></div>`;
 }
 
-/* ============================================================
-   Umbrales editables por el Administrador + recálculo completo
-   ============================================================ */
-const RWYS=[{id:"16",hdg:160,ils:true},{id:"34",hdg:340},{id:"06",hdg:60},{id:"24",hdg:240}];
-let thr={ visAmber:1500, visRed:800, ceilAmber:1000, ceilRed:400,
-          gustWarn:25, gustBad:45, xwindWarn:20, xwindMax:30, tailMax:10, rvrMin:550 };
-const THR0=JSON.parse(JSON.stringify(thr));
-try{ const _sv=JSON.parse(localStorage.getItem('aeroclima_thr')||'null'); if(_sv&&typeof _sv==='object') Object.assign(thr,_sv); }catch(e){}
-function saveThr(){ try{ localStorage.setItem('aeroclima_thr',JSON.stringify(thr)); }catch(e){} }
-const _rank={ok:0,warn:1,bad:2};
-const worst=(...a)=>["ok","warn","bad"][Math.max(...a.map(x=>_rank[x]))];
-function stVis(m){ if(m>=thr.visAmber)return"ok"; if(m>=thr.visRed)return"warn"; return"bad"; }
-function stCeil(ft){ if(ft==null)return"ok"; if(ft>=thr.ceilAmber)return"ok"; if(ft>=thr.ceilRed)return"warn"; return"bad"; }
-function stWind(spd,gust){ const g=Math.max(spd,gust||0); if(g>=thr.gustBad)return"bad"; if(g>=thr.gustWarn)return"warn"; return"ok"; }
-function rwyCalc(sc){
-  const rad=Math.PI/180;
-  return RWYS.map(r=>{
-    const d=Math.abs(((sc.windDir-r.hdg+540)%360)-180);      // 0..180
-    const xw=Math.round(Math.abs(sc.windSpd*Math.sin(d*rad)));
-    const along=sc.windSpd*Math.cos(d*rad);                  // + de frente / - de cola
-    const tail=along<0?Math.round(-along):0;
-    let st="ok",why="";
-    if(tail>thr.tailMax){ st="bad"; why="<b>viento de cola</b> — se evita"; }
-    else if(xw>=thr.xwindMax){ st="bad"; why=`cruzada ${xw} kt &gt; máx (${thr.xwindMax})`; }
-    else if(xw>=thr.xwindWarn){ st="warn"; why=`cruzada ~${xw} kt`; }
-    else { st="ok"; why= along>0 ? "de frente al viento" : "cruzada leve"; }
-    return {id:r.id,ils:!!r.ils,xw,tail,along:Math.round(along),st,why};
-  });
-}
-/* estado "vivo" del escenario en función de los umbrales actuales */
-function live(scn){
-  const s=SC[scn];
-  const visSt=stVis(s.visM), ceilSt=stCeil(s.ceilFt), windSt=stWind(s.windSpd,s.windGust);
-  const imc=worst(visSt,ceilSt);
-  let rw=rwyCalc(s);
-  if(imc==="bad"){
-    rw=rw.map(r=> r.ils
-      ? {...r, st:(s.visM>=thr.rvrMin?"warn":"bad"), why:(s.visM>=thr.rvrMin?"ILS · <b>condicionada por RVR</b>":"ILS <b>bajo RVR mínimo</b>")}
-      : {...r, st:"bad", why:"sin procedimiento bajo mínimos"});
-  } else if(imc==="warn"){
-    rw=rw.map(r=> r.st==="ok" ? {...r, st:"warn", why:r.why+" · marginal por visibilidad"} : r);
-  }
-  const teSt=worst(visSt,ceilSt,windSt);
-  const teTxt = teSt==="bad"?"RESTRINGIDO":teSt==="warn"?"PRECAUCIÓN":"NORMAL";
-  const teDs  = teSt==="bad"?"Visibilidad, plafón o viento fuera de parámetros":teSt==="warn"?"Condiciones marginales — atención":"Condiciones dentro de parámetros";
-  const condSt = worst(imc,windSt);
-  const condTxt= imc==="bad"?"CERRADO":"ABIERTO";
-  const condDs = imc==="bad"?"Bajo mínimos para aproximación":windSt!=="ok"?"Atención a la cruzada al aterrizar":"Sin restricciones meteorológicas";
-  let carta;
-  if(imc==="bad"){
-    const ils=rw.find(r=>r.ils)||rw[0];
-    carta={carta:"ILS RWY "+ils.id,cartaSub:"precisión",pista:ils.id,pistaSub:"única con procedimiento de precisión",
-      nota:`Sólo si el RVR informado ≥ ${thr.rvrMin} m (mínimo de carta)`};
-  } else {
-    const best=[...rw].filter(r=>r.st!=="bad").sort((a,b)=>b.along-a.along)[0]||rw[0];
-    carta={carta:"Aproximación a RWY "+best.id,cartaSub:best.along>0?"alineada al viento":"mejor disponible",
-      pista:best.id,pistaSub:best.along>0?"de frente al viento":"menor componente cruzada",
-      nota: rw.some(r=>r.tail>thr.tailMax)?`Cabeceras con cola > ${thr.tailMax} kt se evitan`:"Sin condicionamientos por meteorología"};
-  }
-  return {...s,
-    vis:{...s.vis,st:visSt}, ceil:{...s.ceil,st:ceilSt}, wind:{...s.wind,st:windSt},
-    estado:{...s.estado,st:teSt,txt:teTxt,ds:teDs},
-    cond:{...s.cond,st:condSt,txt:condTxt,ds:condDs},
-    rwys: rw.map(r=>[r.id,r.why,r.st]),
-    carta, vd: worst(visSt,ceilSt,windSt) };
-}
-
 function renderDecode(){
-  const s=live(scn);
-  const ds=$("decodeSrc"); if(ds) ds.innerHTML='<span class="ld"></span>AWOS · ZZZZ · OBS hace '+s.obsAge+' min';
+  const s=SC[scn];
   $("decodeRaw").innerHTML = s.metar + '<div style="margin-top:10px">'+s.taf+'</div>';
   $("decodeAns").innerHTML = s.decode;
   const vd=$("decodeVd"), names={ok:"Normal",warn:"Precaución operativa",bad:"Restringido"};
@@ -918,9 +788,9 @@ function renderDecode(){
 }
 
 function renderDash(){
-  const s=live(scn);
+  const s=SC[scn];
   $("panelTitle").textContent = prof==="tower" ? "Tablero · Torre" : "Tablero · Piloto";
-  $("panelClock").textContent = "OBS hace "+s.obsAge+" min · homologado";
+  $("panelClock").textContent = "Aeropuerto demo · "+ZULU[scn]+" UTC";
   if(prof==="tower"){
     $("heroes").innerHTML = tile("Visibilidad",s.vis,"Prioritario") + tile("Techo / plafón",s.ceil,"Prioritario");
     $("estadoWrap").innerHTML = estadoHTML(s.estado);
@@ -971,7 +841,6 @@ function seed(){
   addBub("a", `<p>${t}</p><p style="color:var(--acero);font-size:12px;margin:0">Use el control <b>Registro</b> (arriba) para ajustar el nivel técnico de las respuestas.</p>`);
   buildChips();
 }
-function markStale(){ const n=document.getElementById('chatStale'); if(!n||typeof chat==='undefined'||!chat) return; n.classList.toggle('on', !!chat.querySelector('.msg.u')); }
 function buildChips(){
   qchips.innerHTML="";
   ANS[prof].forEach((it,i)=>{
@@ -989,12 +858,11 @@ function addBub(role,html){
 }
 function ask(i,btn){
   if(busy) return; busy=true; if(btn) btn.disabled=true;
-  const _st=document.getElementById("chatStale"); if(_st) _st.classList.remove("on");
   const it=ANS[prof][i]; addBub("u", it.q);
   const typ=document.createElement("div"); typ.className="msg a";
   typ.innerHTML='<div class="av">AC</div><div class="bub"><div class="typing"><i></i><i></i><i></i></div></div>';
   chat.appendChild(typ); chat.scrollTop=chat.scrollHeight;
-  setTimeout(()=>{ typ.remove(); renderAnswer(it.build(live(scn))); busy=false; }, 950+Math.random()*500);
+  setTimeout(()=>{ typ.remove(); renderAnswer(it.build(SC[scn])); busy=false; }, 950+Math.random()*500);
 }
 function renderAnswer(o){
   let html="";
@@ -1054,8 +922,8 @@ renderDecode(); renderDash(); seed();
    Tono neutro/profesional · sin dependencias externas.
    ============================================================ */
 const TOUR=[
-  {view:'operacion', sel:'.ctrlleft', title:'Roles definidos',
-    body:'La demo distingue Torre, Piloto y Administrador. Cada rol ve lo que le corresponde; el Administrador edita los umbrales que afectan en vivo a Torre y Piloto.'},
+  {view:'operacion', sel:'#profSeg',  title:'Dos perfiles, una sola fuente',
+    body:'La misma información, leída según el rol. La torre prioriza visibilidad y techo; el piloto, viento, NOTAMs y ruta. Cambie de perfil y observe cómo se reorganiza el tablero.'},
   {view:'operacion', sel:'#scnRow',   title:'Escenarios meteorológicos',
     body:'Tres situaciones de ejemplo. Al seleccionarlas, el tablero y el asistente se recalculan en tiempo real con esos datos.'},
   {view:'operacion', sel:'.decode',   title:'Del dato crudo a la lectura asistida',
@@ -1068,12 +936,10 @@ const TOUR=[
     body:'Consulte en lenguaje natural. Cada respuesta cita la norma vigente, indica la fuente homologada y queda registrada con fecha y hora.'},
   {view:'operacion', sel:'#aiToggle', title:'Continuidad operativa',
     body:'Si la capa de IA deja de estar disponible, el dato homologado sigue visible. La IA suma síntesis; nunca se interpone entre el operador y la medición.'},
-  {role:'admin', view:'config', sel:'#cfgBody', title:'Configuración del administrador',
-    body:'Solo el Administrador llega a esta vista. Cada umbral recalcula en vivo los estados, los semáforos de cabecera y la condición que ven Torre y Piloto. Pruebe bajar la cruzada máxima y observe el efecto.'},
   {view:'cumplimiento', sel:'.trust',    title:'Por qué no es una app de clima',
     body:'Se apoya en mediciones homologadas y en la normativa vigente; no inventa, no decide y deja todo trazable. Esa es la diferencia.'}
 ];
-let ti=0, tourOn=false, tourSteps=TOUR.slice();
+let ti=0, tourOn=false;
 
 /* construir elementos del tour una sola vez */
 const tBlock=document.createElement('div'); tBlock.id='tourBlock';
@@ -1098,36 +964,32 @@ function placeTour(){
   tCard.style.top=top+'px'; tCard.style.left=left+'px';
 }
 function showStep(i){
-  ti=Math.max(0,Math.min(i,tourSteps.length-1));
-  const st=tourSteps[ti];
+  ti=Math.max(0,Math.min(i,TOUR.length-1));
+  const st=TOUR[ti];
   if(st.view && typeof goView==='function') goView(st.view);
   const el=document.querySelector(st.sel);
-  if(!el){ return ti<tourSteps.length-1 ? showStep(ti+1) : endTour(); }
-  tCard.querySelector('.tcnum').textContent=`Paso ${ti+1} de ${tourSteps.length}`;
+  if(!el){ return ti<TOUR.length-1 ? showStep(ti+1) : endTour(); }
+  tCard.querySelector('.tcnum').textContent=`Paso ${ti+1} de ${TOUR.length}`;
   tCard.querySelector('.tctitle').textContent=st.title;
   tCard.querySelector('.tcbody').textContent=st.body;
   tCard.querySelectorAll('.tcdot').forEach((d,k)=>d.classList.toggle('on',k===ti));
   tCard.querySelector('.tcprev').disabled = ti===0;
-  tCard.querySelector('.tcnext').textContent = ti===tourSteps.length-1 ? 'Finalizar' : 'Siguiente';
+  tCard.querySelector('.tcnext').textContent = ti===TOUR.length-1 ? 'Finalizar' : 'Siguiente';
   el.scrollIntoView({behavior:'smooth',block:'center'});
   setTimeout(placeTour,360); setTimeout(placeTour,560);
 }
-function startTour(){
-  tourSteps = TOUR.filter(s=>!s.role || s.role===role);
-  tCard.querySelector('.tcdots').innerHTML=tourSteps.map(()=>'<span class="tcdot"></span>').join('');
-  tourOn=true; tBlock.style.display='block'; tHole.style.display='block'; tCard.style.display='block'; showStep(0);
-}
+function startTour(){ tourOn=true; tBlock.style.display='block'; tHole.style.display='block'; tCard.style.display='block'; showStep(0); }
 function endTour(){ tourOn=false; tBlock.style.display='none'; tHole.style.display='none'; tCard.style.display='none'; }
 
-tCard.querySelector('.tcnext').onclick=()=>{ ti===tourSteps.length-1 ? endTour() : showStep(ti+1); };
+tCard.querySelector('.tcnext').onclick=()=>{ ti===TOUR.length-1 ? endTour() : showStep(ti+1); };
 tCard.querySelector('.tcprev').onclick=()=>showStep(ti-1);
 tCard.querySelector('.tcskip').onclick=endTour;
-tBlock.onclick=()=>{ ti===tourSteps.length-1 ? endTour() : showStep(ti+1); };
+tBlock.onclick=()=>{ ti===TOUR.length-1 ? endTour() : showStep(ti+1); };
 addEventListener('resize',()=>{ if(tourOn) placeTour(); });
 addEventListener('scroll',()=>{ if(tourOn) placeTour(); },{passive:true});
 addEventListener('keydown',e=>{ if(!tourOn)return;
   if(e.key==='Escape') endTour();
-  else if(e.key==='ArrowRight') (ti===tourSteps.length-1?endTour():showStep(ti+1));
+  else if(e.key==='ArrowRight') (ti===TOUR.length-1?endTour():showStep(ti+1));
   else if(e.key==='ArrowLeft') showStep(ti-1); });
 
 /* el botón del recorrido vive en la barra superior de la demo */
@@ -1163,62 +1025,13 @@ document.querySelectorAll('.side .nav').forEach(b=>b.onclick=()=>goView(b.datase
   tick(); setInterval(tick,1000);
 })();
 
-/* ===== identidad + UI por rol ===== */
-const ROLE={
-  tower:{label:'Torre de control',short:'Torre',icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v6m0 0-4 13h8L12 8Zm-7 19h14"/></svg>'},
-  pilot:{label:'Piloto',short:'Piloto',icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5L21 16Z"/></svg>'},
-  admin:{label:'Administrador',short:'Admin',icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg>'}
-};
-function setIdentity(){
-  const r=ROLE[role]||ROLE.tower;
-  const av=document.getElementById('userAv'); av.innerHTML=r.icon; av.style.padding='4px';
-  document.getElementById('userRole').textContent=r.label;
-  document.getElementById('sessRole').textContent=r.short+' · demo';
+/* sincronizar etiquetas de perfil (topbar / sidebar) */
+function syncProfileLabels(){
+  const pilot = prof==='pilot';
+  document.getElementById('userRole').textContent = pilot?'Piloto':'Operador';
+  document.getElementById('userAv').textContent   = pilot?'PI':'OP';
+  document.getElementById('sessRole').textContent = (pilot?'Piloto':'Torre')+' · demo';
 }
-function syncProfileLabels(){ setIdentity(); }
-function setRoleUI(){
-  document.body.classList.remove('role-tower','role-pilot','role-admin');
-  document.body.classList.add('role-'+role);
-  if(role!=='admin'){ const r=ROLE[role]; document.getElementById('roleLock').innerHTML=r.icon+'<span>'+r.label+'</span>'; }
-  setIdentity();
-}
-
-/* ===== panel de configuración (admin) ===== */
-const CFG=[
- {g:'Visibilidad (m)', ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>', items:[
-   {k:'visAmber',l:'Umbral ámbar · precaución',min:400,max:5000,step:100,u:'m'},
-   {k:'visRed',l:'Umbral rojo · restricción',min:100,max:3000,step:50,u:'m'}]},
- {g:'Techo / plafón (ft)', ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 18a5 5 0 0 0-10 0M12 2v6M5 11l-1-1M19 11l1-1M2 18h3M19 18h3"/></svg>', items:[
-   {k:'ceilAmber',l:'Umbral ámbar · precaución',min:200,max:3000,step:50,u:'ft'},
-   {k:'ceilRed',l:'Umbral rojo · restricción',min:100,max:1500,step:50,u:'ft'}]},
- {g:'Viento (kt)', ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.6 4.6A2 2 0 1 1 11 8H2M12.6 19.4A2 2 0 1 0 14 16H2M17.7 7.7A2.5 2.5 0 1 1 19.5 12H2"/></svg>', items:[
-   {k:'gustWarn',l:'Ráfaga · precaución',min:10,max:50,step:1,u:'kt'},
-   {k:'gustBad',l:'Ráfaga · severa',min:20,max:70,step:1,u:'kt'},
-   {k:'xwindWarn',l:'Cruzada · atención',min:5,max:40,step:1,u:'kt'},
-   {k:'xwindMax',l:'Cruzada · máxima admisible',min:10,max:50,step:1,u:'kt'},
-   {k:'tailMax',l:'Viento de cola · máximo',min:0,max:20,step:1,u:'kt'}]},
- {g:'Aproximación de precisión', ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg>', items:[
-   {k:'rvrMin',l:'RVR mínimo para habilitar ILS',min:200,max:2000,step:50,u:'m'}]}
-];
-function buildConfig(){
-  const wrap=document.getElementById('cfgBody'); if(!wrap) return;
-  wrap.innerHTML=CFG.map(g=>`<div class="cfgcard"><div class="cfgt">${g.ic}${g.g}</div>`+
-    g.items.map(it=>`<div class="cfgrow"><div class="cl"><label for="t_${it.k}">${it.l}</label><span class="cv" id="v_${it.k}">${thr[it.k]} ${it.u}</span></div><input type="range" id="t_${it.k}" min="${it.min}" max="${it.max}" step="${it.step}" value="${thr[it.k]}"></div>`).join('')+
-    `</div>`).join('');
-  CFG.forEach(g=>g.items.forEach(it=>{
-    const inp=document.getElementById('t_'+it.k);
-    inp.oninput=()=>{ thr[it.k]=+inp.value; document.getElementById('v_'+it.k).textContent=inp.value+' '+it.u; applyThr(); };
-  }));
-}
-function applyThr(){ renderDecode(); renderDash(); renderCfgPrev(); saveThr(); markStale(); }
-function renderCfgPrev(){
-  const box=document.getElementById('cfgPrev'); if(!box) return;
-  const rows=Object.keys(SC).map(k=>{ const L=live(k);
-    return `<div class="pvrow"><span class="pvn">${SC[k].label}</span><span class="pvk">Torre</span><span class="pvchip ${L.estado.st}">${L.estado.txt}</span><span class="pvk">Piloto</span><span class="pvchip ${L.cond.st}">${L.cond.txt}</span><span class="pvrwy">Pista sugerida: <b style="color:var(--tx)">${L.carta.pista}</b></span></div>`;
-  }).join('');
-  box.innerHTML=`<div class="pvt">Efecto en vivo · estados resultantes por escenario</div>${rows}`;
-}
-function cfgReset(){ thr=JSON.parse(JSON.stringify(THR0)); buildConfig(); applyThr(); }
 /* el seg de perfil de la operación también actualiza las etiquetas */
 document.querySelectorAll('#profSeg button').forEach(b=>{
   const prev=b.onclick;
@@ -1232,18 +1045,15 @@ document.querySelectorAll('#lgRole button').forEach(b=>b.onclick=()=>{
 });
 function enterConsole(){
   const sel=document.querySelector('#lgRole button.on');
-  role = sel ? sel.dataset.prof : 'tower';            // tower | pilot | admin
-  prof = role==='admin' ? 'tower' : role;             // admin previsualiza Torre por defecto
-  document.body.classList.toggle('prof-pilot', prof==='pilot');
+  const wantPilot = sel && sel.dataset.prof==='pilot';
+  // sincronizar el perfil elegido con la operación
+  prof = wantPilot?'pilot':'tower';
+  document.body.classList.toggle('prof-pilot', wantPilot);
   document.querySelectorAll('#profSeg button').forEach(x=>x.classList.toggle('on', x.dataset.prof===prof));
-  setRoleUI(); buildConfig();
-  renderDecode(); renderDash(); seed(); renderCfgPrev();
-  goView(role==='admin' ? 'config' : 'operacion');
+  renderDash(); seed(); syncProfileLabels();
   lg.classList.add('off'); shell.classList.add('on');
   setTimeout(()=>{ lg.style.display='none'; },520);
 }
-document.getElementById('cfgReset').onclick=cfgReset;
-buildConfig();
 document.getElementById('lgEnter').onclick=enterConsole;
 document.getElementById('lgExit').onclick=()=>{
   shell.classList.remove('on'); lg.style.display='flex';

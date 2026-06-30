@@ -107,21 +107,21 @@ form{background:#fff;border:1px solid var(--line);border-radius:14px;padding:30p
           <div class="form-sub">Completá y te contactamos para mostrarte AeroClima funcionando con tus fuentes.</div>
           <div class="field-row">
             <div class="field"><label for="nombre">Nombre y apellido</label><input type="text" id="nombre" name="nombre" required placeholder="Tu nombre"></div>
-            <div class="field"><label for="email">Email</label><input type="email" id="email" name="email" required placeholder="vos@dominio.com"></div>
+            <div class="field"><label for="email">Email</label><input type="email" id="email" name="email" required placeholder="nombre@dominio.com"></div>
           </div>
           <div class="field-row">
-            <div class="field"><label for="org">Organización / aeropuerto</label><input type="text" id="org" name="organizacion" required placeholder="Aeropuerto, EANA, empresa…"></div>
-            <div class="field"><label for="oaci">Código OACI <span class="opt">(opcional)</span></label><input type="text" id="oaci" name="oaci" maxlength="4" placeholder="Ej.: SAZB"></div>
+            <div class="field"><label for="org">Organización / aeropuerto</label><input type="text" id="org" name="organizacion" required placeholder="Aeropuerto, proveedor de navegación, empresa…"></div>
+            <div class="field"><label for="oaci">Código OACI <span class="opt">(opcional)</span></label><input type="text" id="oaci" name="oaci" maxlength="4" placeholder="Código de 4 letras"></div>
           </div>
           <div class="field-row">
             <div class="field"><label for="rol">Tu rol</label>
               <select id="rol" name="rol" required>
-                <option value="" disabled selected>Elegí una opción</option>
+                <option value="" disabled selected>Seleccione una opción</option>
                 <option>Torre de control</option>
                 <option>Observación meteorológica</option>
                 <option>Dirección / jefatura de aeropuerto</option>
-                <option>EANA</option>
-                <option>ANAC</option>
+                <option>Proveedor de servicios de navegación aérea (ANSP)</option>
+                <option>Autoridad aeronáutica</option>
                 <option>Operador / línea aérea</option>
                 <option>Otro</option>
               </select></div>
@@ -129,7 +129,7 @@ form{background:#fff;border:1px solid var(--line);border-radius:14px;padding:30p
           </div>
           <div class="field"><label for="interes">Me interesa</label>
             <select id="interes" name="interes" required>
-              <option value="" disabled selected>Elegí una opción</option>
+              <option value="" disabled selected>Seleccione una opción</option>
               <option>Ver una demo en vivo</option>
               <option>Asistencia normativa para torre</option>
               <option>Integración con AWOS / SMN</option>
