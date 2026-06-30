@@ -274,7 +274,8 @@ body.degraded .main .chat{opacity:.32;pointer-events:none;filter:grayscale(.5)}
 @keyframes dmrise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 .main .msg.u{align-self:flex-end;flex-direction:row-reverse}
 .main .av{width:28px;height:28px;border-radius:8px;flex:0 0 auto;display:grid;place-items:center;font-family:var(--mono);font-size:10px;font-weight:700}
-.main .msg.a .av{background:var(--accdim);color:var(--acc2);border:1px solid var(--accbd)}
+.main .msg.a .av{background:#0A131C;border:1px solid var(--accbd);overflow:hidden;padding:0}
+.main .msg.a .av img{width:100%;height:100%;object-fit:cover;display:block}
 .main .msg.u .av{background:#16313F;color:var(--mut);border:1px solid var(--line2)}
 .main .bub{padding:11px 13px;border-radius:13px;font-size:13.5px;line-height:1.5}
 .main .msg.a .bub{background:#0F212E;border:1px solid var(--line);border-top-left-radius:4px;color:var(--tx)}
@@ -1031,7 +1032,7 @@ function buildChips(){
 }
 function addBub(role,html){
   const m=document.createElement("div"); m.className="msg "+role;
-  m.innerHTML=`<div class="av">${role==='a'?'AC':'TÚ'}</div><div class="bub">${html}</div>`;
+  m.innerHTML=`<div class="av">${role==='a'?'<img src="aeroclima-mark.png" alt="">':'TÚ'}</div><div class="bub">${html}</div>`;
   chat.appendChild(m); chat.scrollTop=chat.scrollHeight; return m;
 }
 function ask(i,btn){
@@ -1040,7 +1041,7 @@ function ask(i,btn){
   const _st=document.getElementById("chatStale"); if(_st) _st.classList.remove("on");
   const it=ANS[prof][i]; addBub("u", it.q);
   const typ=document.createElement("div"); typ.className="msg a";
-  typ.innerHTML='<div class="av">AC</div><div class="bub"><div class="typing"><i></i><i></i><i></i></div></div>';
+  typ.innerHTML='<div class="av"><img src="aeroclima-mark.png" alt=""></div><div class="bub"><div class="typing"><i></i><i></i><i></i></div></div>';
   chat.appendChild(typ); chat.scrollTop=chat.scrollHeight;
   setTimeout(()=>{ typ.remove(); renderAnswer(it.build(live(scn))); busy=false; }, 950+Math.random()*500);
 }
