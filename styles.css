@@ -48,7 +48,8 @@ h1,h2,h3{font-family:var(--display)}
 .nav{position:sticky;top:0;z-index:50;background:var(--grad-pulsar);border-bottom:1px solid #33404C}
 .nav-inner{display:flex;align-items:center;justify-content:space-between;padding:11px 24px;max-width:1080px;margin:0 auto;gap:20px}
 .brand{font-family:var(--display);font-weight:900;font-stretch:110%;font-size:21px;letter-spacing:.02em;display:inline-flex;align-items:center;gap:11px;flex:none}
-.brand img{width:46px;height:auto;display:block;-webkit-mask-image:radial-gradient(ellipse 75% 75% at 50% 50%,#000 50%,transparent 78%);mask-image:radial-gradient(ellipse 75% 75% at 50% 50%,#000 50%,transparent 78%)}
+.brand .mk{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,#2BA8FF,#0778CE);display:grid;place-items:center;flex:none;box-shadow:0 4px 14px rgba(7,120,206,.35)}
+.brand .mk svg{width:22px;height:22px;color:#fff}
 .brand .word{color:#C9D4DF}
 .brand .word b{color:var(--cielo-claro);font-weight:900}
 .nav-links{display:flex;align-items:center;gap:6px;list-style:none}
@@ -92,7 +93,8 @@ section>.wrap>p.intro{max-width:64ch;color:var(--ink-soft);font-size:18px}
 .site-footer{background:var(--grad-pulsar);color:#CBD6E0;border-bottom:0;padding:54px 0 34px}
 .foot-top{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:40px;padding-bottom:34px;border-bottom:1px solid rgba(255,255,255,.12)}
 .foot-brand{font-family:var(--display);font-weight:900;font-size:22px;color:#fff;display:flex;align-items:center;gap:10px;margin-bottom:14px}
-.foot-brand img{width:40px;-webkit-mask-image:radial-gradient(ellipse 75% 75% at 50% 50%,#000 50%,transparent 78%);mask-image:radial-gradient(ellipse 75% 75% at 50% 50%,#000 50%,transparent 78%)}
+.foot-brand .mk{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#2BA8FF,#0778CE);display:grid;place-items:center;flex:none}
+.foot-brand .mk svg{width:21px;height:21px;color:#fff}
 .foot-brand b{color:var(--cielo-claro)}
 .foot-top p{font-size:14.5px;max-width:34ch;color:#AEBDCB}
 .foot-col h4{font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#8FA1B3;margin-bottom:14px;font-weight:500}

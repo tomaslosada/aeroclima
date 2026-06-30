@@ -418,6 +418,11 @@ body.role-tower .main .rolelock,body.role-pilot .main .rolelock{display:flex}
 .main .stale svg{width:15px;height:15px;flex:0 0 auto;color:var(--warn)}
 .main .chat:empty::before{content:'Sin mensajes en este turno.';color:var(--faint);font-size:12.5px}
 .main .feedsep{flex-wrap:wrap}
+.main .reglvl{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:9px;letter-spacing:.07em;text-transform:uppercase;color:var(--faint);background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:20px;padding:3px 9px;margin-bottom:9px}
+.main .reglvl b{color:var(--acc2);font-weight:700}
+.main .reglvl .rldot{width:6px;height:6px;border-radius:50%;background:var(--acc)}
+.main .msg.flash .bub{animation:bubflash .6s ease}
+@keyframes bubflash{0%{box-shadow:0 0 0 2px var(--accbd)}100%{box-shadow:0 0 0 2px transparent}}
 </style>
 </head>
 <body>
@@ -741,17 +746,22 @@ const ZULU = {niebla:"14:00",viento:"17:00",estable:"12:00"};
 /* ---- respuestas del asistente (por perfil → escenario) ---- */
 function pick(v,reg){ return (typeof v==="string") ? v : (reg===0?v.tec:reg===2?v.llano:v.std); }
 
+const L=(t,s,l)=>({tec:t,std:s,llano:l});
 const ANS = {
   tower:[
     {key:"carta", hero:true, q:"Con esta visibilidad y techo, ¿qué carta y pista en uso corresponde?",
       build:s=>({
         meas:`Visibilidad ${s.vis.v} ${s.vis.u} · Techo ${s.ceil.v} ${s.ceil.u} · Fuente AWOS homologado`,
         v:{tag:s.estado.st, text:{
-          niebla:{tec:"VIS 1200 m / BKN003 (300 ft): circling y VOR bajo OCA/H. Sólo ILS RWY 16 CAT I, supeditada a RVR ≥ mínimo de carta IAC.",
-            std:"Con 1.200 m y techo 300 ft, el circling y la aproximación VOR quedan bajo mínimos. Sólo la aproximación de precisión ILS a la 16 puede autorizarse, y únicamente si el RVR informado iguala o supera el mínimo publicado en su carta IAC.",
-            llano:"Está muy cerrado. Lo único que podría entrar es por el sistema de precisión de la pista 16, y sólo si el equipo que mide la visibilidad sobre la pista (RVR) marca igual o más que el mínimo de la carta."},
-          viento:"Visibilidad y techo no son el limitante. La pista en uso natural es la 24, de frente al viento; la 06 quedaría con viento de cola y se evita. La cruzada sobre 16/34 es alta.",
-          estable:"Sin condicionamientos por meteorología: corresponde aproximación visual y pista 34, alineada con el viento del norte. Operación normal."
+          niebla:L("VIS 1200m / BKN003. CIRC y VOR < OCA/H. Únicamente ILS RWY16 CAT I, sup. RVR ≥ mín carta IAC.",
+            "Con 1.200 m y techo 300 ft, el circling y la aproximación VOR quedan bajo mínimos. Sólo la aproximación de precisión ILS a la 16 puede autorizarse, y únicamente si el RVR informado iguala o supera el mínimo publicado en su carta IAC.",
+            "El aeropuerto está casi cerrado por la niebla: se ve muy poco y las nubes están muy bajas. El único avión que podría aterrizar es uno con sistema de guía de precisión, y sólo por una pista en particular (la 16). Aun así, recién se autoriza si un medidor que está sobre la pista confirma que se alcanza la visibilidad mínima. Si no, hay que esperar o desviarse a otro aeropuerto."),
+          viento:L("CAVOK, s/techo. RWY24 = HW puro → pista en uso. RWY06 = TW, descartar. XW alta s/16-34.",
+            "Visibilidad y techo no son el limitante. La pista en uso natural es la 24, de frente al viento; la 06 quedaría con viento de cola y se evita. La cruzada sobre 16/34 es alta.",
+            "El cielo está despejado, así que eso no complica. Conviene usar la pista 24 porque el viento le entra justo de frente, que es lo cómodo y seguro. La pista 06 lo tendría de atrás, así que se descarta. Y por la 16 o la 34 el viento cruza de costado bastante fuerte."),
+          estable:L("CAVOK, s/nubes bajas. APP visual RWY34 (alineada viento N). OP normal.",
+            "Sin condicionamientos por meteorología: corresponde aproximación visual y pista 34, alineada con el viento del norte. Operación normal.",
+            "No hay nada que complique: el piloto puede aterrizar a la vista, sin instrumentos especiales, por la pista 34, que está alineada con el viento del norte. Operación totalmente normal.")
         }[scn]},
         clause: scn==="niebla"?CL.c204:scn==="viento"?CL.anexo14:CL.doc4444,
         elicit:true })},
@@ -759,23 +769,38 @@ const ANS = {
       build:s=>({
         meas:`Visibilidad ${s.vis.v} ${s.vis.u} · RVR con precedencia · Techo ${s.ceil.v} ${s.ceil.u}`,
         v:{tag:s.estado.st, text:{
-          niebla:"Ya se está en el umbral: 1.200 m y techo 300 ft, con tendencia a empeorar. Conviene preparar los procedimientos de baja visibilidad. Recuerde: el RVR informado tiene precedencia sobre la visibilidad observada.",
-          viento:"No hace falta: la visibilidad es ilimitada (CAVOK). El factor del momento es el viento, no la visibilidad.",
-          estable:"No hace falta: CAVOK, visibilidad ilimitada y sin nubes bajas."
+          niebla:L("VIS 1200m / BKN003, tend ↓. Activar LVP. RVR > VIS observada (precedencia).",
+            "Ya se está en el umbral: 1.200 m y techo 300 ft, con tendencia a empeorar. Conviene preparar los procedimientos de baja visibilidad. Recuerde: el RVR informado tiene precedencia sobre la visibilidad observada.",
+            "Estamos justo en el límite y va a empeorar. Conviene poner en marcha los procedimientos para operar con poca visibilidad. Y algo importante: lo que vale es lo que marca el medidor que está sobre la pista, no lo que se ve a simple vista desde la torre."),
+          viento:L("CAVOK. LVP N/A. Limitante = viento, no VIS.",
+            "No hace falta: la visibilidad es ilimitada (CAVOK). El factor del momento es el viento, no la visibilidad.",
+            "No hace falta: se ve perfecto. Hoy el problema es el viento, no la visibilidad."),
+          estable:L("CAVOK, s/nubes bajas. LVP N/A.",
+            "No hace falta: CAVOK, visibilidad ilimitada y sin nubes bajas.",
+            "Para nada, el día está totalmente despejado.")
         }[scn]},
         clause:CL.c91d, elicit:false })},
     {key:"iac", q:"¿Qué fija la carta IAC de la 16?",
       build:s=>({
         meas:`Carta IAC ILS RWY 16 · AIRAC AMDT 05/26`,
-        v:{tag:"ok", text:"La carta IAC de cada pista fija los mínimos en visibilidad/RVR y la altitud/altura de decisión (DA/H) para precisión, o la mínima de descenso (MDA/H) para no precisión. AeroClima cita el valor exacto de la carta vigente — no lo estima."},
+        v:{tag:"ok", text:L(
+          "Carta IAC fija: mín VIS/RVR + DA/H (precisión) o MDA/H (no precisión) por RWY. AeroClima cita valor de carta vigente; no estima.",
+          "La carta IAC de cada pista fija los mínimos en visibilidad/RVR y la altitud/altura de decisión (DA/H) para precisión, o la mínima de descenso (MDA/H) para no precisión. AeroClima cita el valor exacto de la carta vigente — no lo estima.",
+          "La ficha de aterrizaje de cada pista (la carta) dice dos cosas: con cuánta visibilidad mínima se puede intentar el aterrizaje, y hasta qué altura puede bajar el avión sin ver todavía la pista. AeroClima te muestra el número exacto que figura en la carta vigente; no lo calcula de memoria.")},
         clause:CL.c204, elicit:false })},
     {key:"turno", q:"Resuma el turno",
       build:s=>({
-        meas:`Aeropuerto demo · ${ZULU[scn]} UTC · viento ${s.wind.v} ${s.wind.u}`,
+        meas:`Aeropuerto demo · OBS hace ${s.obsAge} min · viento ${s.wind.v} ${s.wind.u}`,
         v:{tag:s.estado.st, text:{
-          niebla:"Turno dominado por niebla: 1.200 m de visibilidad y techo de 300 ft, con tendencia a empeorar al amanecer y mejora esperada con el ascenso térmico. Viento calmo. Operación restringida; sólo ILS 16 supeditada a RVR. PAPI 16 fuera de servicio (NOTAM).",
-          viento:"Turno dominado por viento del SO: 24 kt con ráfagas de 42, en aumento. Visibilidad y techo sin problemas. Pista en uso 24, de frente al viento. Atención a la cruzada si se opera 16/34.",
-          estable:"Turno tranquilo: CAVOK, viento suave del norte de 6 kt. Sin restricciones. Pista 34. Sin pronóstico de cambios en las próximas horas."
+          niebla:L("Niebla dominante: VIS 1200 / BKN003, tend ↓, mejora c/ascenso térmico. Viento calmo. OP restringida: sólo ILS16 sup. RVR. PAPI16 U/S (NOTAM).",
+            "Turno dominado por niebla: 1.200 m de visibilidad y techo de 300 ft, con tendencia a empeorar al amanecer y mejora esperada con el ascenso térmico. Viento calmo. Operación restringida; sólo ILS 16 supeditada a RVR. PAPI 16 fuera de servicio (NOTAM).",
+            "Turno marcado por la niebla: se ve poco y las nubes están bajas, aunque debería mejorar cuando suba el sol. Casi sin viento. Por ahora sólo puede aterrizar un avión con sistema de precisión por la pista 16, y además las luces que ayudan a calcular la bajada en esa pista están fuera de servicio."),
+          viento:L("Viento SO 24G42, tend ↑. VIS/techo OK. Pista en uso 24. Atención XW si 16/34.",
+            "Turno dominado por viento del SO: 24 kt con ráfagas de 42, en aumento. Visibilidad y techo sin problemas. Pista en uso 24, de frente al viento. Atención a la cruzada si se opera 16/34.",
+            "Turno ventoso del sudoeste, con golpes de viento fuertes que van en aumento. Se ve bien. Se está usando la pista 24, de frente al viento; hay que tener cuidado si se cambia a la 16 o la 34, porque ahí el viento cruza."),
+          estable:L("CAVOK, viento N 6kt. S/restricciones. RWY34. S/cambios previstos.",
+            "Turno tranquilo: CAVOK, viento suave del norte de 6 kt. Sin restricciones. Pista 34. Sin pronóstico de cambios en las próximas horas.",
+            "Turno tranquilo: despejado, viento suave del norte, se usa la pista 34. No se esperan cambios en las próximas horas.")
         }[scn]},
         elicit:false })}
   ],
@@ -784,41 +809,60 @@ const ANS = {
       build:s=>({
         meas:`Viento ${s.wind.v} ${s.wind.u} · ${s.wind.badge} · Fuente AWOS homologado`,
         v:{tag:s.wind.st, text:{
-          viento:{tec:"240/24 G42. RWY 24 ≈ headwind puro. Si se asigna 16/34, xwind ~28 kt + ráfagas; deriva pronunciada en final.",
-            std:"Viento del 240° a 24 kt con ráfagas de 42. Si se asigna la 24, queda casi de frente. Si por tráfico corresponde 16 o 34, debe preverse una componente cruzada fuerte (~28 kt) con ráfagas y deriva pronunciada en la recta final.",
-            llano:"Sopla fuerte del sudoeste, hasta 42 de ráfaga. Por la pista 24 el viento entra de frente, cómodo. Por la 16 o la 34 cruza fuerte y el aterrizaje se complica."},
-          niebla:"El viento no es el problema: calmo del 140° a 8 kt. Lo que condiciona la operación es la visibilidad (1.200 m) y el techo (300 ft) — verifique los mínimos de su carta.",
-          estable:"Viento suave del norte a 6 kt, sin ráfagas. Aterrizaje cómodo, probablemente por la 34."
+          viento:L("240/24 G42. RWY24 ≈ HW puro. 16/34 → XW ~28kt + ráfagas; deriva pronunciada en final.",
+            "Viento del 240° a 24 kt con ráfagas de 42. Si se asigna la 24, queda casi de frente. Si por tráfico corresponde 16 o 34, debe preverse una componente cruzada fuerte (~28 kt) con ráfagas y deriva pronunciada en la recta final.",
+            "Sopla fuerte del sudoeste, con golpes de hasta 42. Por la pista 24 el viento entra de frente, que es lo cómodo. Por la 16 o la 34 te cruza de costado fuerte y el aterrizaje se vuelve exigente."),
+          niebla:L("140/8, calmo. No limitante. Condicionan VIS 1200 / BKN003. Verificar mín de carta.",
+            "El viento no es el problema: calmo del 140° a 8 kt. Lo que condiciona la operación es la visibilidad (1.200 m) y el techo (300 ft) — verifique los mínimos de su carta.",
+            "El viento no te va a molestar, está calmo. Lo que complica es que se ve poco y hay nubes bajas: fijate la visibilidad mínima que pide tu carta antes de decidir."),
+          estable:L("360/6, s/ráfaga. APP cómoda, prob. RWY34.",
+            "Viento suave del norte a 6 kt, sin ráfagas. Aterrizaje cómodo, probablemente por la 34.",
+            "Viento flojo del norte, sin golpes. Aterrizaje cómodo, seguramente por la pista 34.")
         }[scn]},
         clause:CL.anexo14, elicit:false })},
     {key:"notams", q:"¿Qué NOTAMs hay vigentes?",
       build:s=>({
         meas:`NOTAMs vigentes · fuente pública (AIS/AIP)`,
-        v:{tag:"ok", text:"Estos son los NOTAMs vigentes del aeropuerto. Son información pública; AeroClima los consolida y los presenta en claro junto al resto:"},
+        v:{tag:"ok", text:L(
+          "NOTAM vigentes (AIS/AIP), consolidados:",
+          "Estos son los NOTAMs vigentes del aeropuerto. Son información pública; AeroClima los consolida y los presenta en claro junto al resto:",
+          "Estos son los avisos importantes que están activos en el aeropuerto (información oficial y pública). AeroClima te los junta y te los explica en lenguaje simple, junto al resto de la información:")},
         notamList:s.notams, clause:CL.doc4444, elicit:false })},
     {key:"alt", q:"¿Tengo alternativa si no puedo entrar?",
       build:s=>({
         meas:`Alternativa y destino · condición actual`,
         v:{tag:s.cond.st, text:{
-          niebla:"Con el aeropuerto bajo mínimos, conviene tener alternativa firme. El aeropuerto regional A está CAVOK a ~150 NM; el hub principal, abierto. Prevea combustible para alternativa.",
-          viento:"El aeropuerto se mantiene operable dentro de límites de viento. Como alternativa, el aeropuerto regional B, con viento más manejable.",
-          estable:"Sin necesidad operativa de alternativa: aeropuerto y destino abiertos y estables."
+          niebla:L("Origen < mín. ALTN regional A CAVOK ~150NM; hub OPEN. Cargar fuel ALTN.",
+            "Con el aeropuerto bajo mínimos, conviene tener alternativa firme. El aeropuerto regional A está CAVOK a ~150 NM; el hub principal, abierto. Prevea combustible para alternativa.",
+            "Como el aeropuerto de destino está cerrado por la niebla, conviene tener un plan B firme. Hay un aeropuerto regional despejado a unos 150 millas náuticas, y el aeropuerto grande principal está abierto. Llevá combustible de más por si tenés que desviarte."),
+          viento:L("Origen operable dentro de límites XW. ALTN regional B (viento + manejable).",
+            "El aeropuerto se mantiene operable dentro de límites de viento. Como alternativa, el aeropuerto regional B, con viento más manejable.",
+            "El aeropuerto sigue funcionando dentro de los límites de viento. Si querés una opción de respaldo, el regional B tiene viento más tranquilo."),
+          estable:L("S/necesidad ALTN. Origen/DEST OPEN, estables.",
+            "Sin necesidad operativa de alternativa: aeropuerto y destino abiertos y estables.",
+            "No hace falta un plan B: está todo abierto y estable.")
         }[scn]},
         alts:s.alts, elicit:false })},
     {key:"ruta", q:"Resuma la ruta y el destino",
       build:s=>({
         meas:`Ruta · NOTAMs · meteo de destino y alternativa`,
         v:{tag:s.cond.st, text:{
-          niebla:"Salida condicionada por niebla en origen: 1.200 m y techo 300 ft. Destino (hub principal) abierto (BKN030). Alternativa CAVOK. Revise el NOTAM de baja visibilidad y el PAPI 16 U/S.",
-          viento:"Ruta sin restricción de visibilidad; el factor es el viento del SO con ráfagas a 42. Destino abierto. Sin NOTAMs que afecten la operación.",
-          estable:"Ruta despejada: CAVOK en origen, destino y alternativa. Sin NOTAMs operativos relevantes. Vuelo sin condicionamientos meteorológicos."
+          niebla:L("Salida cond. niebla origen: VIS 1200 / BKN003. DEST hub OPEN (BKN030). ALTN CAVOK. Ver NOTAM LVP + PAPI16 U/S.",
+            "Salida condicionada por niebla en origen: 1.200 m y techo 300 ft. Destino (hub principal) abierto (BKN030). Alternativa CAVOK. Revise el NOTAM de baja visibilidad y el PAPI 16 U/S.",
+            "La salida está condicionada por la niebla en el aeropuerto de origen. El destino está abierto y el aeropuerto de respaldo, despejado. Revisá el aviso de baja visibilidad y tené presente que las luces de guía de bajada de la pista 16 están fuera de servicio."),
+          viento:L("S/restricción VIS. Factor = viento SO G42. DEST OPEN. S/NOTAM operativo.",
+            "Ruta sin restricción de visibilidad; el factor es el viento del SO con ráfagas a 42. Destino abierto. Sin NOTAMs que afecten la operación.",
+            "La ruta no tiene problemas de visibilidad; el tema es el viento del sudoeste con golpes fuertes. El destino está abierto y no hay avisos que afecten el vuelo."),
+          estable:L("CAVOK origen/DEST/ALTN. S/NOTAM op. S/condicionamientos.",
+            "Ruta despejada: CAVOK en origen, destino y alternativa. Sin NOTAMs operativos relevantes. Vuelo sin condicionamientos meteorológicos.",
+            "Ruta despejada de principio a fin, sin avisos relevantes. Un vuelo sin complicaciones por el clima.")
         }[scn]},
         elicit:false })}
   ]
-};
+}
 
 /* ---- estado ---- */
-let prof="tower", scn="niebla", reg=1, busy=false, role="tower";
+let prof="tower", scn="niebla", reg=1, busy=false, role="tower", lastAns=null;
 const COL={ok:"#3FB67A",warn:"#E0A340",bad:"#E0584F"};
 const $=id=>document.getElementById(id);
 /* ---- helpers de render ---- */
@@ -968,7 +1012,7 @@ function seed(){
     ? "Soy el asistente operativo para <b>torre de control</b>. Me apoyo en las mediciones homologadas del aeropuerto y en la normativa cargada (RAC, cartas IAC). Realice una consulta y respondo en lenguaje claro; la decisión es del operador."
     : "Soy el asistente operativo para <b>piloto</b>. Resumo viento, NOTAMs, ruta y alternativas del aeropuerto a partir de las fuentes homologadas y públicas. Consulte lo que necesite para planificar.";
   chat.innerHTML="";
-  addBub("a", `<p>${t}</p><p style="color:var(--acero);font-size:12px;margin:0">Use el control <b>Registro</b> (arriba) para ajustar el nivel técnico de las respuestas.</p>`);
+  addBub("a", `<p>${t}</p><p style="color:var(--acero);font-size:12px;margin:0">Puede repetir una consulta y mover el <b>Registro</b> (arriba) para ver la misma respuesta en <b>Técnico</b>, <b>Estándar</b> o <b>Llano</b>.</p>`);
   buildChips();
 }
 function markStale(){ const n=document.getElementById('chatStale'); if(!n||typeof chat==='undefined'||!chat) return; n.classList.toggle('on', !!chat.querySelector('.msg.u')); }
@@ -988,7 +1032,7 @@ function addBub(role,html){
   chat.appendChild(m); chat.scrollTop=chat.scrollHeight; return m;
 }
 function ask(i,btn){
-  if(busy) return; busy=true; if(btn) btn.disabled=true;
+  if(busy) return; busy=true;
   const _st=document.getElementById("chatStale"); if(_st) _st.classList.remove("on");
   const it=ANS[prof][i]; addBub("u", it.q);
   const typ=document.createElement("div"); typ.className="msg a";
@@ -996,8 +1040,8 @@ function ask(i,btn){
   chat.appendChild(typ); chat.scrollTop=chat.scrollHeight;
   setTimeout(()=>{ typ.remove(); renderAnswer(it.build(live(scn))); busy=false; }, 950+Math.random()*500);
 }
-function renderAnswer(o){
-  let html="";
+function answerHTML(o){
+  let html=`<div class="reglvl"><span class="rldot"></span>Nivel <b>${regNames[reg][0]}</b> · ${regNames[reg][1]}</div>`;
   if(o.meas) html+=`<div class="meas"><span>${o.meas}</span></div>`;
   html+=`<div class="verdict ${o.v.tag}">${pick(o.v.text,reg)}</div>`;
   if(o.notamList) html+=o.notamList.map(n=>`<div style="display:flex;gap:9px;font-family:var(--mono);font-size:11px;color:var(--mut);padding:7px 9px;background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:8px;margin:5px 0"><span style="color:var(--cielo);font-weight:700;flex:0 0 auto">${n[0]}</span><span>${n[1]}</span></div>`).join("");
@@ -1012,12 +1056,21 @@ function renderAnswer(o){
     html+=`<div class="elicit"><div class="et"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4m0 4h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>Esta regla condiciona una decisión operativa. AeroClima no la da por aplicada hasta que la confirmes.</div>
       <div class="ebtns"><button class="ebtn go">Confirmar regla aplicable</button><button class="ebtn rev">Revisar fuente</button></div></div>`;
   }
-  html+=`<div class="audit"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg>Fuente: AWOS del aeropuerto · ${ZULU[scn]} UTC${o.clause?' · '+o.clause.ref.split('—')[0].trim():''} · queda auditado</div>`;
-  const m=addBub("a",html);
+  html+=`<div class="audit"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg>Fuente: AWOS del aeropuerto · OBS hace ${live(scn).obsAge} min${o.clause?' · '+o.clause.ref.split('—')[0].trim():''} · queda auditado</div>`;
+  return html;
+}
+function wireBub(m,o){
   const lit=m.querySelector(".lit"); if(lit&&o.clause) lit.onclick=()=>openModal(o.clause);
   const go=m.querySelector(".ebtn.go");
   if(go) go.onclick=()=>{ m.querySelector(".elicit").outerHTML=`<div style="display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:10.5px;color:var(--verde);background:rgba(55,201,125,.12);border:1px solid rgba(55,201,125,.32);border-radius:9px;padding:9px 11px;margin:9px 0 2px"><svg style="width:14px;height:14px;flex:0 0 auto" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>Regla confirmada por el operador — queda registrada con fuente y hora.</div>`; };
   const rev=m.querySelector(".ebtn.rev"); if(rev&&o.clause) rev.onclick=()=>openModal(o.clause);
+}
+function renderAnswer(o){ const m=addBub("a",answerHTML(o)); wireBub(m,o); lastAns={o,el:m}; }
+function regenLast(){
+  if(!lastAns||!lastAns.el||!lastAns.el.isConnected) return;
+  lastAns.el.querySelector(".bub").innerHTML=answerHTML(lastAns.o);
+  wireBub(lastAns.el,lastAns.o);
+  lastAns.el.classList.remove("flash"); void lastAns.el.offsetWidth; lastAns.el.classList.add("flash");
 }
 
 /* ---- modal ---- */
@@ -1043,7 +1096,7 @@ $("aiToggle").onclick=function(){
   this.childNodes[1].nodeValue = on ? "IA caída (simular)" : "IA operativa";
 };
 const regNames=[["Técnico","jerga aeronáutica"],["Estándar","claro y preciso"],["Llano","sin tecnicismos"]];
-$("regSld").oninput=function(){ reg=+this.value; $("regVal").innerHTML=regNames[reg][0]+"<small>"+regNames[reg][1]+"</small>"; };
+$("regSld").oninput=function(){ reg=+this.value; $("regVal").innerHTML=regNames[reg][0]+"<small>"+regNames[reg][1]+"</small>"; regenLast(); };
 
 /* ---- init ---- */
 renderDecode(); renderDash(); seed();

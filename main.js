@@ -3,7 +3,7 @@ const NAV = `
 <nav class="nav">
   <div class="nav-inner">
     <a class="brand" href="index.html" aria-label="AeroClima inicio">
-      <img src="pulsar-logo.png" alt="">
+      <span class="mk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M2 12h4l2-5 3 9 2.5-7L18 12h4"/></svg></span>
       <span class="word">Aero<b>Clima</b></span>
     </a>
     <button class="burger" aria-label="Menú"><span></span><span></span><span></span></button>
@@ -21,7 +21,7 @@ const FOOTER = `
   <div class="wrap">
     <div class="foot-top">
       <div>
-        <div class="foot-brand"><img src="pulsar-logo.png" alt="">Aero<b>Clima</b></div>
+        <div class="foot-brand"><span class="mk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M2 12h4l2-5 3 9 2.5-7L18 12h4"/></svg></span>Aero<b>Clima</b></div>
         <p>Inteligencia conversacional para la meteorología aeronáutica de los aeropuertos regionales de LATAM. Un producto de Pulsar.</p>
       </div>
       <div class="foot-col">
