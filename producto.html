@@ -118,12 +118,12 @@
     <div class="kicker">De qué es capaz</div>
     <h2>El tipo de consulta que resuelve.</h2>
     <div class="preguntas reveal">
-      <div class="pregunta"><div class="q">¿Cómo viene el viento para las próximas tres horas?</div><div class="a">Estado actual, tendencia pronosticada y aviso si una ráfaga proyectada se acerca a los límites operativos del aeropuerto.</div></div>
+      <div class="pregunta"><div class="q">¿Cómo están la visibilidad y el techo ahora?</div><div class="a">Compara los valores medidos con los mínimos de la carta y avisa si la tendencia se acerca a un umbral. Es lo que la torre mira primero.</div></div>
       <div class="pregunta"><div class="q">¿Hay riesgo de niebla para la primera salida?</div><div class="a">Cruza el pronóstico oficial con las condiciones locales de humedad y temperatura, y responde con el nivel de confianza.</div></div>
+      <div class="pregunta"><div class="q">¿Está la pista dentro de límites ahora?</div><div class="a">Responde con el estado del semáforo operativo según los umbrales configurados, con el detalle de cada variable.</div></div>
       <div class="pregunta"><div class="q">¿Qué dice el último aviso de fenómenos severos?</div><div class="a">Traduce los avisos oficiales vigentes al contexto del aeropuerto: si afectan la operación, desde cuándo y hasta cuándo.</div></div>
       <div class="pregunta"><div class="q">Resumime el turno para el relevo.</div><div class="a">Genera una síntesis del período: qué pasó, qué alertas hubo y qué se espera — lista para entregar el puesto.</div></div>
-      <div class="pregunta"><div class="q">¿Está la pista dentro de límites ahora?</div><div class="a">Responde con el estado del semáforo operativo según los umbrales configurados, con el detalle de cada variable.</div></div>
-      <div class="pregunta"><div class="q">¿Cómo estuvo el viento ayer de 14 a 18?</div><div class="a">Consulta el historial registrado y lo presenta en lenguaje claro — útil para reportes y análisis de eventos.</div></div>
+      <div class="pregunta"><div class="q">¿Cómo viene el viento para las próximas horas?</div><div class="a">Estado actual y tendencia, con aviso si una ráfaga proyectada se acerca a los límites. Pesa sobre todo para el piloto.</div></div>
     </div>
   </div>
 </section>
@@ -161,10 +161,10 @@
 <script>
 // ---- demo de chat simulada ----
 const QA = [
-  {q:"¿Cómo viene el viento?", a:`Viento del oeste-sudoeste a 18 nudos, con ráfagas de 30. El pronóstico anticipa ráfagas de hasta 35 nudos entre las 15 y las 20.`, est:["amber","PRECAUCIÓN OPERATIVA"]},
-  {q:"¿Riesgo de niebla mañana?", a:`Baja probabilidad para la primera franja. La humedad sube hacia el amanecer pero la temperatura se mantiene lejos del punto de rocío. Confianza: media-alta.`, est:["verde","DENTRO DE LÍMITES"]},
-  {q:"¿Estado de la pista ahora?", a:`Visibilidad y techo en valores normales. El único factor a vigilar es el viento cruzado por las ráfagas. Operación posible con precaución.`, est:["amber","PRECAUCIÓN OPERATIVA"]},
-  {q:"Resumime el turno", a:`Turno estable en general. Pico de viento a las 16:10 (ráfaga de 32 nudos) que disparó una alerta ámbar, normalizada a las 17:40. Sin otros eventos. Próximas horas: viento en descenso gradual.`, est:["verde","SIN EVENTOS ABIERTOS"]}
+  {q:"¿Cómo está la visibilidad y el techo?", a:`Visibilidad 2.000 m y techo 500 ft. Por ahora dentro de los mínimos de la carta, pero con tendencia a bajar hacia el amanecer. Es la primera variable que mira la torre.`, est:["amber","VIGILAR TENDENCIA"]},
+  {q:"¿Riesgo de niebla mañana?", a:`Probabilidad media para la primera franja: la humedad sube hacia el amanecer y la temperatura se acerca al punto de rocío. Confianza: media-alta. Conviene preparar procedimientos de baja visibilidad.`, est:["amber","PRECAUCIÓN OPERATIVA"]},
+  {q:"¿Estado de la pista ahora?", a:`Visibilidad y techo dentro de límites; el factor a seguir es la evolución de la niebla hacia el amanecer. Operación posible con seguimiento.`, est:["verde","DENTRO DE LÍMITES"]},
+  {q:"¿Cómo viene el viento?", a:`Viento del oeste-sudoeste a 12 nudos, sin ráfagas relevantes. Hoy no es el factor limitante para la torre; pesa sobre todo para el piloto.`, est:["verde","DENTRO DE LÍMITES"]}
 ];
 const body = document.getElementById('chatBody');
 const chips = document.getElementById('chips');
