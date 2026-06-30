@@ -21,9 +21,8 @@ const FOOTER = `
   <div class="wrap">
     <div class="foot-top">
       <div>
-        <div class="foot-brand"><img class="mk" src="aeroclima-mark.png" alt="AeroClima">Aero<b>Clima</b></div>
+        <div class="foot-brand"><img class="mk" src="aeroclima-mark.png" alt="AeroClima"><span class="fbw">Aero<b>Clima</b></span></div>
         <p>Inteligencia conversacional para la meteorología aeronáutica de los aeropuertos regionales de LATAM.</p>
-        <div class="foot-company"><span>Un producto de</span><img src="pulsar-logo.png" alt="Pulsar — Software para la Aviación"></div>
       </div>
       <div class="foot-col">
         <h4>Navegación</h4>

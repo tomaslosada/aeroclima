@@ -112,6 +112,3 @@ section>.wrap>p.intro{max-width:64ch;color:var(--ink-soft);font-size:18px}
   .foot-top{grid-template-columns:1fr;gap:30px}
 }
 
-.foot-company{display:flex;align-items:center;gap:11px;margin-top:16px}
-.foot-company span{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#7C8EA0}
-.foot-company img{height:40px;width:auto;display:block;-webkit-mask-image:radial-gradient(ellipse 78% 72% at 50% 50%,#000 56%,transparent 82%);mask-image:radial-gradient(ellipse 78% 72% at 50% 50%,#000 56%,transparent 82%)}
