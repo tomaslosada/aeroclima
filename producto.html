@@ -62,6 +62,8 @@
 .msg{max-width:80%;padding:11px 15px;border-radius:14px;font-size:14.5px;line-height:1.5;animation:pop .3s ease}
 .msg.u{align-self:flex-end;background:var(--cielo);color:#fff;border-bottom-right-radius:4px}
 .msg.b{align-self:flex-start;background:#fff;border:1px solid var(--line);border-bottom-left-radius:4px}
+.msg .src{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:10px;letter-spacing:.02em;color:var(--verde);background:#EFF7F1;border:1px solid #CFE7D8;border-radius:6px;padding:3px 8px;margin-bottom:8px;width:fit-content}
+.msg .src::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--verde);flex:none}
 .msg .est{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:11.5px;font-weight:500;margin-top:7px}
 .msg .est .d{width:9px;height:9px;border-radius:50%}
 .est.verde{color:var(--verde)}.est.verde .d{background:var(--verde)}
@@ -161,10 +163,10 @@
 <script>
 // ---- demo de chat simulada ----
 const QA = [
-  {q:"¿Cómo está la visibilidad y el techo?", a:`Visibilidad 2.000 m y techo 500 ft. Por ahora dentro de los mínimos de la carta, pero con tendencia a bajar hacia el amanecer. Es la primera variable que mira la torre.`, est:["amber","VIGILAR TENDENCIA"]},
-  {q:"¿Riesgo de niebla mañana?", a:`Probabilidad media para la primera franja: la humedad sube hacia el amanecer y la temperatura se acerca al punto de rocío. Confianza: media-alta. Conviene preparar procedimientos de baja visibilidad.`, est:["amber","PRECAUCIÓN OPERATIVA"]},
-  {q:"¿Estado de la pista ahora?", a:`Visibilidad y techo dentro de límites; el factor a seguir es la evolución de la niebla hacia el amanecer. Operación posible con seguimiento.`, est:["verde","DENTRO DE LÍMITES"]},
-  {q:"¿Resumime cómo viene el turno?", a:`Turno tranquilo hasta ahora, sin eventos abiertos. El único punto a seguir es la niebla hacia el amanecer, que podría bajar la visibilidad. Todo lo demás, dentro de límites. Listo para el relevo.`, est:["verde","SIN EVENTOS ABIERTOS"]}
+  {q:"¿Cómo está la visibilidad y el techo?", src:"ZZZZ · AWOS homologado · OBS hace 6 min", a:`Visibilidad 2.000 m y techo 500 ft. Por ahora dentro de los mínimos de la carta, pero con tendencia a bajar hacia el amanecer. Es la primera variable que mira la torre.`, est:["amber","VIGILAR TENDENCIA"]},
+  {q:"¿Riesgo de niebla mañana?", src:"ZZZZ · pronóstico SMN + AWOS · hace 12 min", a:`Probabilidad media para la primera franja: la humedad sube hacia el amanecer y la temperatura se acerca al punto de rocío. Confianza: media-alta. Conviene preparar procedimientos de baja visibilidad.`, est:["amber","PRECAUCIÓN OPERATIVA"]},
+  {q:"¿Estado de la pista ahora?", src:"ZZZZ · AWOS homologado · OBS hace 6 min", a:`Visibilidad y techo dentro de límites; el factor a seguir es la evolución de la niebla hacia el amanecer. Operación posible con seguimiento.`, est:["verde","DENTRO DE LÍMITES"]},
+  {q:"¿Resumime cómo viene el turno?", src:"ZZZZ · consolidado AWOS + SMN · turno en curso", a:`Turno tranquilo hasta ahora, sin eventos abiertos. El único punto a seguir es la niebla hacia el amanecer, que podría bajar la visibilidad. Todo lo demás, dentro de límites. Listo para el relevo.`, est:["verde","SIN EVENTOS ABIERTOS"]}
 ];
 const body = document.getElementById('chatBody');
 const chips = document.getElementById('chips');
@@ -189,7 +191,7 @@ function ask(i){
   setTimeout(()=>{
     t.remove();
     const b=document.createElement('div'); b.className='msg b';
-    b.innerHTML = item.a + `<div class="est ${item.est[0]}"><span class="d"></span>${item.est[1]}</div>`;
+    b.innerHTML = `<div class="src">${item.src}</div>` + item.a + `<div class="est ${item.est[0]}"><span class="d"></span>${item.est[1]}</div>`;
     body.appendChild(b); scroll();
   }, 1100);
 }

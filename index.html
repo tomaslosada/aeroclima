@@ -43,9 +43,12 @@
 .bubble{background:#EDF3F8;border:1px solid var(--line);border-radius:12px;padding:13px 17px;font-size:15px;max-width:46ch}
 .bubble .who{font-family:var(--mono);font-size:11px;color:var(--ink-soft);display:block;margin-bottom:6px}
 .bubble.answer{background:#fff;border-color:#B5CCE0}
+.bubble .src{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:10.5px;letter-spacing:.02em;color:var(--verde);background:#EFF7F1;border:1px solid #CFE7D8;border-radius:7px;padding:4px 9px;margin-bottom:9px;width:fit-content}
+.bubble .src::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--verde);flex:none}
 .estado{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:12.5px;font-weight:500;margin-top:4px}
 .dot{width:10px;height:10px;border-radius:50%}
 .dot.amber{background:var(--ambar)}.estado.amber{color:var(--ambar)}
+.dot.verde{background:var(--verde)}.estado.verde{color:var(--verde)}
 .frag{margin-top:34px;display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}
 .frag .pane{background:#fff;border:1px solid var(--line);border-radius:10px;padding:18px 20px}
 .frag .pane .src{font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;color:var(--ink-soft);text-transform:uppercase}
@@ -84,15 +87,17 @@
     <div class="decode reveal" aria-label="De un METAR crudo a una respuesta clara">
       <div class="raw">
         <span class="tag">LO QUE LOS SISTEMAS EMITEN HOY</span>
-        METAR ZZZZ 091400Z <b>24018G30KT</b> 9999 SCT025 BKN040 18/09 Q1012=<br><br>
-        TAF ZZZZ 091130Z 0912/1012 24015KT 9999 SCT030 <b>TEMPO 0915/0920 24020G35KT</b>=
+        METAR ZZZZ 291400Z 14008KT <b>1200</b> BR <b>BKN003</b> 12/11 Q1014=<br><br>
+        TAF ZZZZ 291100Z 2912/3012 14010KT 3000 BR BKN004 <b>TEMPO 0800 FG VV002</b>=
       </div>
       <div class="bridge" aria-hidden="true">→</div>
       <div class="clear">
         <span class="tag">LO QUE AEROCLIMA RESPONDE</span>
-        <div class="bubble"><span class="who">TORRE</span>¿Cómo viene el viento para la próxima hora?</div>
-        <div class="bubble answer"><span class="who">AEROCLIMA</span>Viento fuerte del oeste-sudoeste: 18 nudos con ráfagas de 30. El pronóstico indica que entre las 15 y las 20 las ráfagas pueden llegar a 35 nudos.
-          <div class="estado amber"><span class="dot amber"></span>PRECAUCIÓN OPERATIVA</div>
+        <div class="bubble"><span class="who">TORRE</span>Con esta visibilidad y techo, ¿qué carta y pista puedo usar?</div>
+        <div class="bubble answer"><span class="who">AEROCLIMA</span>
+          <span class="src">ZZZZ · AWOS homologado · OBS hace 7 min</span>
+          Visibilidad 1.200 m y techo 300 ft: por debajo de mínimos para circuito y VOR. Con estas condiciones habilita únicamente ILS RWY 16 (CAT I), y supeditada a que el RVR medido sobre la pista alcance el mínimo de la carta IAC.
+          <div class="estado amber"><span class="dot amber"></span>OPERACIÓN RESTRINGIDA · SEGÚN CARTA</div>
         </div>
       </div>
     </div>
