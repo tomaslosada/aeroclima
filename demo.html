@@ -273,7 +273,7 @@ body.degraded .main .chat{opacity:.32;pointer-events:none;filter:grayscale(.5)}
 .main .msg{display:flex;gap:10px;max-width:97%;animation:dmrise .35s ease}
 @keyframes dmrise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 .main .msg.u{align-self:flex-end;flex-direction:row-reverse}
-.main .av{width:28px;height:28px;border-radius:8px;flex:0 0 auto;display:grid;place-items:center;font-family:var(--mono);font-size:10px;font-weight:700}
+.main .msg .av{width:28px;height:28px;border-radius:8px;flex:0 0 auto;display:grid;place-items:center;font-family:var(--mono);font-size:10px;font-weight:700}
 .main .msg.a .av{background:#0A131C;border:1px solid var(--accbd);overflow:hidden;padding:0}
 .main .msg.a .av img{width:100%;height:100%;object-fit:cover;display:block}
 .main .msg.u .av{background:#16313F;color:var(--mut);border:1px solid var(--line2)}
@@ -1181,7 +1181,7 @@ const TOUR=[
   {view:'operacion', sel:'.ctrlleft', title:'Roles definidos',
     body:'La demo distingue Torre, Piloto y Administrador. Cada rol ve lo que le corresponde; el Administrador edita los umbrales que afectan en vivo a Torre y Piloto.'},
   {view:'operacion', sel:'#scnRow',   title:'Escenarios meteorológicos',
-    body:'Tres situaciones de ejemplo. Al seleccionarlas, el tablero y el asistente se recalculan en tiempo real con esos datos.'},
+    body:'Cuatro situaciones de ejemplo. Al seleccionarlas, el tablero y el asistente se recalculan en tiempo real. Una de ellas, «Sensor degradado», simula un sensor sin lectura válida: ahí el sistema se abstiene y muestra SIN DATO en lugar de inventar un valor.'},
   {view:'operacion', sel:'.decode',   title:'Del dato crudo a la lectura asistida',
     body:'Arriba, el METAR y el TAF tal como llegan, sin editar. Debajo, la lectura del sistema en lenguaje claro, con el estado operativo. El dato crudo homologado queda siempre a la vista.'},
   {view:'operacion', sel:'#heroes',   title:'Lo que importa primero',
@@ -1189,13 +1189,13 @@ const TOUR=[
   {view:'operacion', sel:'#card2',    title:'Sugerencia normativa',
     body:'El sistema propone carta y pista en uso a partir de las mediciones y la regla aplicable. La torre confirma: el sistema asiste, no decide.'},
   {view:'operacion', sel:'#qchips',   title:'Asistente conversacional',
-    body:'Consulte en lenguaje natural. Cada respuesta cita la norma vigente, indica la fuente homologada y queda registrada con fecha y hora.'},
+    body:'Consulte en lenguaje natural: cada respuesta cita la norma vigente, indica la fuente homologada y queda registrada con fecha y hora. Además, el sistema no espera la pregunta: cuando una variable se acerca a un límite, emite una alerta proactiva por su cuenta.'},
   {view:'operacion', sel:'#aiToggle', title:'Continuidad operativa',
     body:'Si la capa de IA deja de estar disponible, el dato homologado sigue visible. La IA suma síntesis; nunca se interpone entre el operador y la medición.'},
   {role:'admin', view:'config', sel:'#cfgBody', title:'Configuración del administrador',
     body:'Solo el Administrador llega a esta vista. Cada umbral recalcula en vivo los estados, los semáforos de cabecera y la condición que ven Torre y Piloto. Pruebe bajar la cruzada máxima y observe el efecto.'},
   {view:'cumplimiento', sel:'.trust',    title:'Por qué no es una app de clima',
-    body:'Se apoya en mediciones homologadas y en la normativa vigente; no inventa, no decide y deja todo trazable. Esa es la diferencia.'}
+    body:'Se apoya en mediciones homologadas y en la normativa vigente; no inventa, no decide y deja todo trazable — y cada respuesta queda anclada a una estación, sin mezclar aeropuertos. Esa es la diferencia.'}
 ];
 let ti=0, tourOn=false, tourSteps=TOUR.slice();
 
