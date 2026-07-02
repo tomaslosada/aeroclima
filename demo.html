@@ -201,8 +201,9 @@ body.degraded .main .degbanner{display:flex}
 .main .colsplit::before{content:'';position:absolute;left:5px;top:0;bottom:0;width:2px;background:var(--line);border-radius:2px;transition:background .15s}
 .main .colsplit:hover::before,.main .colsplit.on::before{background:var(--acc)}
 .main .layoutbar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:0 0 12px;font-family:var(--mono);font-size:10px;color:var(--faint)}
-.main .layoutbar .lbreset{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:8px;color:var(--mut);font-family:var(--mono);font-size:10px;padding:6px 11px;cursor:pointer}
-.main .layoutbar .lbreset:hover{border-color:var(--acc);color:var(--acc2)}
+.main .layoutbar .lbreset{display:inline-flex;align-items:center;gap:7px;background:var(--accdim);border:1px solid var(--acc);border-radius:9px;color:var(--acc2);font-family:var(--mono);font-size:10.5px;font-weight:700;letter-spacing:.03em;padding:7px 13px;cursor:pointer;flex:0 0 auto}
+.main .layoutbar .lbreset svg{width:13px;height:13px}
+.main .layoutbar .lbreset:hover{filter:brightness(1.25)}
 .main .grid .card{position:relative;display:flex;flex-direction:column;min-height:0}
 .main .grid .card>.bd{min-height:0}
 .main .grid .card.rz>.bd{flex:1;overflow:auto}
@@ -585,7 +586,7 @@ body.role-tower .main .rolelock,body.role-pilot .main .rolelock{display:flex}
       <button class="nav" data-view="cumplimiento"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg>Cumplimiento</button>
       <div class="grow"></div>
       <div class="sess"><div class="l">Sesión</div><div class="v"><span class="d"></span><span id="sessRole">Torre · demo</span></div></div>
-      <div class="ver">AeroClima · build 02-jul-c · paneles móviles · hora dinámica</div>
+      <div class="ver">AeroClima · build 02-jul-d · reset completo</div>
     </aside>
     <div class="sidescrim" id="sideScrim"></div>
 
@@ -633,7 +634,7 @@ body.role-tower .main .rolelock,body.role-pilot .main .rolelock{display:flex}
           </div>
         </div>
 
-        <div class="layoutbar" id="layoutBar"><span class="lbtxt">Los paneles se arrastran por su encabezado (⣿), se redimensionan desde la esquina inferior derecha, y el divisor central ajusta las columnas.</span><button class="lbreset" id="layoutReset">Restablecer disposición</button></div>
+        <div class="layoutbar" id="layoutBar"><span class="lbtxt">Paneles: arrastrá por el encabezado ⣿ · redimensioná desde la esquina · el divisor central ajusta las columnas. La alerta también se arrastra.</span><button class="lbreset" id="layoutReset"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>Restablecer disposición</button></div>
         <div class="grid" id="opGrid">
           <div class="col" id="colA">
             <div class="card">
@@ -1418,6 +1419,9 @@ function layReset(){
   layCards().forEach(c=>{ c.style.height=''; c.classList.remove('rz'); });
   $('opGrid').style.gridTemplateColumns='';
   layApply(LAY_DEFAULT);
+  window.__toastPos=null;
+  const t=document.getElementById('proToast');
+  if(t){ t.classList.remove('dragged'); t.style.left=t.style.top=t.style.right=t.style.bottom=''; }
 }
 function initLayout(){
   const grid=$('opGrid'); if(!grid) return;
