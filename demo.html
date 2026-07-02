@@ -200,6 +200,8 @@ body.degraded .main .degbanner{display:flex}
 .main .colsplit{align-self:stretch;border-radius:6px;cursor:col-resize;position:relative;background:transparent}
 .main .colsplit::before{content:'';position:absolute;left:5px;top:0;bottom:0;width:2px;background:var(--line);border-radius:2px;transition:background .15s}
 .main .colsplit:hover::before,.main .colsplit.on::before{background:var(--acc)}
+.main .iaoff{display:flex;gap:9px;align-items:flex-start;background:var(--warnbg);border:1px solid rgba(224,163,64,.4);border-radius:10px;padding:10px 13px;font-size:12.5px;color:#F0C77A;margin-top:8px}
+.main .qc:disabled{opacity:.45;cursor:not-allowed;filter:saturate(.4)}
 .main .layoutbar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:0 0 12px;font-family:var(--mono);font-size:10px;color:var(--faint)}
 .main .layoutbar .lbreset{display:inline-flex;align-items:center;gap:7px;background:var(--accdim);border:1px solid var(--acc);border-radius:9px;color:var(--acc2);font-family:var(--mono);font-size:10.5px;font-weight:700;letter-spacing:.03em;padding:7px 13px;cursor:pointer;flex:0 0 auto}
 .main .layoutbar .lbreset svg{width:13px;height:13px}
@@ -586,7 +588,7 @@ body.role-tower .main .rolelock,body.role-pilot .main .rolelock{display:flex}
       <button class="nav" data-view="cumplimiento"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg>Cumplimiento</button>
       <div class="grow"></div>
       <div class="sess"><div class="l">Sesión</div><div class="v"><span class="d"></span><span id="sessRole">Torre · demo</span></div></div>
-      <div class="ver">AeroClima · build 02-jul-d · reset completo</div>
+      <div class="ver">AeroClima · build 02-jul-e · degradación coherente de IA</div>
     </aside>
     <div class="sidescrim" id="sideScrim"></div>
 
@@ -1092,6 +1094,7 @@ function renderDecode(){
   $("decodeAns").innerHTML = s.decode;
   const vd=$("decodeVd"), names={ok:"Normal",warn:"Precaución operativa",bad:"Restringido"};
   vd.className="vd "+s.vd; vd.querySelector("span:last-child").textContent=names[s.vd];
+  if(aiDown()) $("decodeAns").innerHTML='<div class="iaoff"><b>Síntesis no disponible — capa de IA caída.</b>&nbsp;La lectura del METAR/TAF queda a cargo del operador. El dato crudo homologado y el estado del kernel (abajo) permanecen.</div>';
 }
 
 function renderDash(){ if(typeof renderHist==='function') renderHist();
@@ -1139,11 +1142,18 @@ function renderSources(){
     : [['NOTAMs (AIS/AIP) · rutas y alternativas','pub','Público'],['RAC · Anexo 14 (viento) · cartas','nor','Normativa']];
   $("srcs").innerHTML = `<div class="sttl">Fuentes conectadas</div>` +
     common.concat(extra).map(x=>`<div class="src${x[1]==='nor'?' ai':''}${x[3]||''}"><span class="d"></span><span class="nm2">${x[0]}</span><span class="tg ${x[1]}">${x[2]}</span></div>`).join("");
+  const cx=$("card2")&&$("card2").querySelector(".carta");
+  if(cx&&aiDown()) cx.innerHTML='<div class="ct"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/></svg>Sugerencia para confirmar por la torre</div><div class="iaoff"><b>No disponible — capa de IA caída.</b>&nbsp;Consulte las cartas IAC publicadas. El estado por cabecera (kernel determinista) sigue vigente debajo.</div>';
 }
 
 /* ---- chat ---- */
 const chat=$("chat"), qchips=$("qchips");
 function seed(){
+  if(aiDown()){
+    chat.innerHTML="";
+    addBub("a", '<div class="iaoff"><b>Asistente no disponible — capa de IA caída.</b>&nbsp;El tablero, las mediciones homologadas y el registro histórico siguen operativos: no dependen de la IA. Al restablecerse la capa, el asistente retoma anclado a ZZZZ.</div>');
+    buildChips(); return;
+  }
   const t = prof==="tower"
     ? "Soy el asistente operativo para <b>torre de control</b>. Me apoyo en las mediciones homologadas del aeropuerto y en la normativa cargada (RAC, cartas IAC). Realice una consulta y respondo en lenguaje claro; la decisión es del operador. Todas mis respuestas están <b>ancladas a la estación ZZZZ</b>: no mezclo aeropuertos — otro aeródromo significaría otra carta, otra pista y otra norma."
     : "Soy el asistente operativo para <b>piloto</b>. Resumo viento, NOTAMs, ruta y alternativas del aeropuerto a partir de las fuentes homologadas y públicas. Consulte lo que necesite para planificar. Todas mis respuestas están <b>ancladas a la estación ZZZZ</b>: no mezclo aeropuertos — otro aeródromo significaría otras cartas, otras pistas y otros NOTAMs.";
@@ -1158,6 +1168,7 @@ function buildChips(){
     const b=document.createElement("button");
     b.className="qc"+(it.hero?" hero":"");
     b.textContent=it.q;
+    b.disabled=aiDown();
     b.onclick=()=>ask(i,b);
     qchips.appendChild(b);
   });
@@ -1168,7 +1179,7 @@ function addBub(role,html){
   chat.appendChild(m); chat.scrollTop=chat.scrollHeight; return m;
 }
 function ask(i,btn){
-  if(busy) return; busy=true;
+  if(busy||aiDown()) return; busy=true;
   if(btn){ btn.blur(); btn.classList.remove("sent"); void btn.offsetWidth; btn.classList.add("sent"); setTimeout(()=>btn.classList.remove("sent"),900); }
   const _st=document.getElementById("chatStale"); if(_st) _st.classList.remove("on");
   const it=ANS[prof][i]; addBub("u", it.q);
@@ -1238,11 +1249,19 @@ $("scnRow").querySelectorAll(".chip").forEach(b=>b.onclick=()=>{
   $("scnRow").querySelectorAll(".chip").forEach(x=>x.classList.toggle("on",x===b));
   renderDecode(); renderDash(); seed();
 });
+const aiDown=()=>document.body.classList.contains("degraded");
+function applyAI(on){
+  renderDecode(); renderDash(); seed();
+  const r=$("regSld"); if(r) r.disabled=on;
+  const t=document.getElementById('proToast');
+  if(on&&t){ t.classList.remove('on'); setTimeout(()=>t.remove(),400); }
+  if(!on && scn==='niebla' && role!=='admin') setTimeout(fireProactive, 2500);
+}
 $("aiToggle").onclick=function(){
   const on=document.body.classList.toggle("degraded");
   this.classList.toggle("armed",on);
-  this.querySelector(".dot");
   this.childNodes[1].nodeValue = on ? "IA caída (simular)" : "IA operativa";
+  applyAI(on);
 };
 const regNames=[["Técnico","jerga aeronáutica"],["Estándar","claro y preciso"],["Llano","sin tecnicismos"]];
 
@@ -1362,6 +1381,7 @@ function renderHist(){
   $("histFoot").innerHTML = evs.length
     ? `<span><span class="dm" style="background:var(--warn)"></span>rombo = alerta o cambio de estado (${evs.length} en la ventana)</span><span>— — umbrales vigentes: si el Administrador los mueve, los cruces se recalculan</span>`
     : `<span>Sin cruces de umbral ni alertas en la ventana.</span><span>— — umbrales vigentes</span>`;
+  if(aiDown()) $("histFoot").innerHTML += `<span style="color:var(--warn)">· la capa de IA está caída: este registro no depende de ella</span>`;
   histState={ser,evs,labels,X,Y,m,d,W,H,L,iw,T,ih};
   const el=wrap.querySelector("svg"), cap=el.querySelector("#hcap");
   const move=ev=>{ const r=el.getBoundingClientRect(); const cx=(ev.clientX-r.left)*(W/r.width);
@@ -1496,6 +1516,7 @@ renderDecode(); renderDash(); seed();
 /* ---- alerta proactiva (se dispara sola, sin consulta) ---- */
 function fireProactive(){
   if(document.getElementById('proToast')) return;
+  if(document.body.classList.contains('degraded')) return;
   if(tourOn){ setTimeout(fireProactive,3000); return; } /* si el recorrido guiado está activo, la alerta espera a que termine */
   if(scn!=='niebla') return; /* la narrativa de esta alerta pertenece al escenario niebla */
   const t=document.createElement('div'); t.id='proToast';
@@ -1544,7 +1565,7 @@ const TOUR=[
   {view:'operacion', sel:'#opGrid', title:'Disposición a medida',
     body:'Cada operador arma su tablero: los paneles se arrastran por el encabezado, se redimensionan desde la esquina y el divisor central ajusta las columnas. La alerta proactiva también puede moverse. «Restablecer disposición» vuelve al orden original.'},
   {view:'operacion', sel:'#aiToggle', title:'Continuidad operativa',
-    body:'Si la capa de IA deja de estar disponible, el dato homologado sigue visible. La IA suma síntesis; nunca se interpone entre el operador y la medición.'},
+    body:'Simule la caída de la capa de IA: la síntesis, el asistente, la sugerencia normativa y la alerta proyectiva se degradan con aviso explícito — pero el dato crudo homologado, el semáforo del kernel y el registro histórico siguen operativos. La IA nunca se interpone entre el operador y la medición.'},
   {role:'admin', view:'config', sel:'#cfgBody', title:'Configuración del administrador',
     body:'Solo el Administrador llega a esta vista. Cada umbral recalcula en vivo los estados, los semáforos de cabecera y la condición que ven Torre y Piloto. Pruebe bajar la cruzada máxima y observe el efecto.'},
   {view:'cumplimiento', sel:'.trust',    title:'Por qué no es una app de clima',
