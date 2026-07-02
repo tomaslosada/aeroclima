@@ -805,6 +805,34 @@ const ANS = {
         }[scn]},
         clause: scn==="niebla"?CL.c204:scn==="viento"?CL.anexo14:CL.doc4444,
         elicit:true })},
+    {key:"hist", ownDegraded:true, q:"¿Hace cuánto no tenemos techo bajo 800 ft?",
+      build:s=>({
+        meas:{
+          niebla:"Registro histórico ZZZZ · techo · últimas 3 h · AWOS homologado",
+          viento:"Registro histórico ZZZZ · techo · últimas 72 h · AWOS homologado",
+          estable:"Registro histórico ZZZZ · techo · últimos 30 días · AWOS homologado",
+          degradado:"Registro histórico ZZZZ · techo · completo hasta 14:38Z · AWOS homologado"
+        }[scn],
+        v:{tag:{niebla:"bad",viento:"ok",estable:"ok",degradado:"warn"}[scn], text:{
+          niebla:L("Cruce <800 ft: 13:13Z (BKN008). Descenso sostenido 900→300 ft en 60 min. Registro completo por rango, fuente AWOS.",
+            "El techo cruzó por debajo de 800 ft hace unos 40 minutos (13:13 UTC) y sigue bajando: pasó de 900 a 300 ft en la última hora. Cada observación queda en el registro histórico con fecha, hora y fuente — se puede consultar cualquier rango, no sólo el valor actual.",
+            "Las nubes vienen bajando hace rato: hace unos 40 minutos cruzaron el límite de los 800 pies y siguieron cayendo. Todo quedó anotado, medición por medición, con su hora — así que se puede mirar para atrás y ver cómo fue bajando, no sólo cómo está ahora."),
+          viento:L("Sin BKN/OVC <800 ft en 72 h. Hoy SCT040–045 (no constituye techo). Registro consultable por rango.",
+            "No hay registros de techo por debajo de 800 ft en las últimas 72 horas. Hoy sólo hay nubes dispersas entre 4.000 y 4.500 ft, que no constituyen techo. El histórico completo queda disponible por rango horario.",
+            "Hace por lo menos tres días que las nubes no bajan de 800 pies. Hoy hay algunas nubes sueltas bien arriba, que no molestan. Y todo el historial queda guardado por si querés revisar cualquier momento."),
+          estable:L("Sin techo <800 ft en 30 días de registro. Último episodio: 02 jun 06:50–09:10Z, mín 600 ft (niebla matinal). Hoy CAVOK.",
+            "En los últimos 30 días de registro no hubo techo por debajo de 800 ft. El último episodio fue el 2 de junio, entre las 06:50 y las 09:10 UTC, con un mínimo de 600 ft por niebla matinal. Hoy: CAVOK, sin nubes bajas.",
+            "Hace un mes que las nubes no bajan de 800 pies. La última vez fue el 2 de junio a la mañana: un par de horas de niebla que quedaron anotadas — a qué hora empezó, hasta dónde bajó y cuándo se levantó. Hoy está totalmente despejado."),
+          degradado:L("Registro íntegro hasta última lectura válida 14:38Z: sin techo <800 ft en las 3 h previas. Desde 14:38Z sensor s/dato homologado: se registra la falla, no un valor estimado.",
+            "El registro histórico está completo hasta la última lectura válida (14:38 UTC): en las 3 horas previas no hubo techo por debajo de 800 ft. Desde ese momento el sensor no entrega dato homologado — del valor actual me abstengo, pero el registro no se pierde: queda auditada la falla, no un número inventado.",
+            "Hasta hace 22 minutos, cuando el sensor dejó de medir bien, el registro está completo: en las últimas horas las nubes nunca bajaron de 800 pies. De ahí en adelante no hay dato confiable — y eso también queda anotado tal cual: que el aparato falló, no un número inventado para tapar el hueco.")
+        }[scn]},
+        notamList:{
+          niebla:[["13:03Z","BKN009 — techo 900 ft"],["13:13Z","BKN008 — 800 ft · cruce del umbral"],["13:33Z","BKN005 — 500 ft"],["13:53Z","BKN003 — 300 ft · observación actual"]],
+          viento:[["−72 h","sin registros de techo < 800 ft"],["14:00Z","SCT040 — dispersas, no constituyen techo"],["17:00Z","SCT045 — observación actual"]],
+          estable:[["02 jun 06:50Z","BKN006 — inicio del último episodio"],["02 jun 07:40Z","BKN006 — mínimo 600 ft"],["02 jun 09:10Z","SCT025 — fin del episodio"],["Hoy 11:50Z","CAVOK — sin nubes bajas"]],
+          degradado:[["12:10Z","SCT035 — lectura válida"],["13:40Z","SCT036 — lectura válida"],["14:38Z","última lectura válida"],["15:00Z","//// — sin dato · falla registrada"]]
+        }[scn] })},
     {key:"baja", q:"¿Cuándo activo procedimientos de baja visibilidad?",
       build:s=>({
         meas:`Visibilidad ${s.vis.v} ${s.vis.u} · RVR con precedencia · Techo ${s.ceil.v} ${s.ceil.u}`,
@@ -1086,7 +1114,7 @@ function ask(i,btn){
   const typ=document.createElement("div"); typ.className="msg a";
   typ.innerHTML='<div class="av"><img src="aeroclima-mark.png" alt=""></div><div class="bub"><div class="typing"><i></i><i></i><i></i></div></div>';
   chat.appendChild(typ); chat.scrollTop=chat.scrollHeight;
-  setTimeout(()=>{ typ.remove(); renderAnswer(scn==="degradado"?buildDegraded(it):it.build(live(scn))); busy=false; }, 950+Math.random()*500);
+  setTimeout(()=>{ typ.remove(); renderAnswer(scn==="degradado"&&!it.ownDegraded?buildDegraded(it):it.build(live(scn))); busy=false; }, 950+Math.random()*500);
 }
 function buildDegraded(it){
   const w=live("degradado").wind;
@@ -1195,7 +1223,7 @@ const TOUR=[
   {view:'operacion', sel:'#card2',    title:'Sugerencia normativa',
     body:'El sistema propone carta y pista en uso a partir de las mediciones y la regla aplicable. La torre confirma: el sistema asiste, no decide.'},
   {view:'operacion', sel:'#qchips',   title:'Asistente conversacional',
-    body:'Consulte en lenguaje natural: cada respuesta cita la norma vigente, indica la fuente homologada y queda registrada con fecha y hora. Además, el sistema no espera la pregunta: cuando una variable se acerca a un límite, emite una alerta proactiva por su cuenta.'},
+    body:'Consulte en lenguaje natural: cada respuesta cita la norma vigente, indica la fuente homologada y queda registrada con fecha y hora. Además, el sistema no espera la pregunta: cuando una variable se acerca a un límite, emite una alerta proactiva por su cuenta. Y hacia atrás: cada observación queda en un registro histórico consultable por rango, con fecha, hora y fuente.'},
   {view:'operacion', sel:'#aiToggle', title:'Continuidad operativa',
     body:'Si la capa de IA deja de estar disponible, el dato homologado sigue visible. La IA suma síntesis; nunca se interpone entre el operador y la medición.'},
   {role:'admin', view:'config', sel:'#cfgBody', title:'Configuración del administrador',
