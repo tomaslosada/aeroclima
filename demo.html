@@ -177,7 +177,7 @@ body.degraded .main .degbanner{display:flex}
 .main .vd .d{width:7px;height:7px;border-radius:50%}.main .vd.ok .d{background:var(--ok)}.main .vd.warn .d{background:var(--warn)}.main .vd.bad .d{background:var(--bad)}
 
 /* ===== grid + cards ===== */
-.main .grid{display:grid;grid-template-columns:1.04fr .96fr;gap:18px;align-items:start}
+.main .grid{display:grid;grid-template-columns:1.04fr 12px .96fr;gap:18px;align-items:start}
 /* --- registro histórico interactivo --- */
 .main .histcard{margin-top:18px}
 .main .histcard .hd .htabs{display:flex;gap:7px}
@@ -196,7 +196,25 @@ body.degraded .main .degbanner{display:flex}
 .main .hfoot{display:flex;flex-wrap:wrap;gap:5px 16px;margin-top:9px;font-family:var(--mono);font-size:10px;color:var(--faint)}
 .main .hfoot .dm{display:inline-block;width:8px;height:8px;transform:rotate(45deg);border-radius:2px;margin-right:5px;vertical-align:-1px}
 
-@media(max-width:980px){.main .grid{grid-template-columns:1fr}}
+@media(max-width:980px){.main .grid{grid-template-columns:1fr}.main .colsplit{display:none}.main .pgrip,.main .prz,.main .layoutbar{display:none!important}}
+.main .colsplit{align-self:stretch;border-radius:6px;cursor:col-resize;position:relative;background:transparent}
+.main .colsplit::before{content:'';position:absolute;left:5px;top:0;bottom:0;width:2px;background:var(--line);border-radius:2px;transition:background .15s}
+.main .colsplit:hover::before,.main .colsplit.on::before{background:var(--acc)}
+.main .layoutbar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:0 0 12px;font-family:var(--mono);font-size:10px;color:var(--faint)}
+.main .layoutbar .lbreset{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:8px;color:var(--mut);font-family:var(--mono);font-size:10px;padding:6px 11px;cursor:pointer}
+.main .layoutbar .lbreset:hover{border-color:var(--acc);color:var(--acc2)}
+.main .grid .card{position:relative;display:flex;flex-direction:column;min-height:0}
+.main .grid .card>.bd{min-height:0}
+.main .grid .card.rz>.bd{flex:1;overflow:auto}
+.main .pgrip{background:none;border:0;color:var(--faint);font-size:13px;line-height:1;padding:2px 7px 2px 0;cursor:grab;flex:0 0 auto}
+.main .pgrip:hover{color:var(--acc2)}
+.main .pgrip.float{position:absolute;top:9px;left:9px;z-index:3;background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:7px;padding:3px 6px}
+.main .card.plift{position:fixed;z-index:160;opacity:.92;box-shadow:0 26px 70px rgba(0,0,0,.6);pointer-events:none;transition:none;cursor:grabbing}
+.main .pslot{border:1.5px dashed var(--acc);border-radius:14px;background:var(--accdim);margin:0 0 18px}
+.main .prz{position:absolute;right:3px;bottom:3px;width:15px;height:15px;cursor:nwse-resize;color:var(--faint);opacity:.7}
+.main .prz:hover{color:var(--acc2);opacity:1}
+#proToast{cursor:grab}
+#proToast.dragged{transition:none;cursor:grabbing}
 .main .col{display:flex;flex-direction:column;gap:14px;min-width:0}
 .main .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:hidden;color:var(--tx)}
 .main .card .hd{display:flex;align-items:center;justify-content:space-between;padding:13px 16px 11px;border-bottom:1px solid var(--line);gap:10px}
@@ -309,8 +327,8 @@ body.degraded .main .chat{opacity:.32;pointer-events:none;filter:grayscale(.5)}
 .main .verdict .nodata::before{content:"";width:7px;height:7px;border-radius:50%;background:#95A4B2}
 .topbar .station .lock{display:inline-flex;align-items:center;gap:4px;color:var(--acc2);margin-left:4px;font-size:11px}
 .topbar .station .lock svg{width:11px;height:11px}
-#proToast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,150%);z-index:130;max-width:min(520px,92vw);background:#11212E;border:1px solid rgba(224,163,64,.55);border-left:3px solid var(--warn);border-radius:13px;box-shadow:0 22px 60px rgba(0,0,0,.5);padding:15px 17px;display:flex;gap:13px;align-items:flex-start;transition:transform .5s cubic-bezier(.2,.9,.3,1.25),opacity .4s;opacity:0}
-#proToast.on{transform:translate(-50%,0);opacity:1}
+#proToast{position:fixed;right:26px;bottom:26px;left:auto;transform:translate(0,150%);z-index:130;max-width:min(520px,92vw);background:#11212E;border:1px solid rgba(224,163,64,.55);border-left:3px solid var(--warn);border-radius:13px;box-shadow:0 22px 60px rgba(0,0,0,.5);padding:15px 17px;display:flex;gap:13px;align-items:flex-start;transition:transform .5s cubic-bezier(.2,.9,.3,1.25),opacity .4s;opacity:0}
+#proToast.on{transform:translate(0,0);opacity:1}
 #proToast .pi{width:34px;height:34px;flex:0 0 auto;border-radius:9px;background:var(--warnbg);color:var(--warn);display:grid;place-items:center}
 #proToast .pi svg{width:19px;height:19px}
 #proToast .pcap{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--warn);display:flex;align-items:center;gap:6px;margin-bottom:4px}
@@ -567,7 +585,7 @@ body.role-tower .main .rolelock,body.role-pilot .main .rolelock{display:flex}
       <button class="nav" data-view="cumplimiento"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg>Cumplimiento</button>
       <div class="grow"></div>
       <div class="sess"><div class="l">Sesión</div><div class="v"><span class="d"></span><span id="sessRole">Torre · demo</span></div></div>
-      <div class="ver">AeroClima · build 02-jul-b · registro histórico</div>
+      <div class="ver">AeroClima · build 02-jul-c · paneles móviles · hora dinámica</div>
     </aside>
     <div class="sidescrim" id="sideScrim"></div>
 
@@ -615,8 +633,9 @@ body.role-tower .main .rolelock,body.role-pilot .main .rolelock{display:flex}
           </div>
         </div>
 
-        <div class="grid">
-          <div class="col">
+        <div class="layoutbar" id="layoutBar"><span class="lbtxt">Los paneles se arrastran por su encabezado (⣿), se redimensionan desde la esquina inferior derecha, y el divisor central ajusta las columnas.</span><button class="lbreset" id="layoutReset">Restablecer disposición</button></div>
+        <div class="grid" id="opGrid">
+          <div class="col" id="colA">
             <div class="card">
               <div class="hd"><div class="t"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg><span id="panelTitle">Tablero · Torre</span></div><div class="meta" id="panelClock">Aeropuerto demo · 14:00 UTC</div></div>
               <div class="bd"><div class="heroes" id="heroes"></div><div id="estadoWrap"></div></div>
@@ -627,7 +646,8 @@ body.role-tower .main .rolelock,body.role-pilot .main .rolelock{display:flex}
             </div>
             <div class="card"><div class="bd srcs" id="srcs"></div></div>
           </div>
-          <div class="col">
+          <div class="colsplit" id="colSplit" title="Arrastrar para ajustar columnas"></div>
+          <div class="col" id="colB">
             <div class="card chatcard">
               <div class="hd"><div class="t"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z"/></svg>Asistente operativo</div><div class="meta" id="asisMeta">conoce la normativa</div></div>
               <div class="regbar">
@@ -638,9 +658,6 @@ body.role-tower .main .rolelock,body.role-pilot .main .rolelock{display:flex}
               <div class="chat" id="chat"></div>
               <div class="ask"><div class="stale" id="chatStale"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4m0 4h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>Umbrales actualizados — vuelva a consultar para ver el efecto.</div><div class="lab">Seleccione una consulta</div><div class="qchips" id="qchips"></div></div>
             </div>
-          </div>
-        </div>
-
         <div class="card histcard" id="histCard">
           <div class="hd"><div class="t"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m5 15 4-5 3 3 4-7 3 4"/></svg>Registro histórico · <span id="histWin">últimas 3 h</span></div><div class="htabs" id="histTabs"></div></div>
           <div class="bd">
@@ -648,6 +665,9 @@ body.role-tower .main .rolelock,body.role-pilot .main .rolelock{display:flex}
             <div class="hfoot" id="histFoot"></div>
           </div>
         </div>
+          </div>
+        </div>
+
       </section>
 
       <!-- ===== BITÁCORA ===== -->
@@ -832,16 +852,19 @@ const ANS = {
         clause: scn==="niebla"?CL.c204:scn==="viento"?CL.anexo14:CL.doc4444,
         elicit:true })},
     {key:"hist", ownDegraded:true, q:"¿Hace cuánto no tenemos techo bajo 800 ft?",
-      build:s=>({
+      build:s=>{
+        const end=chartEnd(), z=m=>fmtHM(minusMin(end,m)), fd=histFail("degradado")?histFail("degradado").date:null;
+        const fv=fd?fmtHM(fd):"";
+        return {
         meas:{
           niebla:"Registro histórico ZZZZ · techo · últimas 3 h · AWOS homologado",
           viento:"Registro histórico ZZZZ · techo · últimas 72 h · AWOS homologado",
           estable:"Registro histórico ZZZZ · techo · últimos 30 días · AWOS homologado",
-          degradado:"Registro histórico ZZZZ · techo · completo hasta 14:38Z · AWOS homologado"
+          degradado:"Registro histórico ZZZZ · techo · completo hasta "+fv+"Z · AWOS homologado"
         }[scn],
         v:{tag:{niebla:"bad",viento:"ok",estable:"ok",degradado:"warn"}[scn], text:{
-          niebla:L("Cruce <800 ft: 13:13Z (BKN008). Descenso sostenido 900→300 ft en 60 min. Registro completo por rango, fuente AWOS.",
-            "El techo cruzó por debajo de 800 ft hace unos 40 minutos (13:13 UTC) y sigue bajando: pasó de 900 a 300 ft en la última hora. Cada observación queda en el registro histórico con fecha, hora y fuente — se puede consultar cualquier rango, no sólo el valor actual.",
+          niebla:L("Cruce <800 ft: "+z(40)+"Z (BKN008). Descenso sostenido 900→300 ft en 60 min. Registro completo por rango, fuente AWOS.",
+            "El techo cruzó por debajo de 800 ft hace unos 40 minutos ("+z(40)+" UTC) y sigue bajando: pasó de 900 a 300 ft en la última hora. Cada observación queda en el registro histórico con fecha, hora y fuente — se puede consultar cualquier rango, no sólo el valor actual.",
             "Las nubes vienen bajando hace rato: hace unos 40 minutos cruzaron el límite de los 800 pies y siguieron cayendo. Todo quedó anotado, medición por medición, con su hora — así que se puede mirar para atrás y ver cómo fue bajando, no sólo cómo está ahora."),
           viento:L("Sin BKN/OVC <800 ft en 72 h. Hoy SCT040–045 (no constituye techo). Registro consultable por rango.",
             "No hay registros de techo por debajo de 800 ft en las últimas 72 horas. Hoy sólo hay nubes dispersas entre 4.000 y 4.500 ft, que no constituyen techo. El histórico completo queda disponible por rango horario.",
@@ -849,16 +872,16 @@ const ANS = {
           estable:L("Sin techo <800 ft en 30 días de registro. Último episodio: 02 jun 06:50–09:10Z, mín 600 ft (niebla matinal). Hoy CAVOK.",
             "En los últimos 30 días de registro no hubo techo por debajo de 800 ft. El último episodio fue el 2 de junio, entre las 06:50 y las 09:10 UTC, con un mínimo de 600 ft por niebla matinal. Hoy: CAVOK, sin nubes bajas.",
             "Hace un mes que las nubes no bajan de 800 pies. La última vez fue el 2 de junio a la mañana: un par de horas de niebla que quedaron anotadas — a qué hora empezó, hasta dónde bajó y cuándo se levantó. Hoy está totalmente despejado."),
-          degradado:L("Registro íntegro hasta última lectura válida 14:38Z: sin techo <800 ft en las 3 h previas. Desde 14:38Z sensor s/dato homologado: se registra la falla, no un valor estimado.",
-            "El registro histórico está completo hasta la última lectura válida (14:38 UTC): en las 3 horas previas no hubo techo por debajo de 800 ft. Desde ese momento el sensor no entrega dato homologado — del valor actual me abstengo, pero el registro no se pierde: queda auditada la falla, no un número inventado.",
+          degradado:L("Registro íntegro hasta última lectura válida "+fv+"Z: sin techo <800 ft en las 3 h previas. Desde "+fv+"Z sensor s/dato homologado: se registra la falla, no un valor estimado.",
+            "El registro histórico está completo hasta la última lectura válida ("+fv+" UTC): en las 3 horas previas no hubo techo por debajo de 800 ft. Desde ese momento el sensor no entrega dato homologado — del valor actual me abstengo, pero el registro no se pierde: queda auditada la falla, no un número inventado.",
             "Hasta hace 22 minutos, cuando el sensor dejó de medir bien, el registro está completo: en las últimas horas las nubes nunca bajaron de 800 pies. De ahí en adelante no hay dato confiable — y eso también queda anotado tal cual: que el aparato falló, no un número inventado para tapar el hueco.")
         }[scn]},
         notamList:{
-          niebla:[["13:03Z","BKN009 — techo 900 ft"],["13:13Z","BKN008 — 800 ft · cruce del umbral"],["13:33Z","BKN005 — 500 ft"],["13:53Z","BKN003 — 300 ft · observación actual"]],
-          viento:[["−72 h","sin registros de techo < 800 ft"],["14:00Z","SCT040 — dispersas, no constituyen techo"],["17:00Z","SCT045 — observación actual"]],
-          estable:[["02 jun 06:50Z","BKN006 — inicio del último episodio"],["02 jun 07:40Z","BKN006 — mínimo 600 ft"],["02 jun 09:10Z","SCT025 — fin del episodio"],["Hoy 11:50Z","CAVOK — sin nubes bajas"]],
-          degradado:[["12:10Z","SCT035 — lectura válida"],["13:40Z","SCT036 — lectura válida"],["14:38Z","última lectura válida"],["15:00Z","//// — sin dato · falla registrada"]]
-        }[scn] })},
+          niebla:[[z(50)+"Z","BKN009 — techo 900 ft"],[z(40)+"Z","BKN008 — 800 ft · cruce del umbral"],[z(20)+"Z","BKN005 — 500 ft"],[z(0)+"Z","BKN003 — 300 ft · observación actual"]],
+          viento:[["−72 h","sin registros de techo < 800 ft"],[z(180)+"Z","SCT040 — dispersas, no constituyen techo"],[z(0)+"Z","SCT045 — observación actual"]],
+          estable:[["02 jun 06:50Z","BKN006 — inicio del último episodio"],["02 jun 07:40Z","BKN006 — mínimo 600 ft"],["02 jun 09:10Z","SCT025 — fin del episodio"],["Hoy "+z(0)+"Z","CAVOK — sin nubes bajas"]],
+          degradado:[[(fd?fmtHM(minusMin(fd,150)):"")+"Z","SCT035 — lectura válida"],[(fd?fmtHM(minusMin(fd,60)):"")+"Z","SCT036 — lectura válida"],[fv+"Z","última lectura válida"],[fmtHM(chartEnd())+"Z","//// — sin dato · falla registrada"]]
+        }[scn] };}},
     {key:"baja", q:"¿Cuándo activo procedimientos de baja visibilidad?",
       build:s=>({
         meas:`Visibilidad ${s.vis.v} ${s.vis.u} · RVR con precedencia · Techo ${s.ceil.v} ${s.ceil.u}`,
@@ -1050,10 +1073,21 @@ function live(scn){
     carta, vd: worst(visSt,ceilSt,windSt) };
 }
 
+function dynFeed(s){
+  const od=obsDate(scn);
+  const metar=s.metar.replace(/\d{6}Z/, fmtDDHHMM(od)+"Z");
+  const iss=new Date(od); iss.setUTCMinutes(0,0,0); iss.setUTCHours(iss.getUTCHours()-2);
+  const v0=new Date(iss.getTime()+3600e3), v1=new Date(v0.getTime()+24*3600e3), t1=new Date(v0.getTime()+3*3600e3);
+  const dh=x=>String(x.getUTCDate()).padStart(2,"0")+String(x.getUTCHours()).padStart(2,"0");
+  let taf=s.taf.replace(/\d{6}Z/, fmtDDHHMM(iss)+"Z").replace(/\d{4}\/\d{4}/, dh(v0)+"/"+dh(v1));
+  taf=taf.replace(/\d{4}\/\d{4}(?!.*\d{4}\/\d{4})/s, m=>m===dh(v0)+"/"+dh(v1)?m:dh(v0)+"/"+dh(t1));
+  return {metar,taf};
+}
 function renderDecode(){
   const s=live(scn);
   const ds=$("decodeSrc"); if(ds) ds.innerHTML='<span class="ld"></span>AWOS · ZZZZ · OBS hace '+s.obsAge+' min';
-  $("decodeRaw").innerHTML = s.metar + '<div style="margin-top:10px">'+s.taf+'</div>';
+  const df=dynFeed(s);
+  $("decodeRaw").innerHTML = df.metar + '<div style="margin-top:10px">'+df.taf+'</div>';
   $("decodeAns").innerHTML = s.decode;
   const vd=$("decodeVd"), names={ok:"Normal",warn:"Precaución operativa",bad:"Restringido"};
   vd.className="vd "+s.vd; vd.querySelector("span:last-child").textContent=names[s.vd];
@@ -1212,9 +1246,15 @@ $("aiToggle").onclick=function(){
 const regNames=[["Técnico","jerga aeronáutica"],["Estándar","claro y preciso"],["Llano","sin tecnicismos"]];
 
 /* ---- registro histórico interactivo ---- */
-const HTIMES = {niebla:"14:00",viento:"17:00",estable:"12:00",degradado:"15:00"};
-function hLabels(scn){ const [H,M]=HTIMES[scn].split(":").map(Number); const out=[];
-  for(let i=18;i>=0;i--){ let mm=H*60+M-i*10; out.push(String(Math.floor(mm/60)).padStart(2,"0")+":"+String(mm%60).padStart(2,"0")); } return out; }
+function fmtHM(d){ return String(d.getUTCHours()).padStart(2,"0")+":"+String(d.getUTCMinutes()).padStart(2,"0"); }
+function fmtDDHHMM(d){ return String(d.getUTCDate()).padStart(2,"0")+String(d.getUTCHours()).padStart(2,"0")+String(d.getUTCMinutes()).padStart(2,"0"); }
+function minusMin(d,m){ return new Date(d.getTime()-m*60000); }
+function obsDate(k){ return new Date(Date.now()-SC[k].obsAge*60000); }
+function chartEnd(){ const d=new Date(); d.setUTCMinutes(Math.floor(d.getUTCMinutes()/10)*10,0,0); return d; }
+function histFail(k){ if(k!=="degradado") return null; const fd=obsDate("degradado"); const end=chartEnd();
+  return {date:fd, idx:18-(end.getTime()-fd.getTime())/600000}; }
+function hLabels(){ const end=chartEnd(), out=[];
+  for(let i=18;i>=0;i--) out.push(fmtHM(minusMin(end,i*10))); return out; }
 const HIST = {
   niebla:{
     vis:[8000,7600,7000,6400,5600,4800,4000,3400,2900,2500,2200,2000,1800,1650,1500,1400,1300,1250,1200],
@@ -1236,11 +1276,10 @@ const HIST = {
     alerts:[]
   },
   degradado:{
-    vis:[8200,8200,8100,8100,8000,8000,8000,8000,8000,8000,8000,8000,8000,8000,8000,8000,null,null,null],
-    ceil:[3500,3500,3550,3550,3600,3600,3600,3600,3600,3600,3600,3600,3600,3600,3600,3600,null,null,null],
+    vis:[8200,8200,8100,8100,8000,8000,8000,8000,8000,8000,8000,8000,8000,8000,8000,8000,8000,8000,8000],
+    ceil:[3500,3500,3550,3550,3600,3600,3600,3600,3600,3600,3600,3600,3600,3600,3600,3600,3600,3600,3600],
     ceilNote:"SCT — dispersas, no constituyen techo",
     wind:[{v:6},{v:6},{v:5},{v:6},{v:6},{v:6},{v:6},{v:5},{v:6},{v:6},{v:6},{v:6},{v:6},{v:6},{v:6},{v:6},{v:6},{v:6},{v:6}],
-    failAt:15.8, failLabel:"<b>Falla de sensor registrada — 14:38Z.</b> VIS y techo sin dato homologado desde entonces. No se estima ni se promedia: SIN DATO. La falla queda en el registro, no un valor inventado.",
     alerts:[]
   }
 };
@@ -1258,8 +1297,9 @@ const STNAME={ok:"VERDE",warn:"ÁMBAR",bad:"ROJO"};
 function histSeries(){
   const d=HIST[scn], m=HMET[histMetric], raw=d[histMetric];
   if(!raw) return null;
-  return raw.map(p=>{
-    if(p==null) return {y:null,st:"nd"};
+  const f=histFail(scn);
+  return raw.map((p,i)=>{
+    if(p==null || (f && histMetric!=="wind" && i>f.idx)) return {y:null,st:"nd"};
     const num = histMetric==="wind" ? Math.max(p.v,p.g||0) : p;
     return {y:num, p, st:m.st(p)};
   });
@@ -1271,10 +1311,10 @@ function renderHist(){
     const b=document.createElement("button"); b.className="htab"+(k===histMetric?" on":"");
     b.textContent=HMET[k].name; b.onclick=()=>{histMetric=k; renderHist();}; tabs.appendChild(b);
   });
-  $("histWin").textContent="últimas 3 h · hasta "+HTIMES[scn]+"Z";
+  $("histWin").textContent="últimas 3 h · hasta "+fmtHM(chartEnd())+"Z";
   const tip=$("histTip"); tip.classList.remove("on");
   [...wrap.querySelectorAll("svg")].forEach(x=>x.remove());
-  const d=HIST[scn], m=HMET[histMetric], labels=hLabels(scn), ser=histSeries();
+  const d=HIST[scn], m=HMET[histMetric], labels=hLabels(), ser=histSeries(), fail=histFail(scn);
   const W=720,H=210,L=52,R=14,T=26,B=26, iw=W-L-R, ih=H-T-B;
   if(!ser){ // sin serie (estable · techo)
     wrap.insertAdjacentHTML("beforeend",`<svg viewBox="0 0 ${W} ${H}" data-events="0"><text x="${W/2}" y="${H/2}" text-anchor="middle" fill="var(--mut)" font-size="13">Sin nubes bajas en la ventana — CAVOK. No hay techo que graficar.</text></svg>`);
@@ -1297,12 +1337,12 @@ function renderHist(){
     }
   }
   (d.alerts||[]).forEach(a=>{ if(a.for.includes(histMetric)) evs.push({i:a.i, st:"pred", label:a.label}); });
-  if(d.failAt && histMetric!=="wind") evs.push({i:d.failAt, st:"nd", label:d.failLabel});
+  if(fail && histMetric!=="wind") evs.push({i:fail.idx, st:"nd", label:`<b>Falla de sensor registrada — ${fmtHM(fail.date)}Z.</b> VIS y techo sin dato homologado desde entonces. No se estima ni se promedia: SIN DATO. La falla queda en el registro, no un valor inventado.`});
   // svg
   let svg=`<svg viewBox="0 0 ${W} ${H}" data-events="${evs.length}" role="img" aria-label="Serie histórica de ${m.name}">`;
   svg+=`<rect x="${L}" y="${T}" width="${iw}" height="${ih}" fill="rgba(255,255,255,.02)" stroke="var(--line)"/>`;
   // zona SIN DATO
-  if(d.failAt && histMetric!=="wind"){ const fx=X(d.failAt);
+  if(fail && histMetric!=="wind"){ const fx=X(fail.idx);
     svg+=`<rect x="${fx}" y="${T}" width="${L+iw-fx}" height="${ih}" fill="rgba(255,255,255,.045)"/><text x="${(fx+L+iw)/2}" y="${T+ih/2}" text-anchor="middle" fill="var(--mut)" font-family="var(--mono)" font-size="11" letter-spacing=".12em">SIN DATO</text>`; }
   // umbrales vigentes
   [[m.thrW(),"warn","ámbar"],[m.thrB(),"bad","rojo"]].forEach(([tv,cl,nm])=>{ if(tv<lo||tv>hi) return;
@@ -1344,6 +1384,106 @@ function renderHist(){
     el.querySelector("#hx").setAttribute("x1",-9); el.querySelector("#hx").setAttribute("x2",-9); el.querySelector("#hd").setAttribute("cx",-9); });
 }
 
+
+/* ---- disposición de paneles: arrastrar, redimensionar, divisor, persistencia ---- */
+const LAY_KEY='aeroclima_layout_v1';
+const LAY_DEFAULT={a:['tablero','carta','fuentes'], b:['asistente','hist']};
+function layCards(){ return [...document.querySelectorAll('#opGrid .col > .card')]; }
+function layIdOf(c){
+  if(c.querySelector('#panelTitle')) return 'tablero';
+  if(c.querySelector('#card2')) return 'carta';
+  if(c.querySelector('#chat')) return 'asistente';
+  if(c.querySelector('#histWrap')) return 'hist';
+  return 'fuentes';
+}
+function laySave(){
+  try{
+    const st={a:[],b:[],h:{},split:null};
+    document.querySelectorAll('#colA > .card').forEach(c=>st.a.push(c.dataset.pid));
+    document.querySelectorAll('#colB > .card').forEach(c=>st.b.push(c.dataset.pid));
+    layCards().forEach(c=>{ if(c.style.height) st.h[c.dataset.pid]=parseInt(c.style.height); });
+    const g=$('opGrid'); if(g.style.gridTemplateColumns) st.split=g.style.gridTemplateColumns;
+    localStorage.setItem(LAY_KEY,JSON.stringify(st));
+  }catch(e){}
+}
+function layApply(st){
+  const byId={}; layCards().forEach(c=>byId[c.dataset.pid]=c);
+  (st.a||[]).forEach(id=>{ if(byId[id]) $('colA').appendChild(byId[id]); });
+  (st.b||[]).forEach(id=>{ if(byId[id]) $('colB').appendChild(byId[id]); });
+  Object.entries(st.h||{}).forEach(([id,px])=>{ const c=byId[id]; if(c){ c.style.height=px+'px'; c.classList.add('rz'); } });
+  if(st.split) $('opGrid').style.gridTemplateColumns=st.split;
+}
+function layReset(){
+  try{ localStorage.removeItem(LAY_KEY); }catch(e){}
+  layCards().forEach(c=>{ c.style.height=''; c.classList.remove('rz'); });
+  $('opGrid').style.gridTemplateColumns='';
+  layApply(LAY_DEFAULT);
+}
+function initLayout(){
+  const grid=$('opGrid'); if(!grid) return;
+  layCards().forEach(c=>{
+    c.dataset.pid=layIdOf(c);
+    const hd=c.querySelector('.hd');
+    if(!c.querySelector('.pgrip')){
+      const g=document.createElement('button'); g.className='pgrip'; g.title='Arrastrar panel'; g.textContent='⣿';
+      if(hd) hd.insertBefore(g, hd.firstChild); else { g.classList.add('float'); c.appendChild(g); }
+      g.addEventListener('pointerdown',e=>dragStart(e,c));
+    }
+    if(!c.querySelector('.prz')){
+      const h=document.createElement('div'); h.className='prz'; h.title='Redimensionar (doble clic: automático)';
+      h.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v6h-6M21 21 12 12"/></svg>';
+      c.appendChild(h);
+      h.addEventListener('pointerdown',e=>rzStart(e,c));
+      h.addEventListener('dblclick',()=>{ c.style.height=''; c.classList.remove('rz'); laySave(); });
+    }
+  });
+  try{ const st=JSON.parse(localStorage.getItem(LAY_KEY)||'null'); if(st) layApply(st); }catch(e){}
+  const rb=$('layoutReset'); if(rb) rb.onclick=layReset;
+  const sp=$('colSplit');
+  if(sp) sp.addEventListener('pointerdown',e=>{
+    e.preventDefault(); sp.classList.add('on'); sp.setPointerCapture(e.pointerId);
+    const gr=grid.getBoundingClientRect();
+    const mv=ev=>{ let f=(ev.clientX-gr.left)/gr.width; f=Math.max(.28,Math.min(.72,f));
+      grid.style.gridTemplateColumns=`${(f*2).toFixed(3)}fr 12px ${((1-f)*2).toFixed(3)}fr`; };
+    const up=()=>{ sp.classList.remove('on'); sp.removeEventListener('pointermove',mv); sp.removeEventListener('pointerup',up); laySave(); };
+    sp.addEventListener('pointermove',mv); sp.addEventListener('pointerup',up);
+  });
+}
+function dragStart(e,card){
+  if(matchMedia('(max-width:980px)').matches) return;
+  e.preventDefault();
+  const r=card.getBoundingClientRect(), dx=e.clientX-r.left, dy=e.clientY-r.top;
+  const slot=document.createElement('div'); slot.className='pslot'; slot.style.height=r.height+'px';
+  card.parentNode.insertBefore(slot,card);
+  card.classList.add('plift'); card.style.width=r.width+'px'; card.style.left=r.left+'px'; card.style.top=r.top+'px';
+  document.body.style.userSelect='none';
+  const mv=ev=>{
+    card.style.left=(ev.clientX-dx)+'px'; card.style.top=(ev.clientY-dy)+'px';
+    const col=[...document.querySelectorAll('#opGrid .col')].find(c=>{const b=c.getBoundingClientRect(); return ev.clientX>=b.left-20&&ev.clientX<=b.right+20;});
+    if(!col) return;
+    const sibs=[...col.children].filter(x=>x!==slot&&x!==card&&x.classList.contains('card'));
+    let ref=null;
+    for(const sb of sibs){ const b=sb.getBoundingClientRect(); if(ev.clientY < b.top+b.height/2){ ref=sb; break; } }
+    if(ref) col.insertBefore(slot,ref); else col.appendChild(slot);
+  };
+  const up=()=>{
+    removeEventListener('pointermove',mv); removeEventListener('pointerup',up);
+    card.classList.remove('plift'); card.style.width=card.style.left=card.style.top='';
+    slot.parentNode.insertBefore(card,slot); slot.remove();
+    document.body.style.userSelect=''; laySave();
+  };
+  addEventListener('pointermove',mv); addEventListener('pointerup',up);
+}
+function rzStart(e,card){
+  e.preventDefault(); e.stopPropagation();
+  const h0=card.getBoundingClientRect().height, y0=e.clientY;
+  card.classList.add('rz');
+  const mv=ev=>{ card.style.height=Math.max(150,h0+(ev.clientY-y0))+'px'; };
+  const up=()=>{ removeEventListener('pointermove',mv); removeEventListener('pointerup',up); laySave(); };
+  addEventListener('pointermove',mv); addEventListener('pointerup',up);
+}
+initLayout();
+
 $("regSld").oninput=function(){ reg=+this.value; $("regVal").innerHTML=regNames[reg][0]+"<small>"+regNames[reg][1]+"</small>"; regenLast(); };
 
 /* ---- init ---- */
@@ -1362,8 +1502,19 @@ function fireProactive(){
     `<div class="pj">Proyección — confianza media · se recalcula con cada observación</div></div>`+
     `<button class="px" aria-label="Descartar">×</button>`;
   document.body.appendChild(t);
+  if(window.__toastPos){ t.style.left=window.__toastPos.x+'px'; t.style.top=window.__toastPos.y+'px'; t.style.right='auto'; t.style.bottom='auto'; t.classList.add('dragged'); }
   requestAnimationFrame(()=>t.classList.add('on'));
   t.querySelector('.px').onclick=()=>{ t.classList.remove('on'); setTimeout(()=>t.remove(),500); };
+  t.addEventListener('pointerdown',e=>{
+    if(e.target.closest('.px')) return;
+    const r=t.getBoundingClientRect(); const dx=e.clientX-r.left, dy=e.clientY-r.top;
+    t.classList.add('dragged'); t.style.left=r.left+'px'; t.style.top=r.top+'px'; t.style.right='auto'; t.style.bottom='auto';
+    t.setPointerCapture(e.pointerId);
+    const mv=ev=>{ const x=Math.max(6,Math.min(ev.clientX-dx,innerWidth-r.width-6)), y=Math.max(6,Math.min(ev.clientY-dy,innerHeight-60));
+      t.style.left=x+'px'; t.style.top=y+'px'; window.__toastPos={x,y}; };
+    const up=()=>{ t.removeEventListener('pointermove',mv); t.removeEventListener('pointerup',up); };
+    t.addEventListener('pointermove',mv); t.addEventListener('pointerup',up);
+  });
 }
 
 /* ============================================================
@@ -1386,6 +1537,8 @@ const TOUR=[
     body:'Consulte en lenguaje natural: cada respuesta cita la norma vigente, indica la fuente homologada y queda registrada con fecha y hora. Además, el sistema no espera la pregunta: cuando una variable se acerca a un límite, emite una alerta proactiva por su cuenta. Y hacia atrás: cada observación queda en un registro histórico consultable por rango, con fecha, hora y fuente.'},
   {view:'operacion', sel:'#histCard', title:'Registro histórico interactivo',
     body:'Recorra la serie con el cursor: valor, hora y estado en cada punto. Los rombos marcan alertas y cambios de estado, y las líneas punteadas son los umbrales vigentes — si el Administrador los mueve, los cruces se recalculan en vivo.'},
+  {view:'operacion', sel:'#opGrid', title:'Disposición a medida',
+    body:'Cada operador arma su tablero: los paneles se arrastran por el encabezado, se redimensionan desde la esquina y el divisor central ajusta las columnas. La alerta proactiva también puede moverse. «Restablecer disposición» vuelve al orden original.'},
   {view:'operacion', sel:'#aiToggle', title:'Continuidad operativa',
     body:'Si la capa de IA deja de estar disponible, el dato homologado sigue visible. La IA suma síntesis; nunca se interpone entre el operador y la medición.'},
   {role:'admin', view:'config', sel:'#cfgBody', title:'Configuración del administrador',
