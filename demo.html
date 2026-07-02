@@ -178,6 +178,24 @@ body.degraded .main .degbanner{display:flex}
 
 /* ===== grid + cards ===== */
 .main .grid{display:grid;grid-template-columns:1.04fr .96fr;gap:18px;align-items:start}
+/* --- registro histórico interactivo --- */
+.main .histcard{margin-top:18px}
+.main .histcard .hd .htabs{display:flex;gap:7px}
+.main .htab{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:8px;color:var(--mut);font-family:var(--mono);font-size:10.5px;letter-spacing:.04em;padding:6px 11px;cursor:pointer;transition:.15s}
+.main .htab.on{border-color:var(--acc);color:var(--acc2);background:var(--accdim)}
+.main .histwrap{position:relative}
+.main .histwrap svg{display:block;width:100%;height:auto;cursor:crosshair;touch-action:pan-y}
+.main .htip{position:absolute;pointer-events:none;background:rgba(10,22,32,.96);border:1px solid var(--line2);border-radius:9px;padding:8px 11px;font-size:12px;color:var(--tx);min-width:150px;max-width:250px;box-shadow:0 10px 26px rgba(0,0,0,.45);opacity:0;transition:opacity .1s;z-index:5}
+.main .htip.on{opacity:1}
+.main .htip .tt{font-family:var(--mono);font-size:11px;color:var(--acc2);margin-bottom:2px}
+.main .htip .tv{font-weight:700;font-size:14px}
+.main .htip .tst{display:inline-block;font-family:var(--mono);font-size:9px;letter-spacing:.08em;border-radius:5px;padding:2px 6px;margin-left:7px;vertical-align:2px}
+.main .htip .tst.ok{color:var(--ok);background:var(--okbg)}.main .htip .tst.warn{color:var(--warn);background:var(--warnbg)}.main .htip .tst.bad{color:var(--bad);background:var(--badbg)}.main .htip .tst.nd{color:var(--mut);background:rgba(255,255,255,.07)}
+.main .htip .tev{margin-top:6px;padding-top:6px;border-top:1px solid var(--line);font-size:11.5px;color:var(--mut)}
+.main .htip .tev b{color:var(--tx)}
+.main .hfoot{display:flex;flex-wrap:wrap;gap:5px 16px;margin-top:9px;font-family:var(--mono);font-size:10px;color:var(--faint)}
+.main .hfoot .dm{display:inline-block;width:8px;height:8px;transform:rotate(45deg);border-radius:2px;margin-right:5px;vertical-align:-1px}
+
 @media(max-width:980px){.main .grid{grid-template-columns:1fr}}
 .main .col{display:flex;flex-direction:column;gap:14px;min-width:0}
 .main .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:hidden;color:var(--tx)}
@@ -622,6 +640,14 @@ body.role-tower .main .rolelock,body.role-pilot .main .rolelock{display:flex}
             </div>
           </div>
         </div>
+
+        <div class="card histcard" id="histCard">
+          <div class="hd"><div class="t"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m5 15 4-5 3 3 4-7 3 4"/></svg>Registro histórico · <span id="histWin">últimas 3 h</span></div><div class="htabs" id="histTabs"></div></div>
+          <div class="bd">
+            <div class="histwrap" id="histWrap"><div class="htip" id="histTip"></div></div>
+            <div class="hfoot" id="histFoot"></div>
+          </div>
+        </div>
       </section>
 
       <!-- ===== BITÁCORA ===== -->
@@ -1033,7 +1059,7 @@ function renderDecode(){
   vd.className="vd "+s.vd; vd.querySelector("span:last-child").textContent=names[s.vd];
 }
 
-function renderDash(){
+function renderDash(){ if(typeof renderHist==='function') renderHist();
   const s=live(scn);
   $("panelTitle").textContent = prof==="tower" ? "Tablero · Torre" : "Tablero · Piloto";
   $("panelClock").textContent = "OBS hace "+s.obsAge+" min · homologado";
@@ -1184,6 +1210,140 @@ $("aiToggle").onclick=function(){
   this.childNodes[1].nodeValue = on ? "IA caída (simular)" : "IA operativa";
 };
 const regNames=[["Técnico","jerga aeronáutica"],["Estándar","claro y preciso"],["Llano","sin tecnicismos"]];
+
+/* ---- registro histórico interactivo ---- */
+const HTIMES = {niebla:"14:00",viento:"17:00",estable:"12:00",degradado:"15:00"};
+function hLabels(scn){ const [H,M]=HTIMES[scn].split(":").map(Number); const out=[];
+  for(let i=18;i>=0;i--){ let mm=H*60+M-i*10; out.push(String(Math.floor(mm/60)).padStart(2,"0")+":"+String(mm%60).padStart(2,"0")); } return out; }
+const HIST = {
+  niebla:{
+    vis:[8000,7600,7000,6400,5600,4800,4000,3400,2900,2500,2200,2000,1800,1650,1500,1400,1300,1250,1200],
+    ceil:[4500,4200,3800,3200,2600,2100,1700,1400,1150,950,900,850,800,700,600,500,400,350,300],
+    wind:[{v:8},{v:8},{v:7},{v:8},{v:8},{v:7},{v:8},{v:8},{v:8},{v:7},{v:8},{v:8},{v:8},{v:8},{v:8},{v:8},{v:8},{v:8},{v:8}],
+    alerts:[{i:14.5,for:["vis"],kind:"pred",label:"<b>Alerta proactiva emitida</b> (WhatsApp/push): visibilidad en descenso sostenido — al ritmo actual cruzaría el umbral ámbar en ~25 min."}]
+  },
+  viento:{
+    vis:Array(19).fill(10000),
+    ceil:[4000,4000,4100,4100,4200,4200,4200,4300,4300,4300,4400,4400,4400,4500,4500,4500,4500,4500,4500],
+    ceilNote:"SCT — dispersas, no constituyen techo",
+    wind:[{v:10},{v:11},{v:12},{v:13},{v:14},{v:15},{v:16},{v:17},{v:18,g:24},{v:19,g:26},{v:20,g:30},{v:21,g:33},{v:22,g:35},{v:23,g:37},{v:24,g:38},{v:25,g:40},{v:26,g:41},{v:27,g:42},{v:28,g:42}],
+    alerts:[]
+  },
+  estable:{
+    vis:Array(19).fill(10000),
+    ceil:null,
+    wind:[{v:5},{v:6},{v:6},{v:5},{v:6},{v:6},{v:6},{v:5},{v:6},{v:6},{v:6},{v:6},{v:5},{v:6},{v:6},{v:6},{v:6},{v:6},{v:6}],
+    alerts:[]
+  },
+  degradado:{
+    vis:[8200,8200,8100,8100,8000,8000,8000,8000,8000,8000,8000,8000,8000,8000,8000,8000,null,null,null],
+    ceil:[3500,3500,3550,3550,3600,3600,3600,3600,3600,3600,3600,3600,3600,3600,3600,3600,null,null,null],
+    ceilNote:"SCT — dispersas, no constituyen techo",
+    wind:[{v:6},{v:6},{v:5},{v:6},{v:6},{v:6},{v:6},{v:5},{v:6},{v:6},{v:6},{v:6},{v:6},{v:6},{v:6},{v:6},{v:6},{v:6},{v:6}],
+    failAt:15.8, failLabel:"<b>Falla de sensor registrada — 14:38Z.</b> VIS y techo sin dato homologado desde entonces. No se estima ni se promedia: SIN DATO. La falla queda en el registro, no un valor inventado.",
+    alerts:[]
+  }
+};
+const HMET = {
+  vis:{name:"Visibilidad", unit:"m", thrW:()=>thr.visAmber, thrB:()=>thr.visRed, dirDown:true,
+    st:v=>stVis(v), fmt:v=>v>=9999?"10+ km":v.toLocaleString("es-AR")+" m"},
+  ceil:{name:"Techo", unit:"ft", thrW:()=>thr.ceilAmber, thrB:()=>thr.ceilRed, dirDown:true,
+    st:v=>stCeil(v), fmt:v=>v.toLocaleString("es-AR")+" ft"},
+  wind:{name:"Viento", unit:"kt", thrW:()=>thr.gustWarn, thrB:()=>thr.gustBad, dirDown:false,
+    st:p=>stWind(p.v,p.g), fmt:p=>p.g?p.v+" kt · ráfaga "+p.g:p.v+" kt"}
+};
+let histMetric="vis", histState=null;
+const STNAME={ok:"VERDE",warn:"ÁMBAR",bad:"ROJO"};
+
+function histSeries(){
+  const d=HIST[scn], m=HMET[histMetric], raw=d[histMetric];
+  if(!raw) return null;
+  return raw.map(p=>{
+    if(p==null) return {y:null,st:"nd"};
+    const num = histMetric==="wind" ? Math.max(p.v,p.g||0) : p;
+    return {y:num, p, st:m.st(p)};
+  });
+}
+function renderHist(){
+  const wrap=$("histWrap"), tabs=$("histTabs"); if(!wrap) return;
+  tabs.innerHTML="";
+  Object.keys(HMET).forEach(k=>{
+    const b=document.createElement("button"); b.className="htab"+(k===histMetric?" on":"");
+    b.textContent=HMET[k].name; b.onclick=()=>{histMetric=k; renderHist();}; tabs.appendChild(b);
+  });
+  $("histWin").textContent="últimas 3 h · hasta "+HTIMES[scn]+"Z";
+  const tip=$("histTip"); tip.classList.remove("on");
+  [...wrap.querySelectorAll("svg")].forEach(x=>x.remove());
+  const d=HIST[scn], m=HMET[histMetric], labels=hLabels(scn), ser=histSeries();
+  const W=720,H=210,L=52,R=14,T=26,B=26, iw=W-L-R, ih=H-T-B;
+  if(!ser){ // sin serie (estable · techo)
+    wrap.insertAdjacentHTML("beforeend",`<svg viewBox="0 0 ${W} ${H}" data-events="0"><text x="${W/2}" y="${H/2}" text-anchor="middle" fill="var(--mut)" font-size="13">Sin nubes bajas en la ventana — CAVOK. No hay techo que graficar.</text></svg>`);
+    $("histFoot").innerHTML=`<span>Sin cruces de umbral ni alertas en la ventana.</span>`;
+    histState=null; return;
+  }
+  const vals=ser.filter(p=>p.y!=null).map(p=>p.y);
+  const thrs=[m.thrW(),m.thrB()];
+  let lo=Math.min(...vals,...thrs), hi=Math.max(...vals,...thrs);
+  const pad=(hi-lo)*0.12||10; lo=Math.max(0,lo-pad); hi=hi+pad;
+  const X=i=>L+iw*i/(ser.length-1), Y=v=>T+ih*(1-(v-lo)/(hi-lo));
+  const stC=st=>st==="ok"?"var(--ok)":st==="warn"?"var(--warn)":st==="bad"?"var(--bad)":"var(--mut)";
+  // eventos: cruces de estado (dinámicos, según umbrales vigentes) + alertas del escenario + falla
+  const evs=[];
+  for(let i=1;i<ser.length;i++){
+    if(ser[i].y==null||ser[i-1].y==null) continue;
+    if(ser[i].st!==ser[i-1].st){
+      const worse={ok:0,warn:1,bad:2}[ser[i].st]>{ok:0,warn:1,bad:2}[ser[i-1].st];
+      evs.push({i, st:ser[i].st, label:(worse?`<b>Cruce a ${STNAME[ser[i].st]}</b> — ${m.name.toLowerCase()} ${m.fmt(ser[i].p)}. Se dispara alerta y queda registrada.`:`<b>Vuelta a ${STNAME[ser[i].st]}</b> — ${m.name.toLowerCase()} ${m.fmt(ser[i].p)}. La alerta se resuelve y queda registrada.`)});
+    }
+  }
+  (d.alerts||[]).forEach(a=>{ if(a.for.includes(histMetric)) evs.push({i:a.i, st:"pred", label:a.label}); });
+  if(d.failAt && histMetric!=="wind") evs.push({i:d.failAt, st:"nd", label:d.failLabel});
+  // svg
+  let svg=`<svg viewBox="0 0 ${W} ${H}" data-events="${evs.length}" role="img" aria-label="Serie histórica de ${m.name}">`;
+  svg+=`<rect x="${L}" y="${T}" width="${iw}" height="${ih}" fill="rgba(255,255,255,.02)" stroke="var(--line)"/>`;
+  // zona SIN DATO
+  if(d.failAt && histMetric!=="wind"){ const fx=X(d.failAt);
+    svg+=`<rect x="${fx}" y="${T}" width="${L+iw-fx}" height="${ih}" fill="rgba(255,255,255,.045)"/><text x="${(fx+L+iw)/2}" y="${T+ih/2}" text-anchor="middle" fill="var(--mut)" font-family="var(--mono)" font-size="11" letter-spacing=".12em">SIN DATO</text>`; }
+  // umbrales vigentes
+  [[m.thrW(),"warn","ámbar"],[m.thrB(),"bad","rojo"]].forEach(([tv,cl,nm])=>{ if(tv<lo||tv>hi) return;
+    svg+=`<line x1="${L}" x2="${L+iw}" y1="${Y(tv)}" y2="${Y(tv)}" stroke="${stC(cl)}" stroke-dasharray="5 5" stroke-opacity=".55"/><text x="${L+iw-4}" y="${Y(tv)-4}" text-anchor="end" fill="${stC(cl)}" font-size="9.5" font-family="var(--mono)">umbral ${nm} ${tv}</text>`; });
+  // grilla horaria
+  for(let i=0;i<ser.length;i+=3) svg+=`<text x="${X(i)}" y="${H-8}" text-anchor="middle" fill="var(--faint)" font-size="9.5" font-family="var(--mono)">${labels[i]}Z</text>`;
+  // segmentos coloreados por estado
+  for(let i=1;i<ser.length;i++){ const a=ser[i-1],b=ser[i]; if(a.y==null||b.y==null) continue;
+    svg+=`<line x1="${X(i-1)}" y1="${Y(a.y)}" x2="${X(i)}" y2="${Y(b.y)}" stroke="${stC(b.st)}" stroke-width="2.4" stroke-linecap="round"/>`; }
+  // marcadores de eventos (carril superior + guía vertical)
+  evs.forEach(e=>{ const x=X(e.i);
+    svg+=`<line x1="${x}" x2="${x}" y1="${T}" y2="${T+ih}" stroke="${stC(e.st==="pred"?"warn":e.st)}" stroke-opacity=".3"/><rect x="${x-5.2}" y="${T-14}" width="10.4" height="10.4" transform="rotate(45 ${x} ${T-8.8})" fill="${e.st==="pred"?"var(--acc)":stC(e.st)}" stroke="rgba(0,0,0,.35)"/>`; });
+  svg+=`<line id="hx" x1="-9" x2="-9" y1="${T}" y2="${T+ih}" stroke="var(--acc)" stroke-opacity=".6"/><circle id="hd" cx="-9" cy="-9" r="4.2" fill="var(--acc)" stroke="#08131C" stroke-width="1.6"/>`;
+  svg+=`<rect id="hcap" x="${L}" y="0" width="${iw}" height="${H}" fill="transparent"/></svg>`;
+  wrap.insertAdjacentHTML("beforeend",svg);
+  $("histFoot").innerHTML = evs.length
+    ? `<span><span class="dm" style="background:var(--warn)"></span>rombo = alerta o cambio de estado (${evs.length} en la ventana)</span><span>— — umbrales vigentes: si el Administrador los mueve, los cruces se recalculan</span>`
+    : `<span>Sin cruces de umbral ni alertas en la ventana.</span><span>— — umbrales vigentes</span>`;
+  histState={ser,evs,labels,X,Y,m,d,W,H,L,iw,T,ih};
+  const el=wrap.querySelector("svg"), cap=el.querySelector("#hcap");
+  const move=ev=>{ const r=el.getBoundingClientRect(); const cx=(ev.clientX-r.left)*(W/r.width);
+    const i=Math.max(0,Math.min(ser.length-1,Math.round((cx-L)/(iw/(ser.length-1)))));
+    const pt=ser[i]; const x=X(i);
+    el.querySelector("#hx").setAttribute("x1",x); el.querySelector("#hx").setAttribute("x2",x);
+    const hdot=el.querySelector("#hd");
+    if(pt.y!=null){ hdot.setAttribute("cx",x); hdot.setAttribute("cy",Y(pt.y)); } else { hdot.setAttribute("cx",-9); }
+    const near=evs.filter(e=>Math.abs(X(e.i)-x)<iw/ser.length*0.9);
+    let html=`<div class="tt">${labels[i]}Z</div>`;
+    html+= pt.y==null
+      ? `<span class="tv" style="color:var(--mut)">SIN DATO</span><span class="tst nd">ABSTENCIÓN</span>`
+      : `<span class="tv">${m.fmt(pt.p)}</span><span class="tst ${pt.st}">${STNAME[pt.st]}</span>`;
+    if(histMetric==="ceil"&&d.ceilNote&&pt.y!=null) html+=`<div style="font-size:10.5px;color:var(--faint);margin-top:1px">${d.ceilNote}</div>`;
+    near.forEach(e=>html+=`<div class="tev">◆ ${e.label}</div>`);
+    const tip=$("histTip"); tip.innerHTML=html; tip.classList.add("on");
+    const wr=wrap.getBoundingClientRect(); let px=(x/W)*wr.width+12; if(px+230>wr.width) px=(x/W)*wr.width-242;
+    tip.style.left=px+"px"; tip.style.top="18px"; };
+  cap.addEventListener("pointermove",move); cap.addEventListener("pointerdown",move);
+  cap.addEventListener("pointerleave",ev=>{ if(ev.pointerType&&ev.pointerType!=="mouse") return; $("histTip").classList.remove("on");
+    el.querySelector("#hx").setAttribute("x1",-9); el.querySelector("#hx").setAttribute("x2",-9); el.querySelector("#hd").setAttribute("cx",-9); });
+}
+
 $("regSld").oninput=function(){ reg=+this.value; $("regVal").innerHTML=regNames[reg][0]+"<small>"+regNames[reg][1]+"</small>"; regenLast(); };
 
 /* ---- init ---- */
@@ -1224,6 +1384,8 @@ const TOUR=[
     body:'El sistema propone carta y pista en uso a partir de las mediciones y la regla aplicable. La torre confirma: el sistema asiste, no decide.'},
   {view:'operacion', sel:'#qchips',   title:'Asistente conversacional',
     body:'Consulte en lenguaje natural: cada respuesta cita la norma vigente, indica la fuente homologada y queda registrada con fecha y hora. Además, el sistema no espera la pregunta: cuando una variable se acerca a un límite, emite una alerta proactiva por su cuenta. Y hacia atrás: cada observación queda en un registro histórico consultable por rango, con fecha, hora y fuente.'},
+  {view:'operacion', sel:'#histCard', title:'Registro histórico interactivo',
+    body:'Recorra la serie con el cursor: valor, hora y estado en cada punto. Los rombos marcan alertas y cambios de estado, y las líneas punteadas son los umbrales vigentes — si el Administrador los mueve, los cruces se recalculan en vivo.'},
   {view:'operacion', sel:'#aiToggle', title:'Continuidad operativa',
     body:'Si la capa de IA deja de estar disponible, el dato homologado sigue visible. La IA suma síntesis; nunca se interpone entre el operador y la medición.'},
   {role:'admin', view:'config', sel:'#cfgBody', title:'Configuración del administrador',
@@ -1246,7 +1408,8 @@ tBlock.style.display='none'; tHole.style.display='none'; tCard.style.display='no
 tCard.querySelector('.tcdots').innerHTML=TOUR.map(()=>'<span class="tcdot"></span>').join('');
 
 function placeTour(){
-  const el=document.querySelector(TOUR[ti].sel); if(!el) return;
+  const st=(tourSteps&&tourSteps[ti])||TOUR[ti];
+  const el=document.querySelector(st.sel); if(!el) return;
   const r=el.getBoundingClientRect(), p=8;
   tHole.style.top=(r.top-p)+'px'; tHole.style.left=(r.left-p)+'px';
   tHole.style.width=(r.width+2*p)+'px'; tHole.style.height=(r.height+2*p)+'px';
