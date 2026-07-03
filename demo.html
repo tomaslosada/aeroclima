@@ -181,7 +181,16 @@ body.degraded .main .degbanner{display:flex}
 /* --- registro histórico interactivo --- */
 .main .histcard{margin-top:18px}
 .main .histcard .hd .htabs{display:flex;gap:7px}
-.main .htab{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:8px;color:var(--mut);font-family:var(--mono);font-size:10.5px;letter-spacing:.04em;padding:6px 11px;cursor:pointer;transition:.15s}
+.main .htab{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:8px;color:var(--mut);font-family:var(--mono);font-size:10.5px;letter-spacing:.04em;padding:6px 11px;cursor:pointer;transition:.15s;white-space:nowrap}
+@media(max-width:640px){
+  .main .histcard .hd{flex-direction:column;align-items:stretch;gap:9px}
+  .main .histcard .hd .t{font-size:13px;line-height:1.35}
+  .main .histcard .hd .htabs{gap:6px;width:100%}
+  .main .histcard .hd .htabs .htab{flex:1 1 0;min-width:0;text-align:center;padding:8px 4px;font-size:11px}
+  .main .htip{min-width:120px;max-width:190px;padding:7px 9px}
+  .main .htip .tv{font-size:13px}
+  .main .hfoot{font-size:9px}
+}
 .main .htab.on{border-color:var(--acc);color:var(--acc2);background:var(--accdim)}
 .main .histwrap{position:relative}
 .main .histwrap svg{display:block;width:100%;height:auto;cursor:crosshair;touch-action:pan-y}
@@ -529,6 +538,25 @@ body.role-tower .main .rolelock,body.role-pilot .main .rolelock{display:flex}
   .vhead h2{font-size:20px}
   .vhead p{font-size:12.5px}
 }
+
+/* == accesibilidad tactil en telefono: al final para ganar la cascada == */
+@media(max-width:640px){
+  .main .chip{padding:12px 16px !important;font-size:13.5px}
+  .main .qc{padding:12px 14px !important;font-size:13px}
+  .main .histcard .hd .htabs .htab{padding:12px 4px !important}
+  .topbar .tbtn,.topbar .exit{min-height:42px;display:inline-flex;align-items:center}
+  #aiToggle,.main .ghost{min-height:42px}
+  .side .nav{padding-top:14px !important;padding-bottom:14px !important}
+}
+
+/* == accesibilidad: contraste AA, foco de teclado, movimiento reducido == */
+:root{ --faint:#728A9A; --dsteel:#728A9A; }
+a:focus-visible, button:focus-visible, [role="button"]:focus-visible, .chip:focus-visible, .qc:focus-visible, .nav:focus-visible, .htab:focus-visible, input:focus-visible, [tabindex]:focus-visible{
+  outline:2px solid var(--acc2) !important; outline-offset:2px !important;
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{ transition-duration:.001ms !important; animation-duration:.001ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+}
 </style>
 
 <!-- ===================== ACCESO ===================== -->
@@ -588,7 +616,7 @@ body.role-tower .main .rolelock,body.role-pilot .main .rolelock{display:flex}
       <button class="nav" data-view="cumplimiento"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg>Cumplimiento</button>
       <div class="grow"></div>
       <div class="sess"><div class="l">Sesión</div><div class="v"><span class="d"></span><span id="sessRole">Torre · demo</span></div></div>
-      <div class="ver">AeroClima · build 02-jul-e · degradación coherente de IA</div>
+      <div class="ver">AeroClima · build 02-jul-h · reloj vivo · a11y · Safari/WebKit</div>
     </aside>
     <div class="sidescrim" id="sideScrim"></div>
 
@@ -1335,7 +1363,9 @@ function renderHist(){
   const tip=$("histTip"); tip.classList.remove("on");
   [...wrap.querySelectorAll("svg")].forEach(x=>x.remove());
   const d=HIST[scn], m=HMET[histMetric], labels=hLabels(), ser=histSeries(), fail=histFail(scn);
-  const W=720,H=210,L=52,R=14,T=26,B=26, iw=W-L-R, ih=H-T-B;
+  const mob = matchMedia("(max-width:640px)").matches;
+  const W=720, H=mob?300:210, L=mob?46:52, R=14, T=mob?30:26, B=mob?34:26, iw=W-L-R, ih=H-T-B;
+  const FS_lbl=mob?15:9.5, FS_thr=mob?14:9.5, FS_nd=mob?17:11, LBL_STEP=mob?6:3;
   if(!ser){ // sin serie (estable · techo)
     wrap.insertAdjacentHTML("beforeend",`<svg viewBox="0 0 ${W} ${H}" data-events="0"><text x="${W/2}" y="${H/2}" text-anchor="middle" fill="var(--mut)" font-size="13">Sin nubes bajas en la ventana — CAVOK. No hay techo que graficar.</text></svg>`);
     $("histFoot").innerHTML=`<span>Sin cruces de umbral ni alertas en la ventana.</span>`;
@@ -1363,19 +1393,19 @@ function renderHist(){
   svg+=`<rect x="${L}" y="${T}" width="${iw}" height="${ih}" fill="rgba(255,255,255,.02)" stroke="var(--line)"/>`;
   // zona SIN DATO
   if(fail && histMetric!=="wind"){ const fx=X(fail.idx);
-    svg+=`<rect x="${fx}" y="${T}" width="${L+iw-fx}" height="${ih}" fill="rgba(255,255,255,.045)"/><text x="${(fx+L+iw)/2}" y="${T+ih/2}" text-anchor="middle" fill="var(--mut)" font-family="var(--mono)" font-size="11" letter-spacing=".12em">SIN DATO</text>`; }
+    svg+=`<rect x="${fx}" y="${T}" width="${L+iw-fx}" height="${ih}" fill="rgba(255,255,255,.045)"/><text x="${(fx+L+iw)/2}" y="${T+ih/2}" text-anchor="middle" fill="var(--mut)" font-family="var(--mono)" font-size="${FS_nd}" letter-spacing=".12em">SIN DATO</text>`; }
   // umbrales vigentes
   [[m.thrW(),"warn","ámbar"],[m.thrB(),"bad","rojo"]].forEach(([tv,cl,nm])=>{ if(tv<lo||tv>hi) return;
-    svg+=`<line x1="${L}" x2="${L+iw}" y1="${Y(tv)}" y2="${Y(tv)}" stroke="${stC(cl)}" stroke-dasharray="5 5" stroke-opacity=".55"/><text x="${L+iw-4}" y="${Y(tv)-4}" text-anchor="end" fill="${stC(cl)}" font-size="9.5" font-family="var(--mono)">umbral ${nm} ${tv}</text>`; });
+    svg+=`<line x1="${L}" x2="${L+iw}" y1="${Y(tv)}" y2="${Y(tv)}" stroke="${stC(cl)}" stroke-dasharray="5 5" stroke-opacity=".55"/><text x="${L+iw-4}" y="${Y(tv)-4}" text-anchor="end" fill="${stC(cl)}" font-size="${FS_thr}" font-family="var(--mono)">umbral ${nm} ${tv}</text>`; });
   // grilla horaria
-  for(let i=0;i<ser.length;i+=3) svg+=`<text x="${X(i)}" y="${H-8}" text-anchor="middle" fill="var(--faint)" font-size="9.5" font-family="var(--mono)">${labels[i]}Z</text>`;
+  for(let i=0;i<ser.length;i+=LBL_STEP) svg+=`<text x="${X(i)}" y="${H-(mob?12:8)}" text-anchor="middle" fill="var(--faint)" font-size="${FS_lbl}" font-family="var(--mono)">${labels[i]}Z</text>`;
   // segmentos coloreados por estado
   for(let i=1;i<ser.length;i++){ const a=ser[i-1],b=ser[i]; if(a.y==null||b.y==null) continue;
-    svg+=`<line x1="${X(i-1)}" y1="${Y(a.y)}" x2="${X(i)}" y2="${Y(b.y)}" stroke="${stC(b.st)}" stroke-width="2.4" stroke-linecap="round"/>`; }
+    svg+=`<line x1="${X(i-1)}" y1="${Y(a.y)}" x2="${X(i)}" y2="${Y(b.y)}" stroke="${stC(b.st)}" stroke-width="${mob?3.4:2.4}" stroke-linecap="round"/>`; }
   // marcadores de eventos (carril superior + guía vertical)
   evs.forEach(e=>{ const x=X(e.i);
-    svg+=`<line x1="${x}" x2="${x}" y1="${T}" y2="${T+ih}" stroke="${stC(e.st==="pred"?"warn":e.st)}" stroke-opacity=".3"/><rect x="${x-5.2}" y="${T-14}" width="10.4" height="10.4" transform="rotate(45 ${x} ${T-8.8})" fill="${e.st==="pred"?"var(--acc)":stC(e.st)}" stroke="rgba(0,0,0,.35)"/>`; });
-  svg+=`<line id="hx" x1="-9" x2="-9" y1="${T}" y2="${T+ih}" stroke="var(--acc)" stroke-opacity=".6"/><circle id="hd" cx="-9" cy="-9" r="4.2" fill="var(--acc)" stroke="#08131C" stroke-width="1.6"/>`;
+    svg+=`<line x1="${x}" x2="${x}" y1="${T}" y2="${T+ih}" stroke="${stC(e.st==="pred"?"warn":e.st)}" stroke-opacity=".3"/><rect x="${x-(mob?7:5.2)}" y="${T-(mob?18:14)}" width="${mob?14:10.4}" height="${mob?14:10.4}" transform="rotate(45 ${x} ${T-(mob?11:8.8)})" fill="${e.st==="pred"?"var(--acc)":stC(e.st)}" stroke="rgba(0,0,0,.35)"/>`; });
+  svg+=`<line id="hx" x1="-9" x2="-9" y1="${T}" y2="${T+ih}" stroke="var(--acc)" stroke-opacity=".6"/><circle id="hd" cx="-9" cy="-9" r="${mob?6:4.2}" fill="var(--acc)" stroke="#08131C" stroke-width="1.6"/>`;
   svg+=`<rect id="hcap" x="${L}" y="0" width="${iw}" height="${H}" fill="transparent"/></svg>`;
   wrap.insertAdjacentHTML("beforeend",svg);
   $("histFoot").innerHTML = evs.length
@@ -1461,7 +1491,17 @@ function initLayout(){
       h.addEventListener('dblclick',()=>{ c.style.height=''; c.classList.remove('rz'); laySave(); });
     }
   });
-  try{ const st=JSON.parse(localStorage.getItem(LAY_KEY)||'null'); if(st) layApply(st); }catch(e){}
+  try{
+    const st=JSON.parse(localStorage.getItem(LAY_KEY)||'null');
+    if(st){
+      const have=new Set(layCards().map(c=>c.dataset.pid));
+      const stored=[...(st.a||[]),...(st.b||[])];
+      const known=stored.length && stored.every(id=>have.has(id));
+      const complete=stored.length===have.size; // mismo conjunto de paneles que la versión actual
+      if(known && complete) layApply(st);
+      else localStorage.removeItem(LAY_KEY); // esquema viejo/incompleto: descartar, queda el default
+    }
+  }catch(e){ try{ localStorage.removeItem(LAY_KEY); }catch(_){} }
   const rb=$('layoutReset'); if(rb) rb.onclick=layReset;
   const sp=$('colSplit');
   if(sp) sp.addEventListener('pointerdown',e=>{
@@ -1652,12 +1692,24 @@ document.querySelectorAll('.side .nav').forEach(b=>b.onclick=()=>goView(b.datase
   if(sc) sc.onclick=()=>{ sd.classList.remove('open'); sc.classList.remove('on'); };
 })();
 
-/* reloj UTC en vivo */
+/* reloj UTC en vivo + refresco de derivados por minuto */
 (function(){
   const el=document.getElementById('utcClock');
+  let lastMin=-1;
   function tick(){ const d=new Date();
     const p=n=>String(n).padStart(2,'0');
     el.textContent=p(d.getUTCHours())+':'+p(d.getUTCMinutes())+':'+p(d.getUTCSeconds());
+    // al cambiar el minuto, refrescar timestamps derivados (METAR/TAF y gráfico) sin molestar al usuario
+    const m=d.getUTCMinutes();
+    if(m!==lastMin){
+      lastMin=m;
+      const dragging=document.querySelector('.card.plift')||document.querySelector('#colSplit.on');
+      const tipOpen=(document.getElementById('histTip')||{}).classList&&document.getElementById('histTip').classList.contains('on');
+      const isBusy=(typeof busy!=='undefined')&&busy;
+      if(typeof renderDecode==='function' && !isBusy && !dragging && !tipOpen){
+        try{ renderDecode(); renderDash(); }catch(e){}
+      }
+    }
   }
   tick(); setInterval(tick,1000);
 })();
