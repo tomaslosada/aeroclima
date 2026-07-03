@@ -432,6 +432,7 @@ body.degraded .main .ask{opacity:.32;pointer-events:none}
 #tourBlock.on{display:block}
 #tourHole{position:fixed;z-index:171;border-radius:12px;box-shadow:0 0 0 9999px rgba(5,12,18,.72);border:2px solid var(--acc);transition:top .32s cubic-bezier(.4,0,.2,1),left .32s cubic-bezier(.4,0,.2,1),width .32s,height .32s;pointer-events:none}
 #tourCard{position:fixed;z-index:172;width:336px;max-width:calc(100vw - 32px);background:var(--panel);border:1px solid var(--line2);border-radius:14px;box-shadow:0 18px 50px rgba(0,0,0,.5);padding:17px 18px;transition:top .3s,left .3s;cursor:default}
+@media(max-height:840px) and (min-width:1120px){#tourCard{width:300px;padding:14px 16px}#tourCard .tcbody{font-size:12.5px;line-height:1.42}}
 #tourCard .tcnum{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--acc2);margin-bottom:8px}
 #tourCard .tctitle{font-family:var(--disp);font-weight:800;font-size:16.5px;color:#fff;margin-bottom:7px;line-height:1.2;padding-right:18px}
 #tourCard .tcbody{font-size:13px;line-height:1.58;color:var(--mut);margin-bottom:15px}
@@ -616,7 +617,7 @@ a:focus-visible, button:focus-visible, [role="button"]:focus-visible, .chip:focu
       <button class="nav" data-view="cumplimiento"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg>Cumplimiento</button>
       <div class="grow"></div>
       <div class="sess"><div class="l">Sesión</div><div class="v"><span class="d"></span><span id="sessRole">Torre · demo</span></div></div>
-      <div class="ver">AeroClima · build 02-jul-h · reloj vivo · a11y · Safari/WebKit</div>
+      <div class="ver">AeroClima · build 02-jul-i · tour reencuadrado · reloj optimizado</div>
     </aside>
     <div class="sidescrim" id="sideScrim"></div>
 
@@ -1602,7 +1603,7 @@ const TOUR=[
     body:'Consulte en lenguaje natural: cada respuesta cita la norma vigente, indica la fuente homologada y queda registrada con fecha y hora. Además, el sistema no espera la pregunta: cuando una variable se acerca a un límite, emite una alerta proactiva por su cuenta. Y hacia atrás: cada observación queda en un registro histórico consultable por rango, con fecha, hora y fuente.'},
   {view:'operacion', sel:'#histCard', title:'Registro histórico interactivo',
     body:'Recorra la serie con el cursor: valor, hora y estado en cada punto. Los rombos marcan alertas y cambios de estado, y las líneas punteadas son los umbrales vigentes — si el Administrador los mueve, los cruces se recalculan en vivo.'},
-  {view:'operacion', sel:'#opGrid', title:'Disposición a medida',
+  {view:'operacion', sel:'#layoutBar', title:'Disposición a medida',
     body:'Cada operador arma su tablero: los paneles se arrastran por el encabezado, se redimensionan desde la esquina y el divisor central ajusta las columnas. La alerta proactiva también puede moverse. «Restablecer disposición» vuelve al orden original.'},
   {view:'operacion', sel:'#aiToggle', title:'Continuidad operativa',
     body:'Simule la caída de la capa de IA: la síntesis, el asistente, la sugerencia normativa y la alerta proyectiva se degradan con aviso explícito — pero el dato crudo homologado, el semáforo del kernel y el registro histórico siguen operativos. La IA nunca se interpone entre el operador y la medición.'},
@@ -1631,9 +1632,21 @@ function placeTour(){
   const r=el.getBoundingClientRect(), p=8;
   tHole.style.top=(r.top-p)+'px'; tHole.style.left=(r.left-p)+'px';
   tHole.style.width=(r.width+2*p)+'px'; tHole.style.height=(r.height+2*p)+'px';
-  const cw=tCard.offsetWidth||332, ch=tCard.offsetHeight||170, m=14, vw=innerWidth, vh=innerHeight;
-  let top=r.bottom+p+12; if(top+ch>vh-m) top=r.top-p-12-ch; if(top<m) top=m;
-  let left=r.left+r.width/2-cw/2; left=Math.max(m,Math.min(left,vw-cw-m));
+  const cw=tCard.offsetWidth||332, ch=tCard.offsetHeight||170, m=14, vw=innerWidth, vh=innerHeight, gap=12;
+  // preferencia original: abajo del elemento; si no entra, arriba
+  const fitsBelow=r.bottom+p+gap+ch<=vh-m, fitsAbove=r.top-p-gap-ch>=m;
+  let top, left=r.left+r.width/2-cw/2;
+  if(fitsBelow){ top=r.bottom+p+gap; }
+  else if(fitsAbove){ top=r.top-p-gap-ch; }
+  else {
+    // no entra cómodo arriba ni abajo (panel alto): mandar al costado para no pisarlo
+    const spaceRight=vw-r.right-gap-m, spaceLeft=r.left-gap-m;
+    if(spaceRight>=cw){ left=r.right+gap; top=Math.max(m,Math.min(r.top-p, vh-ch-m)); }
+    else if(spaceLeft>=cw){ left=r.left-gap-cw; top=Math.max(m,Math.min(r.top-p, vh-ch-m)); }
+    else { top=Math.max(m, vh-ch-m); } // sin costados (mobile): abajo de todo, clampeado
+  }
+  top=Math.max(m,Math.min(top,vh-ch-m));
+  left=Math.max(m,Math.min(left,vw-cw-m));
   tCard.style.top=top+'px'; tCard.style.left=left+'px';
 }
 function showStep(i){
@@ -1692,17 +1705,19 @@ document.querySelectorAll('.side .nav').forEach(b=>b.onclick=()=>goView(b.datase
   if(sc) sc.onclick=()=>{ sd.classList.remove('open'); sc.classList.remove('on'); };
 })();
 
-/* reloj UTC en vivo + refresco de derivados por minuto */
+/* reloj UTC en vivo + refresco de derivados cuando cambia el bucket de 10 min */
 (function(){
   const el=document.getElementById('utcClock');
-  let lastMin=-1;
+  let lastBucket=-1;
   function tick(){ const d=new Date();
     const p=n=>String(n).padStart(2,'0');
     el.textContent=p(d.getUTCHours())+':'+p(d.getUTCMinutes())+':'+p(d.getUTCSeconds());
-    // al cambiar el minuto, refrescar timestamps derivados (METAR/TAF y gráfico) sin molestar al usuario
-    const m=d.getUTCMinutes();
-    if(m!==lastMin){
-      lastMin=m;
+    // el gráfico y el METAR se rotulan en tramos de 10 min: sólo refrescar al cambiar de tramo,
+    // no cada minuto (evita re-render y acumulación innecesarios en equipos modestos)
+    const bucket=Math.floor((d.getUTCHours()*60+d.getUTCMinutes())/10);
+    if(bucket!==lastBucket){
+      const first=lastBucket===-1; lastBucket=bucket;
+      if(first) return; // en la carga ya renderizó el init; no repetir
       const dragging=document.querySelector('.card.plift')||document.querySelector('#colSplit.on');
       const tipOpen=(document.getElementById('histTip')||{}).classList&&document.getElementById('histTip').classList.contains('on');
       const isBusy=(typeof busy!=='undefined')&&busy;
