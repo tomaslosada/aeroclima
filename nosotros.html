@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nosotros — Pulsar | AeroClima</title>
-<meta name="description" content="Pulsar es un equipo de tecnología y operación con base en Argentina, dedicado al software para la aviación. AeroClima es su producto para la aviación regional.">
+<title>Nosotros — Púlsar | AeroClima</title>
+<meta name="description" content="Púlsar es un equipo de tecnología y operación con base en Argentina, dedicado al software para la aviación. AeroClima es su producto para la aviación regional.">
 <link rel="icon" type="image/png" sizes="48x48" href="favicon-48.png">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -12,15 +12,15 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="AeroClima">
 <meta property="og:locale" content="es_AR">
-<meta property="og:title" content="Nosotros — Pulsar | AeroClima">
-<meta property="og:description" content="Pulsar: equipo de tecnología y operación con base en Argentina, dedicado al software para la aviación.">
+<meta property="og:title" content="Nosotros — Púlsar | AeroClima">
+<meta property="og:description" content="Púlsar: equipo de tecnología y operación con base en Argentina, dedicado al software para la aviación.">
 <meta property="og:url" content="https://aeroclima.pulsar-avitech.ai/nosotros.html">
 <meta property="og:image" content="https://aeroclima.pulsar-avitech.ai/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Nosotros — Pulsar | AeroClima">
-<meta name="twitter:description" content="Pulsar: equipo de tecnología y operación con base en Argentina, dedicado al software para la aviación.">
+<meta name="twitter:title" content="Nosotros — Púlsar | AeroClima">
+<meta name="twitter:description" content="Púlsar: equipo de tecnología y operación con base en Argentina, dedicado al software para la aviación.">
 <meta name="twitter:image" content="https://aeroclima.pulsar-avitech.ai/og-image.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -38,12 +38,14 @@
 .valor p{font-size:14.5px;color:var(--ink-soft)}
 .team{margin-top:38px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px}
 .member{background:#fff;border:1px solid var(--line);border-radius:13px;padding:26px;text-align:center}
-.avatar{width:84px;height:84px;border-radius:50%;margin:0 auto 16px;display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:30px;color:#fff;background:var(--grad-pulsar)}
+.avatar{width:84px;height:84px;border-radius:50%;margin:0 auto 16px;display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:30px;color:#fff;background:var(--grad-pulsar);position:relative}
+.pbdg{position:absolute;right:-5px;bottom:-3px;width:27px;height:27px;border-radius:50%;background:var(--per,#15C2B2);display:grid;place-items:center;border:2.5px solid #fff;box-shadow:0 1px 5px rgba(10,30,45,.28)}
+.pbdg svg{width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .member .nm{font-family:var(--display);font-weight:800;font-size:18px}
 .member .rl{font-size:13.5px;color:var(--cielo);font-weight:600;margin-top:3px}
 .member .bio{font-size:13.5px;color:var(--ink-soft);margin-top:10px;line-height:1.5}
 .adv-tag{display:inline-block;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;color:var(--ink-soft);background:#EDF1F5;border-radius:99px;padding:3px 10px;margin-top:12px}
-.ph-hint{margin-top:20px;font-family:var(--mono);font-size:12px;color:var(--ink-soft);font-style:italic}
+
 @media (max-width:820px){.mision{grid-template-columns:1fr;gap:30px}}
 .skip{position:absolute;left:-9999px;top:0;background:#fff;color:var(--ink);padding:10px 16px;border-radius:0 0 8px 0;z-index:99;font-weight:600}.skip:focus{left:0}
 </style>
@@ -57,7 +59,7 @@
   <div class="wrap">
     <div class="kicker">Quiénes somos</div>
     <h1>Software para la aviación, hecho desde la operación.</h1>
-    <p>Pulsar es un equipo de tecnología y operación con base en Argentina. AeroClima es nuestro producto para la aviación regional de LATAM.</p>
+    <p>Púlsar es un equipo de tecnología y operación con base en Argentina. AeroClima es nuestro producto para la aviación regional de LATAM.</p>
   </div>
 </header>
 
@@ -70,7 +72,7 @@
         <p>Construimos AeroClima con asesoría directa de profesionales en ejercicio de la meteorología aeronáutica y el control de tránsito aéreo, validando cada función contra el trabajo real de un turno — no contra supuestos de oficina.</p>
         <p>Creemos que la tecnología no tiene que reemplazar el criterio de quien opera: tiene que darle mejor información, más rápido y en lenguaje claro. El producto se encuentra en desarrollo activo.</p>
       </div>
-      <div class="logo-panel"><img src="pulsar-logo-round.png" alt="Pulsar — Software para la Aviación"></div>
+      <div class="logo-panel"><img src="pulsar-logo-round.png" alt="Púlsar — Software para la Aviación"></div>
     </div>
   </div>
 </section>
@@ -93,13 +95,13 @@
     <div class="kicker">El equipo</div>
     <h2>Las personas detrás de AeroClima.</h2>
     <div class="team reveal">
-      <div class="member"><div class="avatar">MG</div><div class="nm">María del Carmen Gironzi</div><div class="rl">Cofundadora · CEO</div><div class="bio">Conduce la dirección general de Pulsar y el vínculo con los interesados.</div></div>
-      <div class="member"><div class="avatar">RG</div><div class="nm">Ricardo Gironzi</div><div class="rl">Cofundador · CTO</div><div class="bio">Lidera la estrategia tecnológica y la relación con aeropuertos.</div></div>
-      <div class="member"><div class="avatar">TL</div><div class="nm">Tomás Losada</div><div class="rl">Cofundador · Arquitecto de Sistemas y Líder Técnico</div><div class="bio">Diseña la arquitectura de la plataforma y dirige el desarrollo del producto.</div></div>
-      <div class="member"><div class="avatar">ES</div><div class="nm">Esther Sack</div><div class="rl">Cofundadora · Product Owner</div><div class="bio">Define el rumbo del producto y prioriza la voz del usuario operativo.</div></div>
-      <div class="member"><div class="avatar">DG</div><div class="nm">Daniel Gironzi</div><div class="rl">Cofundador</div><div class="bio">Impulsa y respalda el desarrollo del proyecto desde sus inicios.</div></div>
+      <div class="member"><div class="avatar" style="--per:#159AC2">MG<span class="pbdg"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m15 9-2.5 5.5L9 15l2.5-5.5Z"/></svg></span></div><div class="nm">María del Carmen Gironzi</div><div class="rl">Cofundadora · CEO</div><div class="bio">Conduce la dirección general de Púlsar y el vínculo con los interesados.</div></div>
+      <div class="member"><div class="avatar" style="--per:#7A5CD6">RG<span class="pbdg"><svg viewBox="0 0 24 24"><path d="M12 3v3M8 6h8l-1.5 5h-5L8 6ZM12 11v10M9 21h6"/></svg></span></div><div class="nm">Ricardo Gironzi</div><div class="rl">Cofundador · CTO</div><div class="bio">Lidera la estrategia tecnológica y la relación con aeropuertos.</div></div>
+      <div class="member"><div class="avatar" style="--per:#15C2B2">TL<span class="pbdg"><svg viewBox="0 0 24 24"><path d="m8 8-4 4 4 4M16 8l4 4-4 4"/></svg></span></div><div class="nm">Tomás Losada</div><div class="rl">Cofundador · Arquitecto de Sistemas y Líder Técnico</div><div class="bio">Diseña la arquitectura de la plataforma y dirige el desarrollo del producto.</div></div>
+      <div class="member"><div class="avatar" style="--per:#D99A2B">ES<span class="pbdg"><svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6zM15 3v4h4"/><path d="m9 14 2 2 4-4"/></svg></span></div><div class="nm">Esther Sack</div><div class="rl">Cofundadora · Product Owner</div><div class="bio">Define el rumbo del producto y prioriza la voz del usuario operativo.</div></div>
+      <div class="member"><div class="avatar" style="--per:#4C9A5F">DG<span class="pbdg"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg></span></div><div class="nm">Daniel Gironzi</div><div class="rl">Cofundador</div><div class="bio">Impulsa y respalda el desarrollo del proyecto desde sus inicios.</div></div>
     </div>
-    <p class="ph-hint">Las fotos del equipo se incorporarán próximamente.</p>
+    
   </div>
 </section>
 

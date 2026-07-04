@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Producto — AeroClima | Pulsar</title>
+<title>Producto — AeroClima | Púlsar</title>
 <meta name="description" content="De qué es capaz AeroClima: consultas en lenguaje natural sobre la meteorología del aeropuerto, alertas configurables y una incorporación sin obra ni reemplazos.">
 <link rel="icon" type="image/png" sizes="48x48" href="favicon-48.png">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
@@ -77,6 +77,10 @@
 .chip{font-size:13.5px;font-family:var(--body);background:#EDF3F8;border:1px solid var(--line);color:var(--ink);border-radius:99px;padding:8px 15px;cursor:pointer;transition:background .15s,border-color .15s}
 .chip:hover{background:#DCE8F2;border-color:var(--cielo)}
 .chip:disabled{opacity:.4;cursor:default}
+.ptrace{margin-top:9px;text-align:left}
+.pthd{font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;color:#7A8B99;margin-bottom:4px}
+.ptl{font-family:var(--mono);font-size:11.5px;color:#44607A;border-left:2px solid #BFD6E4;padding:2px 0 2px 8px;margin:3px 0;animation:pfad .25s ease}
+@keyframes pfad{from{opacity:0;transform:translateY(2px)}to{opacity:1}}
 @media(max-width:640px){.chip{padding:12px 16px;font-size:14px}}
 .demo-note{margin-top:18px;font-family:var(--mono);font-size:12px;color:#8FA1B3;max-width:560px;text-align:center}
 .split-note{margin-top:20px;font-size:14px;color:var(--ink-soft)}
@@ -164,10 +168,10 @@
 <script>
 // ---- demo de chat simulada ----
 const QA = [
-  {q:"¿Cómo está la visibilidad y el techo?", src:"ZZZZ · AWOS homologado · OBS hace 6 min", a:`Visibilidad 2.000 m y techo 500 ft. Por ahora dentro de los mínimos de la carta, pero con tendencia a bajar hacia el amanecer. Es la primera variable que mira la torre.`, est:["amber","VIGILAR TENDENCIA"]},
-  {q:"¿Riesgo de niebla mañana?", src:"ZZZZ · pronóstico SMN + AWOS · hace 12 min", a:`Probabilidad media para la primera franja: la humedad sube hacia el amanecer y la temperatura se acerca al punto de rocío. Confianza: media-alta. Conviene preparar procedimientos de baja visibilidad.`, est:["amber","PRECAUCIÓN OPERATIVA"]},
-  {q:"¿Estado de la pista ahora?", src:"ZZZZ · AWOS homologado · OBS hace 6 min", a:`Visibilidad y techo dentro de límites; el factor a seguir es la evolución de la niebla hacia el amanecer. Operación posible con seguimiento.`, est:["verde","DENTRO DE LÍMITES"]},
-  {q:"¿Resumime cómo viene el turno?", src:"ZZZZ · consolidado AWOS + SMN · turno en curso", a:`Turno tranquilo hasta ahora, sin eventos abiertos. El único punto a seguir es la niebla hacia el amanecer, que podría bajar la visibilidad. Todo lo demás, dentro de límites. Listo para el relevo.`, est:["verde","SIN EVENTOS ABIERTOS"]}
+  {q:"¿Cómo está la visibilidad y el techo?", src:"SAZZ · AWOS homologado · OBS hace 6 min", a:`Visibilidad 2.000 m y techo 500 ft. Por ahora dentro de los mínimos de la carta, pero con tendencia a bajar hacia el amanecer. Es la primera variable que mira la torre.`, est:["amber","VIGILAR TENDENCIA"]},
+  {q:"¿Riesgo de niebla mañana?", src:"SAZZ · pronóstico SMN + AWOS · hace 12 min", a:`Probabilidad media para la primera franja: la humedad sube hacia el amanecer y la temperatura se acerca al punto de rocío. Confianza: media-alta. Conviene preparar procedimientos de baja visibilidad.`, est:["amber","PRECAUCIÓN OPERATIVA"]},
+  {q:"¿Estado de la pista ahora?", src:"SAZZ · AWOS homologado · OBS hace 6 min", a:`Visibilidad y techo dentro de límites; el factor a seguir es la evolución de la niebla hacia el amanecer. Operación posible con seguimiento.`, est:["verde","DENTRO DE LÍMITES"]},
+  {q:"¿Resumime cómo viene el turno?", src:"SAZZ · consolidado AWOS + SMN · turno en curso", a:`Turno tranquilo hasta ahora, sin eventos abiertos. El único punto a seguir es la niebla hacia el amanecer, que podría bajar la visibilidad. Todo lo demás, dentro de límites. Listo para el relevo.`, est:["verde","SIN EVENTOS ABIERTOS"]}
 ];
 const body = document.getElementById('chatBody');
 const chips = document.getElementById('chips');
@@ -189,12 +193,23 @@ function ask(i){
   body.appendChild(u); scroll();
   const t=document.createElement('div'); t.className='typing'; t.innerHTML='<span></span><span></span><span></span>';
   body.appendChild(t); scroll();
+  const _steps=[
+    'Leo la observación vigente · '+item.src.split('·').slice(1).join('·').trim(),
+    'Comparo contra umbrales y mínimos de la carta vigente',
+    'Kernel: '+item.est[1].toLowerCase()+' — la IA narra, no decide',
+    'Redacto en lenguaje operativo claro'
+  ];
+  const _tr=document.createElement('div'); _tr.className='ptrace';
+  _tr.innerHTML='<div class="pthd">PROCESANDO · TRAZA DE LA CONSULTA</div>';
+  t.appendChild(_tr);
+  const _rm=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  _steps.forEach((sx,ix)=>setTimeout(()=>{const d=document.createElement('div');d.className='ptl';d.textContent=sx;_tr.appendChild(d);scroll();}, _rm?40+ix*50:430+ix*470));
   setTimeout(()=>{
     t.remove();
     const b=document.createElement('div'); b.className='msg b';
     b.innerHTML = `<div class="src">${item.src}</div>` + item.a + `<div class="est ${item.est[0]}"><span class="d"></span>${item.est[1]}</div>`;
     body.appendChild(b); scroll();
-  }, 1100);
+  }, 2650);
 }
 renderChips();
 </script>

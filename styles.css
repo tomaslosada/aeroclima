@@ -28,6 +28,7 @@ img{max-width:100%}
 .wrap{max-width:1080px;margin:0 auto;padding:0 24px}
 .kicker{font-family:var(--mono);font-size:12.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--cielo);margin-bottom:12px}
 h1,h2,h3{font-family:var(--display);text-wrap:balance}
+p{text-wrap:pretty;hyphens:auto;-webkit-hyphens:auto}
 
 /* ---------- ESCENA ANIMADA DE FONDO (heroes) ---------- */
 .hero, .page-hero{position:relative;overflow:hidden}
@@ -109,6 +110,8 @@ section>.wrap>p.intro{max-width:64ch;color:var(--ink-soft);font-size:18px}
   .nav-links a{display:block;padding:13px 12px;font-size:16px;border-radius:8px}
   .nav-cta{margin-top:8px;text-align:center;justify-content:center}
   .foot-col a{padding:11px 0}
+  .page-hero{padding:26px 0 34px !important}
+  .hero{padding-top:44px !important}
   .burger{display:block}
   .foot-top{grid-template-columns:1fr;gap:30px}
 }

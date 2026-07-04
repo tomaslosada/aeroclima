@@ -584,7 +584,7 @@ a:focus-visible, button:focus-visible, [role="button"]:focus-visible, .chip:focu
 
     <div class="fld">
       <label>Estación</label>
-      <select id="lgStation"><option>ZZZZ · Aeropuerto demo (datos públicos)</option></select>
+      <select id="lgStation"><option>SAZZ · Aeropuerto regional · demo (datos públicos)</option></select>
     </div>
     <div class="fld">
       <label>Perfil de acceso</label>
@@ -609,7 +609,7 @@ a:focus-visible, button:focus-visible, [role="button"]:focus-visible, .chip:focu
       <img class="mk" src="aeroclima-mark.png" alt="AeroClima">
       <div><div class="wm">Aero<span>Clima</span></div><span class="tag">Demo operativa</span></div>
     </div>
-    <div class="station">EST <b>ZZZZ</b> · Aeropuerto demo <span class="lock" title="Cada respuesta está anclada a la estación ZZZZ. Otro aeropuerto significaría otra carta, otra pista y otra norma — AeroClima no mezcla aeropuertos."><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>anclado</span></div>
+    <div class="station">EST <b>SAZZ</b> · Aeropuerto regional · demo <span class="lock" title="Cada respuesta está anclada a la estación SAZZ. Otro aeropuerto significaría otra carta, otra pista y otra norma — AeroClima no mezcla aeropuertos."><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>anclado</span></div>
     <div class="spacer"></div>
     <div class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px;color:var(--acc2)"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span class="clk" id="utcClock">--:--:--</span> UTC</div>
     <div class="pill live"><span class="d"></span><span class="lvlabel">EN LÍNEA</span></div>
@@ -628,7 +628,7 @@ a:focus-visible, button:focus-visible, [role="button"]:focus-visible, .chip:focu
       <button class="nav" data-view="cumplimiento"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg>Cumplimiento</button>
       <div class="grow"></div>
       <div class="sess"><div class="l">Sesión</div><div class="v"><span class="d"></span><span id="sessRole">Torre · demo</span></div></div>
-      <div class="ver">AeroClima · build 02-jul-o · H1 claim sin jerga</div>
+      <div class="ver">AeroClima · build 02-jul-s · estación SAZZ</div>
     </aside>
     <div class="sidescrim" id="sideScrim"></div>
 
@@ -668,7 +668,7 @@ a:focus-visible, button:focus-visible, [role="button"]:focus-visible, .chip:focu
           <div class="hd"><div class="t"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4.9 16.1a9 9 0 0 1 0-8.2M7.8 13.8a5 5 0 0 1 0-3.6M19.1 7.9a9 9 0 0 1 0 8.2M16.2 10.2a5 5 0 0 1 0 3.6"/><circle cx="12" cy="12" r="1.4"/></svg>Observación vigente</div><div class="meta">METAR · TAF</div></div>
           <div class="bd">
             <div class="feedraw">
-              <div class="rawhd"><span class="ftag">Crudo · sin editar</span><span class="rawsrc" id="decodeSrc"><span class="ld"></span>AWOS · ZZZZ</span></div>
+              <div class="rawhd"><span class="ftag">Crudo · sin editar</span><span class="rawsrc" id="decodeSrc"><span class="ld"></span>AWOS · SAZZ</span></div>
               <div id="decodeRaw" class="rawtxt"></div>
             </div>
             <div class="feedsep"><span class="seplab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>Lectura asistida · AeroClima</span></div>
@@ -680,7 +680,7 @@ a:focus-visible, button:focus-visible, [role="button"]:focus-visible, .chip:focu
         <div class="grid" id="opGrid">
           <div class="col" id="colA">
             <div class="card">
-              <div class="hd"><div class="t"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg><span id="panelTitle">Tablero · Torre</span></div><div class="meta" id="panelClock">Aeropuerto demo · 14:00 UTC</div></div>
+              <div class="hd"><div class="t"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg><span id="panelTitle">Tablero · Torre</span></div><div class="meta" id="panelClock">Aeropuerto regional · demo · 14:00 UTC</div></div>
               <div class="bd"><div class="heroes" id="heroes"></div><div id="estadoWrap"></div></div>
             </div>
             <div class="card">
@@ -804,8 +804,8 @@ const SC = {
   niebla:{
     label:"Niebla · techo bajo",
     visM:1200, ceilFt:300, windDir:140, windSpd:8, windGust:0, obsAge:7,
-    metar:'METAR ZZZZ 291400Z <b>14008KT</b> <b>1200</b> BR <b>BKN003</b> 12/11 Q1014=',
-    taf:'TAF ZZZZ 291100Z 2912/3012 14010KT 3000 BR BKN004<br>TEMPO 2912/2915 <b>0800 FG VV002</b>=',
+    metar:'METAR SAZZ 291400Z <b>14008KT</b> <b>1200</b> BR <b>BKN003</b> 12/11 Q1014=',
+    taf:'TAF SAZZ 291100Z 2912/3012 14010KT 3000 BR BKN004<br>TEMPO 2912/2915 <b>0800 FG VV002</b>=',
     decode:'<b>Niebla</b>: visibilidad <b>1.200 m</b> y techo <b>300 ft</b> (BKN003); temperatura y rocío casi iguales — aire saturado. Con el ascenso térmico de la mañana debería ir levantando. Por debajo de 1.500 m, la referencia operativa pasa a ser el <b>RVR</b> medido sobre la pista.',
     vd:"bad",
     vis:{v:"1.200",u:"m",st:"bad",badge:"Bajo mínimo",sub:"Mínima por sector NW",spark:[2600,2200,1900,1600,1400,1200]},
@@ -821,8 +821,8 @@ const SC = {
   viento:{
     label:"Viento fuerte del SO",
     visM:9999, ceilFt:null, windDir:240, windSpd:28, windGust:42, obsAge:4,
-    metar:'METAR ZZZZ 291700Z <b>24028G42KT</b> 9999 SCT045 16/04 Q1009=',
-    taf:'TAF ZZZZ 291500Z 2915/3015 <b>24025G40KT</b> 9999 SCT040<br>TEMPO 2917/2921 <b>24030G48KT</b>=',
+    metar:'METAR SAZZ 291700Z <b>24028G42KT</b> 9999 SCT045 16/04 Q1009=',
+    taf:'TAF SAZZ 291500Z 2915/3015 <b>24025G40KT</b> 9999 SCT040<br>TEMPO 2917/2921 <b>24030G48KT</b>=',
     decode:'<b>Viento fuerte del oeste-sudoeste</b>: 24 nudos sostenidos con ráfagas de 42. Visibilidad y techo sin problemas; lo que hay que vigilar es la <b>componente cruzada</b> sobre la pista en uso.',
     vd:"warn",
     vis:{v:"10+",u:"km",st:"ok",badge:"CAVOK",sub:"Sin restricción",spark:[10,10,10,10,10,10]},
@@ -838,8 +838,8 @@ const SC = {
   estable:{
     label:"Estable",
     visM:9999, ceilFt:null, windDir:360, windSpd:6, windGust:0, obsAge:12,
-    metar:'METAR ZZZZ 291200Z <b>36006KT</b> <b>CAVOK</b> 19/07 Q1018=',
-    taf:'TAF ZZZZ 291100Z 2912/3012 36006KT CAVOK=',
+    metar:'METAR SAZZ 291200Z <b>36006KT</b> <b>CAVOK</b> 19/07 Q1018=',
+    taf:'TAF SAZZ 291100Z 2912/3012 36006KT CAVOK=',
     decode:'<b>Condiciones óptimas</b>: CAVOK y viento suave del norte de 6 nudos. Visibilidad ilimitada, sin nubes bajas. Operación normal, sin restricciones.',
     vd:"ok",
     vis:{v:"10+",u:"km",st:"ok",badge:"CAVOK",sub:"Cielo despejado",spark:[10,10,10,10,10,10]},
@@ -855,8 +855,8 @@ const SC = {
   degradado:{
     label:"Sensor degradado",
     visM:9999, ceilFt:null, windDir:150, windSpd:6, windGust:0, obsAge:22,
-    metar:'METAR ZZZZ 291500Z 15006KT <b>////</b> <b>BKN///</b> 14/12 Q1013=',
-    taf:'TAF ZZZZ 291100Z 2912/3012 15008KT 9999 SCT035=',
+    metar:'METAR SAZZ 291500Z 15006KT <b>////</b> <b>BKN///</b> 14/12 Q1013=',
+    taf:'TAF SAZZ 291100Z 2912/3012 15008KT 9999 SCT035=',
     decode:'El sensor de visibilidad y el de techo están devolviendo <b>datos no válidos</b> (<b>////</b> en el METAR): lecturas ausentes o fuera de rango físico. AeroClima <b>no promedia ni estima</b> el valor faltante — se <b>abstiene</b> de esas dos variables, deja a la vista la <b>última lectura válida</b> y deriva la observación al <b>observador certificado</b>. El resto de las variables sigue disponible.',
     vd:"warn",
     vis:{v:"SIN DATO",u:"",st:"warn",badge:"Sensor sin lectura válida",sub:"Última lectura válida hace 22 min: 8.000 m",spark:[8000,8000,8000,8000,8000,8000]},
@@ -900,10 +900,10 @@ const ANS = {
         const fv=fd?fmtHM(fd):"";
         return {
         meas:{
-          niebla:"Registro histórico ZZZZ · techo · últimas 3 h · AWOS homologado",
-          viento:"Registro histórico ZZZZ · techo · últimas 72 h · AWOS homologado",
-          estable:"Registro histórico ZZZZ · techo · últimos 30 días · AWOS homologado",
-          degradado:"Registro histórico ZZZZ · techo · completo hasta "+fv+"Z · AWOS homologado"
+          niebla:"Registro histórico SAZZ · techo · últimas 3 h · AWOS homologado",
+          viento:"Registro histórico SAZZ · techo · últimas 72 h · AWOS homologado",
+          estable:"Registro histórico SAZZ · techo · últimos 30 días · AWOS homologado",
+          degradado:"Registro histórico SAZZ · techo · completo hasta "+fv+"Z · AWOS homologado"
         }[scn],
         v:{tag:{niebla:"bad",viento:"ok",estable:"ok",degradado:"warn"}[scn], text:{
           niebla:L("Cruce <800 ft: "+z(40)+"Z (BKN008). Descenso sostenido 900→300 ft en 60 min. Registro completo por rango, fuente AWOS.",
@@ -950,7 +950,7 @@ const ANS = {
         clause:CL.c204, elicit:false })},
     {key:"turno", q:"Resuma el turno",
       build:s=>({
-        meas:`Aeropuerto demo · OBS hace ${s.obsAge} min · viento ${s.wind.v} ${s.wind.u}`,
+        meas:`Aeropuerto regional · demo · OBS hace ${s.obsAge} min · viento ${s.wind.v} ${s.wind.u}`,
         v:{tag:s.estado.st, text:{
           niebla:L("Niebla dominante: VIS 1200 / BKN003, tend ↓, mejora c/ascenso térmico. Viento calmo. OP restringida: sólo ILS16 sup. RVR. PAPI16 U/S (NOTAM).",
             "Turno dominado por niebla: 1.200 m de visibilidad y techo de 300 ft, con tendencia a empeorar al amanecer y mejora esperada con el ascenso térmico. Viento calmo. Operación restringida; sólo ILS 16 supeditada a RVR. PAPI 16 fuera de servicio (NOTAM).",
@@ -1128,7 +1128,7 @@ function dynFeed(s){
 }
 function renderDecode(){
   const s=live(scn);
-  const ds=$("decodeSrc"); if(ds) ds.innerHTML='<span class="ld"></span>AWOS · ZZZZ · OBS hace '+s.obsAge+' min';
+  const ds=$("decodeSrc"); if(ds) ds.innerHTML='<span class="ld"></span>AWOS · SAZZ · OBS hace '+s.obsAge+' min';
   const df=dynFeed(s);
   $("decodeRaw").innerHTML = df.metar + '<div style="margin-top:10px">'+df.taf+'</div>';
   $("decodeAns").innerHTML = s.decode;
@@ -1191,12 +1191,12 @@ const chat=$("chat"), qchips=$("qchips");
 function seed(){
   if(aiDown()){
     chat.innerHTML="";
-    addBub("a", '<div class="iaoff"><b>Asistente no disponible — capa de IA caída.</b>&nbsp;El tablero, las mediciones homologadas y el registro histórico siguen operativos: no dependen de la IA. Al restablecerse la capa, el asistente retoma anclado a ZZZZ.</div>');
+    addBub("a", '<div class="iaoff"><b>Asistente no disponible — capa de IA caída.</b>&nbsp;El tablero, las mediciones homologadas y el registro histórico siguen operativos: no dependen de la IA. Al restablecerse la capa, el asistente retoma anclado a SAZZ.</div>');
     buildChips(); return;
   }
   const t = prof==="tower"
-    ? "Soy el asistente operativo para <b>torre de control</b>. Me apoyo en las mediciones homologadas del aeropuerto y en la normativa cargada (RAC, cartas IAC). Realice una consulta y respondo en lenguaje claro; la decisión es del operador. Todas mis respuestas están <b>ancladas a la estación ZZZZ</b>: no mezclo aeropuertos — otro aeródromo significaría otra carta, otra pista y otra norma."
-    : "Soy el asistente operativo para <b>piloto</b>. Resumo viento, NOTAMs, ruta y alternativas del aeropuerto a partir de las fuentes homologadas y públicas. Consulte lo que necesite para planificar. Todas mis respuestas están <b>ancladas a la estación ZZZZ</b>: no mezclo aeropuertos — otro aeródromo significaría otras cartas, otras pistas y otros NOTAMs.";
+    ? "Soy el asistente operativo para <b>torre de control</b>. Me apoyo en las mediciones homologadas del aeropuerto y en la normativa cargada (RAC, cartas IAC). Realice una consulta y respondo en lenguaje claro; la decisión es del operador. Todas mis respuestas están <b>ancladas a la estación SAZZ</b>: no mezclo aeropuertos — otro aeródromo significaría otra carta, otra pista y otra norma."
+    : "Soy el asistente operativo para <b>piloto</b>. Resumo viento, NOTAMs, ruta y alternativas del aeropuerto a partir de las fuentes homologadas y públicas. Consulte lo que necesite para planificar. Todas mis respuestas están <b>ancladas a la estación SAZZ</b>: no mezclo aeropuertos — otro aeródromo significaría otras cartas, otras pistas y otros NOTAMs.";
   chat.innerHTML="";
   addBub("a", `<p>${t}</p><p style="color:var(--acero);font-size:12px;margin:0">Puede repetir una consulta y mover el <b>Registro</b> (arriba) para ver la misma respuesta en <b>Técnico</b>, <b>Estándar</b> o <b>Llano</b>.</p>`);
   buildChips();
@@ -1228,13 +1228,13 @@ function traceFor(it,d){
     "Derivo al observador certificado y dejo a la vista la última lectura válida",
     red];
   const K={
-    carta:[lee,"Comparo contra los mínimos de las cartas publicadas de ZZZZ","El kernel determinista selecciona carta y cabecera — la IA no decide, sugiere",red],
+    carta:[lee,"Comparo contra los mínimos de las cartas publicadas de SAZZ","El kernel determinista selecciona carta y cabecera — la IA no decide, sugiere",red],
     hist:["Recorro el registro homologado de las últimas 3 horas","Busco cruces del umbral de techo (800 ft) y alertas emitidas","Ordeno los eventos y calculo cuánto tiempo pasó",red],
     baja:[lee,"Contrasto la tendencia del TAF con el umbral de baja visibilidad","Anclo la cita normativa correspondiente (texto a la vista)",red],
     iac:["Abro la carta IAC 16 en la biblioteca normativa anclada","Extraigo mínimos y restricciones tal como están publicados","No interpreto: cito el texto y su vigencia",red],
     turno:["Recolecto los eventos del turno: cambios de estado, alertas y SIN DATO",lee,"Armo la síntesis cronológica con cada fuente citada",red],
     viento:[lee,"Proyecto el viento sobre la cabecera en uso: componente frontal y cruzada",red],
-    notams:["Consulto los NOTAM vigentes de ZZZZ (fuente oficial)","Filtro los que afectan esta operación",red],
+    notams:["Consulto los NOTAM vigentes de SAZZ (fuente oficial)","Filtro los que afectan esta operación",red],
     alt:[lee,"Evalúo las alternativas cargadas y sus mínimos vigentes",red],
     ruta:["Reúno METAR y TAF de ruta y destino",lee,red]
   };
@@ -1271,7 +1271,7 @@ function buildDegraded(it){
   const w=live("degradado").wind;
   const windOk="El sensor de viento sigue válido: "+w.v+" "+w.u+".";
   return {
-    meas:"Visibilidad/techo ZZZZ · SIN DATO VÁLIDO · última lectura válida hace 22 min",
+    meas:"Visibilidad/techo SAZZ · SIN DATO VÁLIDO · última lectura válida hace 22 min",
     v:{tag:"abst", text:L(
       "VIS/techo = //// (sensor sin lectura válida). No se estima ni promedia. Se abstiene de la variable; última lectura válida a la vista; se deriva al observador. Viento válido.",
       "El sensor de visibilidad y el de techo están entregando datos no válidos, así que no puedo darte un valor: no lo estimo ni lo completo con el pronóstico. Me abstengo de esas dos variables, dejo a la vista la última lectura válida (hace 22 min) y derivo la observación al observador certificado. "+windOk,
@@ -1620,7 +1620,7 @@ function fireProactive(){
   if(scn!=='niebla') return; /* la narrativa de esta alerta pertenece al escenario niebla */
   const t=document.createElement('div'); t.id='proToast';
   t.innerHTML=`<div class="pi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg></div>`+
-    `<div style="flex:1"><div class="pcap"><span class="pd"></span>Alerta proactiva · sin consulta · ZZZZ</div>`+
+    `<div style="flex:1"><div class="pcap"><span class="pd"></span>Alerta proactiva · sin consulta · SAZZ</div>`+
     `<div class="pt">Visibilidad bajando: 2.200 → 1.200 m en los últimos 20 min. Al ritmo actual, cruzaría el mínimo de carta (800 m) en ~12 min.</div>`+
     `<div class="ps">Conviene preparar procedimientos de baja visibilidad.</div>`+
     `<div class="pj">Proyección — confianza media · se recalcula con cada observación</div></div>`+

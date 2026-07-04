@@ -1,4 +1,4 @@
-// AeroClima · Pulsar — nav + footer compartidos e interacciones
+// AeroClima · Púlsar — nav + footer compartidos e interacciones
 const NAV = `
 <nav class="nav">
   <div class="nav-inner">
@@ -33,14 +33,14 @@ const FOOTER = `
         <a href="contacto.html">Contacto</a>
       </div>
       <div class="foot-col">
-        <h4>Pulsar</h4>
+        <h4>Púlsar</h4>
         <a href="nosotros.html">Quiénes somos</a>
         <a href="contacto.html">Hablemos</a>
         <span style="display:block;color:#8FA1B3;font-size:14px;padding:5px 0">Buenos Aires, Argentina</span>
       </div>
     </div>
     <div class="foot-bottom">
-      <span>© <span data-year>2026</span> Pulsar · AeroClima</span>
+      <span>© <span data-year>2026</span> Púlsar · AeroClima</span>
       <span>Información meteorológica de carácter complementario · no sustituye fuentes oficiales</span>
     </div>
   </div>
