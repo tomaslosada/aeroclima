@@ -476,6 +476,12 @@ body.role-tower .main .rolelock,body.role-pilot .main .rolelock{display:flex}
 .main .cfgcard{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
 .main .cfgcard .cfgt{font-family:var(--body);font-size:13px;font-weight:700;color:var(--tx);display:flex;align-items:center;gap:9px;margin-bottom:14px;padding-bottom:11px;border-bottom:1px solid var(--line)}
 .main .cfgcard .cfgt svg{width:16px;height:16px;color:var(--acc2);flex:0 0 auto}
+.main .cfggov{font-family:var(--mono);font-size:11px;color:var(--mut);margin:2px 0 14px;line-height:1.55}
+.main .cfgimpact{font-family:var(--mono);font-size:12px;color:var(--acc2);background:var(--accdim);border:1px solid var(--accbd);border-radius:9px;padding:9px 12px;margin-bottom:14px}
+.main .cfglog{display:flex;flex-direction:column;gap:6px}
+.main .cfglog .cle{font-family:var(--mono);font-size:11.5px;color:var(--mut);border-left:2px solid var(--line2);padding:3px 0 3px 9px}
+.main .cfglog .cle b{color:var(--tx);font-weight:600}
+.main .cfglog .cle.sin{border-left-color:transparent;font-style:italic}
 .main .cfgrow{margin-bottom:15px}.main .cfgrow:last-child{margin-bottom:0}
 .main .cfgrow .cl{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}
 .main .cfgrow .cl label{font-size:12.5px;color:var(--mut)}
@@ -628,7 +634,7 @@ a:focus-visible, button:focus-visible, [role="button"]:focus-visible, .chip:focu
       <button class="nav" data-view="cumplimiento"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg>Cumplimiento</button>
       <div class="grow"></div>
       <div class="sess"><div class="l">Sesión</div><div class="v"><span class="d"></span><span id="sessRole">Torre · demo</span></div></div>
-      <div class="ver">AeroClima · build 02-jul-s · estación SAZZ</div>
+      <div class="ver">AeroClima · build 02-jul-u · og coherente</div>
     </aside>
     <div class="sidescrim" id="sideScrim"></div>
 
@@ -750,10 +756,13 @@ a:focus-visible, button:focus-visible, [role="button"]:focus-visible, .chip:focu
           <p>Estos umbrales definen cuándo cada variable pasa a <b>precaución</b> o <b>restricción</b>. Se aplican en vivo a las vistas de Torre y Piloto: ajuste un valor y verá cambiar los estados, los semáforos de cabecera y las respuestas del asistente. Use “Vista previa” aquí debajo o ingrese como Torre/Piloto.</p></div>
         <div id="cfgBody" class="cfg"></div>
         <div class="cfgactions">
-          <button id="cfgReset" class="ghost"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M3 12a9 9 0 1 0 9-9 9 9 0 0 0-6.4 2.6L3 8M3 3v5h5"/></svg>Restaurar valores por defecto</button>
+          <button id="cfgReset" class="ghost"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M3 12a9 9 0 1 0 9-9 9 9 0 0 0-6.4 2.6L3 8M3 3v5h5"/></svg>Restablecer a mínimos de carta</button>
           <span class="cfgnote">Los cambios se aplican al instante a todas las vistas.</span>
         </div>
-        <div class="cfgprev" id="cfgPrev"></div>
+        <p class="cfggov">Los cambios rigen para la estación SAZZ y quedan auditados. Los valores por defecto son los mínimos de la carta publicada.</p>
+      <div id="cfgImpact" class="cfgimpact" hidden></div>
+      <div class="cfgcard"><div class="cfgt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Bitácora de configuración · auditada</div><div id="cfgLog" class="cfglog"><div class="cle sin">Sin cambios en esta sesión.</div></div></div>
+      <div class="cfgprev" id="cfgPrev"></div>
       </section>
 
     </main>
@@ -1844,7 +1853,10 @@ function buildConfig(){
     `</div>`).join('');
   CFG.forEach(g=>g.items.forEach(it=>{
     const inp=document.getElementById('t_'+it.k);
-    inp.oninput=()=>{ thr[it.k]=+inp.value; document.getElementById('v_'+it.k).textContent=inp.value+' '+it.u; applyThr(); };
+    const snap=()=>{ if(cfgBase[it.k]===undefined){ cfgBase[it.k]={v:thr[it.k], n:countCross(METRIC_OF[it.k])}; } };
+    inp.addEventListener('pointerdown',snap); inp.addEventListener('focus',snap);
+    inp.oninput=()=>{ snap(); thr[it.k]=+inp.value; document.getElementById('v_'+it.k).textContent=inp.value+' '+it.u; applyThr(); cfgImpact(it); };
+    inp.onchange=()=>{ const b=cfgBase[it.k]; if(b && b.v!==thr[it.k]) logCfg(`<b>${it.l}</b>: ${b.v} → ${thr[it.k]} ${it.u}`); delete cfgBase[it.k]; };
   }));
 }
 function applyThr(){ renderDecode(); renderDash(); renderCfgPrev(); saveThr(); markStale(); }
@@ -1855,7 +1867,36 @@ function renderCfgPrev(){
   }).join('');
   box.innerHTML=`<div class="pvt">Efecto en vivo · estados resultantes por escenario</div>${rows}`;
 }
-function cfgReset(){ thr=JSON.parse(JSON.stringify(THR0)); buildConfig(); applyThr(); }
+const METRIC_OF={visAmber:'vis',visRed:'vis',ceilAmber:'ceil',ceilRed:'ceil',gustWarn:'wind',gustBad:'wind',xwindWarn:'wind',xwindMax:'wind',tailMax:'wind',rvrMin:null};
+const cfgBase={}, cfgEntries=[];
+function countCross(metric){
+  if(!metric) return null;
+  const keep=histMetric; histMetric=metric;
+  const d=HIST[scn], ser=histSeries(), fail=histFail(scn);
+  histMetric=keep;
+  if(!ser) return 0;
+  let n=0;
+  for(let i=1;i<ser.length;i++){ if(ser[i].y==null||ser[i-1].y==null) continue; if(ser[i].st!==ser[i-1].st) n++; }
+  (d.alerts||[]).forEach(a=>{ if(a.for.includes(metric)) n++; });
+  if(fail && metric!=='wind') n++;
+  return n;
+}
+function cfgImpact(it){
+  const el=document.getElementById('cfgImpact'); const metric=METRIC_OF[it.k];
+  if(!el) return;
+  if(!metric){ el.hidden=true; return; }
+  const now=countCross(metric), b=cfgBase[it.k];
+  el.hidden=false;
+  el.textContent=`Con ${thr[it.k]} ${it.u}: ${now} cruce${now===1?'':'s'} de ${HMET[metric].name.toLowerCase()} en la ventana de 3 h`+(b?` (antes: ${b.n})`:'')+` · escenario ${scn}`;
+}
+function logCfg(html){
+  const box=document.getElementById('cfgLog'); if(!box) return;
+  const sin=box.querySelector('.cle.sin'); if(sin) sin.remove();
+  const d=new Date(); const p=x=>String(x).padStart(2,'0');
+  cfgEntries.unshift(`${p(d.getUTCHours())}:${p(d.getUTCMinutes())}Z · ${html} · admin`);
+  box.innerHTML=cfgEntries.slice(0,8).map(e=>`<div class="cle">${e}</div>`).join('');
+}
+function cfgReset(){ thr=JSON.parse(JSON.stringify(THR0)); buildConfig(); applyThr(); const ci=document.getElementById('cfgImpact'); if(ci) ci.hidden=true; logCfg('<b>Restablecidos a mínimos de carta</b> — todos los umbrales a valores de la carta publicada'); }
 /* el seg de perfil de la operación también actualiza las etiquetas */
 document.querySelectorAll('#profSeg button').forEach(b=>{
   const prev=b.onclick;
