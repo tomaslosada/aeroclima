@@ -372,6 +372,16 @@ body.degraded .main .chat{opacity:.32;pointer-events:none;filter:grayscale(.5)}
 .main .typing{display:flex;gap:4px;padding:12px 14px}
 .main .typing i{width:7px;height:7px;border-radius:50%;background:var(--faint);animation:dmblink 1.2s infinite}
 .main .typing i:nth-child(2){animation-delay:.18s}.main .typing i:nth-child(3){animation-delay:.36s}
+.main .trhd{font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;color:var(--faint);margin-bottom:7px}
+.main .trace{display:flex;flex-direction:column;gap:7px}
+.main .trace .ts{display:flex;gap:8px;align-items:flex-start;font-family:var(--mono);font-size:11px;line-height:1.45;color:var(--mut);opacity:0;transform:translateY(3px);transition:opacity .22s,transform .22s}
+.main .trace .ts.on{opacity:1;transform:none}
+.main .trace .ts .tic{width:11px;height:11px;flex:0 0 auto;margin-top:2px;border-radius:50%;border:1.5px solid var(--faint);position:relative}
+.main .trace .ts.run .tic{border-color:var(--acc);border-top-color:transparent;animation:trspin .7s linear infinite}
+.main .trace .ts.done{color:var(--tx)}
+.main .trace .ts.done .tic{border-color:var(--acc);animation:none}
+.main .trace .ts.done .tic::after{content:'';position:absolute;inset:2.5px;border-radius:50%;background:var(--acc)}
+@keyframes trspin{to{transform:rotate(360deg)}}
 @keyframes dmblink{0%,60%,100%{opacity:.25}30%{opacity:1}}
 .main .ask{border-top:1px solid var(--line);padding:13px 15px;background:#0C1A25}
 .main .ask .lab{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin-bottom:9px}
@@ -431,7 +441,7 @@ body.degraded .main .ask{opacity:.32;pointer-events:none}
 /* ===== recorrido guiado ===== */
 #tourBlock{position:fixed;inset:0;z-index:170;display:none;cursor:pointer}
 #tourBlock.on{display:block}
-#tourHole{position:fixed;z-index:171;border-radius:12px;box-shadow:0 0 0 9999px rgba(5,12,18,.72);border:2px solid var(--acc);transition:top .32s cubic-bezier(.4,0,.2,1),left .32s cubic-bezier(.4,0,.2,1),width .32s,height .32s;pointer-events:none}
+#tourHole{position:fixed;z-index:171;border-radius:12px;box-shadow:0 0 0 9999px rgba(5,12,18,.72);border:2px solid var(--acc);transition:top .14s ease-out,left .14s ease-out,width .14s ease-out,height .14s ease-out;pointer-events:none}
 #tourCard{position:fixed;z-index:172;width:336px;max-width:calc(100vw - 32px);background:var(--panel);border:1px solid var(--line2);border-radius:14px;box-shadow:0 18px 50px rgba(0,0,0,.5);padding:17px 18px;transition:top .3s,left .3s;cursor:default}
 @media(max-height:840px) and (min-width:1120px){#tourCard{width:300px;padding:14px 16px}#tourCard .tcbody{font-size:12.5px;line-height:1.42}}
 #tourCard .tcnum{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--acc2);margin-bottom:8px}
@@ -618,7 +628,7 @@ a:focus-visible, button:focus-visible, [role="button"]:focus-visible, .chip:focu
       <button class="nav" data-view="cumplimiento"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg>Cumplimiento</button>
       <div class="grow"></div>
       <div class="sess"><div class="l">Sesión</div><div class="v"><span class="d"></span><span id="sessRole">Torre · demo</span></div></div>
-      <div class="ver">AeroClima · build 02-jul-j · arranque optimizado</div>
+      <div class="ver">AeroClima · build 02-jul-n · slogan nuevo</div>
     </aside>
     <div class="sidescrim" id="sideScrim"></div>
 
@@ -1208,6 +1218,28 @@ function addBub(role,html){
   m.innerHTML=`<div class="av">${role==='a'?'<img src="aeroclima-mark.png" alt="">':'TÚ'}</div><div class="bub">${html}</div>`;
   chat.appendChild(m); chat.scrollTop=chat.scrollHeight; return m;
 }
+function traceFor(it,d){
+  const R=regNames[reg][0];
+  const lee="Leo la observación vigente: vis "+d.vis.v+" "+d.vis.u+" · techo "+d.ceil.v+" "+(d.ceil.u||"")+" · viento "+d.wind.v+" "+d.wind.u;
+  const red="Redacto en registro "+R+", con cada dato anclado a su fuente";
+  if(scn==="degradado" && !it.ownDegraded) return [
+    "Leo la observación vigente y encuentro //// en visibilidad y techo",
+    "Sensor sin lectura válida → aplico la política de abstención: no estimo ni promedio",
+    "Derivo al observador certificado y dejo a la vista la última lectura válida",
+    red];
+  const K={
+    carta:[lee,"Comparo contra los mínimos de las cartas publicadas de ZZZZ","El kernel determinista selecciona carta y cabecera — la IA no decide, sugiere",red],
+    hist:["Recorro el registro homologado de las últimas 3 horas","Busco cruces del umbral de techo (800 ft) y alertas emitidas","Ordeno los eventos y calculo cuánto tiempo pasó",red],
+    baja:[lee,"Contrasto la tendencia del TAF con el umbral de baja visibilidad","Anclo la cita normativa correspondiente (texto a la vista)",red],
+    iac:["Abro la carta IAC 16 en la biblioteca normativa anclada","Extraigo mínimos y restricciones tal como están publicados","No interpreto: cito el texto y su vigencia",red],
+    turno:["Recolecto los eventos del turno: cambios de estado, alertas y SIN DATO",lee,"Armo la síntesis cronológica con cada fuente citada",red],
+    viento:[lee,"Proyecto el viento sobre la cabecera en uso: componente frontal y cruzada",red],
+    notams:["Consulto los NOTAM vigentes de ZZZZ (fuente oficial)","Filtro los que afectan esta operación",red],
+    alt:[lee,"Evalúo las alternativas cargadas y sus mínimos vigentes",red],
+    ruta:["Reúno METAR y TAF de ruta y destino",lee,red]
+  };
+  return K[it.key]||[lee,red];
+}
 function ask(i,btn){
   if(busy||aiDown()) return; busy=true;
   if(btn){ btn.blur(); btn.classList.remove("sent"); void btn.offsetWidth; btn.classList.add("sent"); setTimeout(()=>btn.classList.remove("sent"),900); }
@@ -1216,7 +1248,24 @@ function ask(i,btn){
   const typ=document.createElement("div"); typ.className="msg a";
   typ.innerHTML='<div class="av"><img src="aeroclima-mark.png" alt=""></div><div class="bub"><div class="typing"><i></i><i></i><i></i></div></div>';
   chat.appendChild(typ); chat.scrollTop=chat.scrollHeight;
-  setTimeout(()=>{ typ.remove(); renderAnswer(scn==="degradado"&&!it.ownDegraded?buildDegraded(it):it.build(live(scn))); busy=false; }, 950+Math.random()*500);
+  const d=live(scn), steps=traceFor(it,d);
+  const rm=matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const t0=rm?90:480, cad=rm?60:430, tail=rm?60:340;
+  setTimeout(()=>{
+    const bub=typ.querySelector(".bub");
+    bub.innerHTML='<div class="trhd">PROCESANDO · TRAZA DE LA CONSULTA</div><div class="trace"></div>';
+    const tr=bub.querySelector(".trace");
+    steps.forEach((st,ix)=>{
+      setTimeout(()=>{
+        [...tr.children].forEach(c=>{ c.classList.remove("run"); c.classList.add("done"); });
+        const row=document.createElement("div"); row.className="ts run";
+        row.innerHTML='<span class="tic"></span><span>'+st+'</span>';
+        tr.appendChild(row); requestAnimationFrame(()=>row.classList.add("on"));
+        chat.scrollTop=chat.scrollHeight;
+      }, ix*cad);
+    });
+    setTimeout(()=>{ typ.remove(); renderAnswer(scn==="degradado"&&!it.ownDegraded?buildDegraded(it):it.build(d)); busy=false; }, steps.length*cad+tail);
+  }, t0);
 }
 function buildDegraded(it){
   const w=live("degradado").wind;
@@ -1258,9 +1307,17 @@ function wireBub(m,o){
 function renderAnswer(o){ const m=addBub("a",answerHTML(o)); wireBub(m,o); lastAns={o,el:m}; }
 function regenLast(){
   if(!lastAns||!lastAns.el||!lastAns.el.isConnected) return;
-  lastAns.el.querySelector(".bub").innerHTML=answerHTML(lastAns.o);
-  wireBub(lastAns.el,lastAns.o);
-  lastAns.el.classList.remove("flash"); void lastAns.el.offsetWidth; lastAns.el.classList.add("flash");
+  const bub=lastAns.el.querySelector(".bub");
+  const tok=(regenLast._t=(regenLast._t||0)+1);
+  const rm=matchMedia("(prefers-reduced-motion: reduce)").matches;
+  bub.innerHTML='<div class="trace"><div class="ts run on"><span class="tic"></span><span>Reformulo la misma respuesta en registro <b>'+regNames[reg][0]+'</b> — mismos datos, mismo anclaje; sólo cambia el lenguaje</span></div></div>';
+  chat.scrollTop=chat.scrollHeight;
+  setTimeout(()=>{
+    if(tok!==regenLast._t || !lastAns.el.isConnected) return;
+    bub.innerHTML=answerHTML(lastAns.o);
+    wireBub(lastAns.el,lastAns.o);
+    lastAns.el.classList.remove("flash"); void lastAns.el.offsetWidth; lastAns.el.classList.add("flash");
+  }, rm?80:760);
 }
 
 /* ---- modal ---- */
@@ -1644,7 +1701,15 @@ function placeTour(){
     const spaceRight=vw-r.right-gap-m, spaceLeft=r.left-gap-m;
     if(spaceRight>=cw){ left=r.right+gap; top=Math.max(m,Math.min(r.top-p, vh-ch-m)); }
     else if(spaceLeft>=cw){ left=r.left-gap-cw; top=Math.max(m,Math.min(r.top-p, vh-ch-m)); }
-    else { top=Math.max(m, vh-ch-m); } // sin costados (mobile): abajo de todo, clampeado
+    else {
+      // sin costados (panel ancho y alto en pantalla baja): recortar el spotlight a la
+      // franja superior del elemento y poner el globo debajo del recorte, sin pisarlo
+      const need=ch+gap+m;
+      const holeTop=Math.max(m, r.top-p);
+      const holeH=Math.max(120, vh-need-holeTop);
+      tHole.style.top=holeTop+'px'; tHole.style.height=holeH+'px';
+      top=holeTop+holeH+gap;
+    }
   }
   top=Math.max(m,Math.min(top,vh-ch-m));
   left=Math.max(m,Math.min(left,vw-cw-m));
@@ -1677,7 +1742,12 @@ tCard.querySelector('.tcprev').onclick=()=>showStep(ti-1);
 tCard.querySelector('.tcskip').onclick=endTour;
 tBlock.onclick=()=>{ ti===tourSteps.length-1 ? endTour() : showStep(ti+1); };
 addEventListener('resize',()=>{ if(tourOn) placeTour(); });
-addEventListener('scroll',()=>{ if(tourOn) placeTour(); },{passive:true});
+let _tourScrollIdle=null;
+addEventListener('scroll',()=>{ if(!tourOn) return;
+  tHole.style.transition='none'; placeTour();
+  clearTimeout(_tourScrollIdle);
+  _tourScrollIdle=setTimeout(()=>{ tHole.style.transition=''; placeTour(); },140);
+},{capture:true,passive:true}); /* capture: el scroller real es .main, y scroll no burbujea */
 addEventListener('keydown',e=>{ if(!tourOn)return;
   if(e.key==='Escape') endTour();
   else if(e.key==='ArrowRight') (ti===tourSteps.length-1?endTour():showStep(ti+1));
